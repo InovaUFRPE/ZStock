@@ -23,7 +23,7 @@
             android:layout_height="wrap_content">
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/btnAbrirCameraPerfilPessoaFisica"
+                android:id="@+id/fabAbrirCameraPerfilPessoaFisica"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -36,10 +36,10 @@
                 app:backgroundTint="@color/goiaba" />
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/btnAbrirGaleriaCameraPerfilPessoaFisica"
+                android:id="@+id/fabAbrirGaleriaPerfilPessoaFisica"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/btnAbrirCameraPerfilPessoaFisica"
+                android:layout_alignTop="@+id/fabAbrirCameraPerfilPessoaFisica"
                 android:layout_toLeftOf="@+id/cvPerfilPessoaFisica"
                 android:layout_toStartOf="@+id/cvPerfilPessoaFisica"
                 android:clickable="true"
