@@ -18,12 +18,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.persistencia.FirebaseController;
+import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
 import com.zstok.perfil.negocio.PerfilServices;
+import com.zstok.produto.gui.MeusProdutosActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -65,9 +69,11 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
         //Instanciando views do menu lateral
         instanciandoView();
 
+        //Carregando foto menu lateral
+        carregarFoto();
+
         //Carregando informações do menu lateral
         setDadosMenuLateral();
-
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -81,6 +87,7 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
                         drawer.closeDrawers();
                         return true;
                     case R.id.nav_produtos:
+                        abrirTelaMeusProdutosActivity();
                         //Função abrir tela produtos
                         return true;
                     case R.id.nav_sair:
@@ -92,6 +99,17 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
             }
         });
     }
+    //Carregando foto do usuário
+    private void carregarFoto(){
+        FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+        if (user != null) {
+            if (user.getPhotoUrl() != null) {
+                Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
+            }else {
+                Helper.criarToast(getApplicationContext(), "ERROR");
+            }
+        }
+    }
     private void instanciandoView(){
         View headerView = navigationView.getHeaderView(0);
         tvNomeUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderNome);
@@ -99,20 +117,9 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
         cvNavHeaderPessoa = headerView.findViewById(R.id.cvNavHeaderPessoa);
     }
     private void setDadosMenuLateral(){
-        PerfilServices.resgatarFoto(cvNavHeaderPessoa);
         PerfilServices.setDadosNavHeader(FirebaseController.getFirebaseAuthentication().getCurrentUser(),tvNomeUsuarioNavHeader,tvEmailUsuarioNavHeader);
     }
-
-    private void abrirTelaPerfilPessoaJuridicaActivity() {
-        Intent intent = new Intent(getApplicationContext(), PerfilPessoaJuridicaActivity.class);
-        startActivity(intent);
-    }
-
-    private void abrirTelaLoginActivity(){
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(intent);
-    }
-
+    //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
     private void sair () {
         //Cria o gerador do AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -138,12 +145,6 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
         //Exibe
         alertaSair.show();
     }
-
-
-
-
-
-
 
     @Override
     public void onBackPressed() {
@@ -186,5 +187,20 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    //Intent para a tela dos produtos cadastrados
+    private void abrirTelaMeusProdutosActivity(){
+        Intent intent = new Intent(getApplicationContext(), MeusProdutosActivity.class);
+        startActivity(intent);
+    }
+    //Intent para a tela de perfil da pessoa jurídica
+    private void abrirTelaPerfilPessoaJuridicaActivity() {
+        Intent intent = new Intent(getApplicationContext(), PerfilPessoaJuridicaActivity.class);
+        startActivity(intent);
+    }
+    //Intent para a tela de login
+    private void abrirTelaLoginActivity(){
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
     }
 }

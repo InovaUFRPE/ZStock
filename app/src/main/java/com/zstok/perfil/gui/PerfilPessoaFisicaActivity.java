@@ -26,12 +26,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.persistencia.FirebaseController;
@@ -49,11 +49,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class PerfilPessoaFisicaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final int CAMERA_REQUEST_CODE = 0;
-    private static final int GALERY_REQUEST_CODE = 1;
+    private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int GALERY_REQUEST_CODE = 71;
 
-    private StorageReference storageReference;
-    private Uri uriFoto;
     private AlertDialog alertaSair;
 
     private TextView tvNomeUsuarioNavHeader;
@@ -95,9 +93,6 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         tvDataNascimentoPerfilFisico = findViewById(R.id.tvDataNascimentoPerfilFisico);
         TextView tvEnderecoPerfilFisico = findViewById(R.id.tvEnderecoPerfilFisico);
 
-        //Referencia do storage do firebase
-        storageReference = FirebaseStorage.getInstance().getReference();
-
         //Solicitando permissão ao usuário, caso o mesmo ainda não tenha permitido a solicitação
         permissaoGravarLerArquivos();
 
@@ -108,7 +103,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         setDadosMenuLateral();
 
         //Carregando foto do banco de dados e setando para o ImageView
-        carregandoFoto();
+        carregarFoto();
 
         //Recuperando dados do usuário do banco
         recuperarDados();
@@ -137,14 +132,14 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                 }
             }
         });
-        FloatingActionButton fabAbrirGaleriaPerfilPessoaFisica = findViewById(R.id.btnAbrirGaleriaCameraPerfilPessoaFisica);
+        FloatingActionButton fabAbrirGaleriaPerfilPessoaFisica = findViewById(R.id.fabAbrirGaleriaPerfilPessoaFisica);
         fabAbrirGaleriaPerfilPessoaFisica.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 escolherFoto();
             }
         });
-        FloatingActionButton fabAbrirCameraPerfilPessoaFisica = findViewById(R.id.btnAbrirCameraPerfilPessoaFisica);
+        FloatingActionButton fabAbrirCameraPerfilPessoaFisica = findViewById(R.id.fabAbrirCameraPerfilPessoaFisica);
         fabAbrirCameraPerfilPessoaFisica.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -228,7 +223,6 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     }
     //Carregando informações do menu lateral
     private void setDadosMenuLateral(){
-        PerfilServices.resgatarFoto(cvNavHeaderPessoa);
         PerfilServices.setDadosNavHeader(FirebaseController.getFirebaseAuthentication().getCurrentUser(),tvNomeUsuarioNavHeader, tvEmailUsuarioNavHeader);
     }
     //Permissão para ler e gravar arquivos do celular
@@ -282,22 +276,22 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     //Método que abre a câmera
     private void tirarFoto() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(intent, CAMERA_REQUEST_CODE);
-        }
+        startActivityForResult(intent, CAMERA_REQUEST_CODE);
     }
     //Esse método trata as permissões do usuário
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults){
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults){
         switch (requestCode){
             case CAMERA_REQUEST_CODE:{
                 if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     tirarFoto();
+                    break;
                 }
             }
             case GALERY_REQUEST_CODE:{
                 if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     escolherFoto();
+                    break;
                 }
             }
         }
@@ -323,13 +317,15 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case GALERY_REQUEST_CODE:{
+            case GALERY_REQUEST_CODE:
+                Uri uriFoto;
+            {
                 if (requestCode == GALERY_REQUEST_CODE && resultCode == RESULT_OK) {
                     uriFoto = data.getData();
                     try{
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),uriFoto);
-                        cvPerfilPessoaFisica.setImageBitmap(bitmap);
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFoto);
                         cvNavHeaderPessoa.setImageBitmap(bitmap);
+                        cvPerfilPessoaFisica.setImageBitmap(bitmap);
                         inserirFoto(uriFoto);
                     }catch(IOException e ){
                         Log.d("IOException upload", e.getMessage());
@@ -357,8 +353,16 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         PerfilServices.insereFoto(uriFoto);
     }
     //Resgatando foto do Storage
-    private void carregandoFoto(){
-        PerfilServices.resgatarFoto(cvPerfilPessoaFisica);
+    private void carregarFoto(){
+        FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+        if (user != null) {
+            if (user.getPhotoUrl() != null) {
+                Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
+                Glide.with(this).load(user.getPhotoUrl()).into(cvPerfilPessoaFisica);
+            }else {
+                Helper.criarToast(getApplicationContext(), "ERROR");
+            }
+        }
     }
     //Obtendo URI da imagem
     public Uri getImageUri(Context inContext, Bitmap inImage) {
