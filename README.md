@@ -3,3 +3,4 @@ O ZStock é uma aplicação, que vai encontrar um comprador para o seu estoque. 
 
 Teste!
 Teste!
+Teste!
