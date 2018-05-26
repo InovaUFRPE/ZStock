@@ -80,8 +80,8 @@
             android:gravity="center_vertical"
             android:hint="@string/zs_hint_preco_produto"
             android:textSize="18sp"
-            android:textColorHint="@color/cimento"
             android:textColor="@color/cloudGrey"
+            android:textColorHint="@color/cimento"
             android:layout_margin="5dp"
             android:layout_below="@id/edtNomeProduto"
             android:drawableLeft="@drawable/ic_negociacao"
@@ -90,7 +90,7 @@
             android:drawablePadding="@dimen/drawable_padding"
             android:paddingLeft="@dimen/padding_left"
             android:paddingStart="@dimen/padding_left"
-            android:inputType="number"/>
+            android:inputType="numberDecimal"/>
 
         <EditText
             android:id="@+id/edtQuantidadeEstoqueProduto"
@@ -98,6 +98,7 @@
             android:layout_height="50dp"
             android:layout_below="@id/edtPrecoProduto"
             android:textSize="18sp"
+            android:textColor="@color/cloudGrey"
             android:textColorHint="@color/cimento"
             android:hint="@string/zs_hint_quantidade_estoque_produto"
             android:layout_margin="5dp"
@@ -123,7 +124,10 @@
             android:hint="@string/zs_hint_descricao_produto"
             android:paddingBottom="70dp"
             android:maxLength="1000"
-            android:textColorHint="@color/cimento"/>
+            android:textSize="18sp"
+            android:textColor="@color/cloudGrey"
+            android:textColorHint="@color/cimento"
+            android:inputType="text"/>
 
         <Button
             android:id="@+id/btnCadastrarProduto"

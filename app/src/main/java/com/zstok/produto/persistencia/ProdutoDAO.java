@@ -31,12 +31,7 @@ public class ProdutoDAO {
     }
     //Inserindo imagem no banco
     private static void insereFoto(Uri uriFoto, final Produto produto) {
-        StorageReference ref = storageReference.child("images/produto/" + "/" + FirebaseController.getUidUser() + "/" + produto.getNomeProduto() + ".bmp");
-        ref.putFile(uriFoto).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                produto.setUrlImagemProduto(taskSnapshot.getDownloadUrl().toString());
-            }
-        });
+        StorageReference ref = storageReference.child("images/produtos/" + FirebaseController.getUidUser() + "/" + produto.getNomeProduto() + ".bmp");
+        ref.putFile(uriFoto);
     }
 }

@@ -23,10 +23,11 @@ public class ProdutoListHolder extends RecyclerView.ViewHolder {
     public ProdutoListHolder (final View itemView){
         super(itemView);
 
-        imgCardViewProduto = itemView.findViewById(R.id.fotoID);
-        tvCardViewNomeProduto = itemView.findViewById(R.id.nomeID);
-        tvCardViewPrecoProduto = itemView.findViewById(R.id.precoID);
-        tvCardViewQuantidadeEstoque = itemView.findViewById(R.id.quantidadeID);
+        imgCardViewProduto = itemView.findViewById(R.id.imgCardViewProduto);
+        tvCardViewNomeProduto = itemView.findViewById(R.id.nomeCardViewProduto);
+        tvCardViewPrecoProduto = itemView.findViewById(R.id.precoCardViewProduto);
+        tvCardViewQuantidadeEstoque = itemView.findViewById(R.id.quantidadeCardViewProduto);
+        tvCardViewNomeEmpresa = itemView.findViewById(R.id.nomeEmpresaCardViewProduto);
         mainLayout = itemView.findViewById(R.id.cardViewProduto);
         linearLayout = itemView.findViewById(R.id.produtoCard);
 

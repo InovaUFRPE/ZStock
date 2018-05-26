@@ -27,7 +27,6 @@
         </activity>
         <activity android:name=".pessoa.gui.RegistroActivity" />
         <activity android:name=".ResgatarSenhaActivity" />
-        <activity android:name=".cardView.gui.CardProdutoActivity" />
         <activity
             android:name=".perfil.gui.PerfilPessoaFisicaActivity"
             android:label="@string/title_activity_pessoa_fisica"

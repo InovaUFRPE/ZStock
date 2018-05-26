@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,7 +22,6 @@ import android.widget.EditText;
 import com.zstok.R;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.VerificaConexao;
-import com.zstok.perfil.negocio.PerfilServices;
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
 
@@ -32,8 +32,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CadastrarProdutoActivity extends AppCompatActivity {
 
-    private static final int CAMERA_REQUEST_CODE = 0;
-    private static final int GALERY_REQUEST_CODE = 1;
+    private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int GALERY_REQUEST_CODE = 71;
 
     private EditText edtNomeProduto;
     private EditText edtPrecoProduto;
@@ -71,7 +71,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (verificaConexao.isConected()){
                     if (validarCampos()){
-                        inserirProduto(uriFoto, criarProduto());
+                        inserirProduto(criarProduto());
                     }
                 }
             }
@@ -180,11 +180,13 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
             case CAMERA_REQUEST_CODE:{
                 if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     tirarFoto();
+                    break;
                 }
             }
             case GALERY_REQUEST_CODE:{
                 if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     escolherFoto();
+                    break;
                 }
             }
         }
@@ -227,11 +229,20 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         produto.setPreco(Double.valueOf(edtPrecoProduto.getText().toString()));
         produto.setQuantidadeEstoque(Integer.valueOf(edtQuantidadeEstoqueProduto.getText().toString()));
         produto.setDescricao(edtDescricaoProduto.getText().toString());
+        produto.setBitmapImagemProduto(bitMapToString(bitmapCadstrarProduto));
 
         return produto;
     }
+    //Convertendo bitMap para string
+    //By: http://androidtrainningcenter.blogspot.com.br/2012/03/how-to-convert-string-to-bitmap-and.html
+    private String bitMapToString (Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress (Bitmap.CompressFormat.PNG, 100, baos);
+        byte [] b = baos.toByteArray ();
+        return Base64.encodeToString (b, Base64.DEFAULT);
+    }
     //Inserindo imagem no banco
-    private void inserirProduto(Uri uriFoto, Produto produto){
+    private void inserirProduto(Produto produto){
         if (ProdutoServices.insereProduto(uriFoto, produto)){
             abrirTelaMeusProdutosActivity();
         } else {

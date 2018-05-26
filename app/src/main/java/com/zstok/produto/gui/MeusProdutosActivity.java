@@ -2,6 +2,8 @@ package com.zstok.produto.gui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,6 +24,7 @@ import android.view.MenuItem;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.zstok.R;
@@ -38,6 +42,9 @@ public class MeusProdutosActivity extends AppCompatActivity
 
     private RecyclerView recylerViewMeusprodutos;
     private RecyclerView.Adapter adapter;
+    private FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+
+    private Intent intent = getIntent();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,18 +110,34 @@ public class MeusProdutosActivity extends AppCompatActivity
             adapter = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(Produto.class, R.layout.card_produto, ProdutoListHolder.class, databaseReference) {
 
                 @Override
-                protected void populateViewHolder(ProdutoListHolder viewHolder, Produto model, int position) {
+                protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
+                    String preco = "Preço: " + String.valueOf(model.getPreco());
+                    String quantidade = "Quantidade: " + String.valueOf(model.getQuantidadeEstoque());
+                    String nomeEmpresa = "Empresa: " + user.getDisplayName();
+
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
                     viewHolder.tvCardViewNomeProduto.setText(model.getNomeProduto());
-                    viewHolder.tvCardViewPrecoProduto.setText(String.valueOf(model.getPreco()));
-                    viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
-                    if (model.getUrlImagemProduto() != null) {
-                        viewHolder.imgCardViewProduto.setImageURI(Uri.parse(model.getUrlImagemProduto()));
+                    viewHolder.tvCardViewPrecoProduto.setText(preco);
+                    viewHolder.tvCardViewQuantidadeEstoque.setText(quantidade);
+                    viewHolder.tvCardViewNomeEmpresa.setText(nomeEmpresa);
+                    if (model.getBitmapImagemProduto() != null) {
+                        viewHolder.imgCardViewProduto.setImageBitmap(stringToBitMap(model.getBitmapImagemProduto()));
                     }
                 }
             };
             recylerViewMeusprodutos.setAdapter(adapter);
+        }
+    }
+    //Convertendo string para bitmap
+    //By: http://androidtrainningcenter.blogspot.com.br/2012/03/how-to-convert-string-to-bitmap-and.html
+    private Bitmap stringToBitMap(String encodedString){
+        try{
+            byte [] encodeByte = Base64.decode(encodedString,Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+        }catch(Exception e){
+            e.getMessage();
+            return null;
         }
     }
     //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma

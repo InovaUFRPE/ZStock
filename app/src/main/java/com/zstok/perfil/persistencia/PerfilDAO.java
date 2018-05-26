@@ -58,11 +58,7 @@ public class PerfilDAO {
                         UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
                                 .setPhotoUri(Uri.parse(uriImagemPerfil))
                                 .build();
-                        user.updateProfile(profileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                            }
-                        });
+                        user.updateProfile(profileChangeRequest);
                     }
                 }
             });

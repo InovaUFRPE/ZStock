@@ -201,8 +201,6 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
             if (user.getPhotoUrl() != null) {
                 Glide.with(this).load(user.getPhotoUrl()).into(cvPerfilPessoaJuridica);
                 Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
-            }else {
-                Helper.criarToast(getApplicationContext(), "ERROR");
             }
         }
     }

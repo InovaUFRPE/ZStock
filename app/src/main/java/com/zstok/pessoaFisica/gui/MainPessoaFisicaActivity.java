@@ -101,8 +101,6 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
         if (user != null) {
             if (user.getPhotoUrl() != null) {
                 Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
-            }else {
-                Helper.criarToast(getApplicationContext(), "ERROR");
             }
         }
     }

@@ -359,8 +359,6 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
             if (user.getPhotoUrl() != null) {
                 Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
                 Glide.with(this).load(user.getPhotoUrl()).into(cvPerfilPessoaFisica);
-            }else {
-                Helper.criarToast(getApplicationContext(), "ERROR");
             }
         }
     }
