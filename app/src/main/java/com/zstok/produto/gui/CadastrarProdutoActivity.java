@@ -1,7 +1,6 @@
 package com.zstok.produto.gui;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -13,7 +12,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +23,6 @@ import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -41,7 +38,6 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
     private EditText edtDescricaoProduto;
     private CircleImageView cvCadastrarProduto;
 
-    private Uri uriFoto;
     private Bitmap bitmapCadstrarProduto;
 
     private VerificaConexao verificaConexao;
@@ -63,7 +59,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         edtPrecoProduto = findViewById(R.id.edtPrecoProduto);
         edtQuantidadeEstoqueProduto = findViewById(R.id.edtQuantidadeEstoqueProduto);
         edtDescricaoProduto = findViewById(R.id.edtDescricaoProduto);
-        cvCadastrarProduto = findViewById(R.id.cvCadstrarProduto);
+        cvCadastrarProduto = findViewById(R.id.cvCadastrarProduto);
         Button btnCadastrarProduto = findViewById(R.id.btnCadastrarProduto);
 
         btnCadastrarProduto.setOnClickListener(new View.OnClickListener() {
@@ -196,6 +192,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case GALERY_REQUEST_CODE:
+                Uri uriFoto;
             {
                 if (requestCode == GALERY_REQUEST_CODE && resultCode == RESULT_OK) {
                     uriFoto = data.getData();
@@ -213,7 +210,6 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
                         Bundle extras = data.getExtras();
                         if (extras != null) {
                             bitmapCadstrarProduto = (Bitmap) extras.get("data");
-                            uriFoto = getImageUri(getApplicationContext(), bitmapCadstrarProduto);
                             cvCadastrarProduto.setImageBitmap(bitmapCadstrarProduto);
                         }
                     }
@@ -229,32 +225,18 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         produto.setPreco(Double.valueOf(edtPrecoProduto.getText().toString()));
         produto.setQuantidadeEstoque(Integer.valueOf(edtQuantidadeEstoqueProduto.getText().toString()));
         produto.setDescricao(edtDescricaoProduto.getText().toString());
-        produto.setBitmapImagemProduto(bitMapToString(bitmapCadstrarProduto));
-
+        if (bitmapCadstrarProduto != null) {
+            produto.setBitmapImagemProduto(Helper.bitMapToString(bitmapCadstrarProduto));
+        }
         return produto;
-    }
-    //Convertendo bitMap para string
-    //By: http://androidtrainningcenter.blogspot.com.br/2012/03/how-to-convert-string-to-bitmap-and.html
-    private String bitMapToString (Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress (Bitmap.CompressFormat.PNG, 100, baos);
-        byte [] b = baos.toByteArray ();
-        return Base64.encodeToString (b, Base64.DEFAULT);
     }
     //Inserindo imagem no banco
     private void inserirProduto(Produto produto){
-        if (ProdutoServices.insereProduto(uriFoto, produto)){
+        if (ProdutoServices.insereProduto(produto)){
             abrirTelaMeusProdutosActivity();
         } else {
             Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
         }
-    }
-    //Obtendo URI da imagem
-    private Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
     }
     //Intent para a tela meus produtos
     private void abrirTelaMeusProdutosActivity(){

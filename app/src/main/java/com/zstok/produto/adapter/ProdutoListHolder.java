@@ -7,8 +7,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zstok.R;
+import com.zstok.produto.dominio.Produto;
 
-public class ProdutoListHolder extends RecyclerView.ViewHolder {
+public class ProdutoListHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     //public int currentItem;
     public ImageView imgCardViewProduto;
@@ -18,6 +19,7 @@ public class ProdutoListHolder extends RecyclerView.ViewHolder {
     public TextView tvCardViewNomeEmpresa;
     public View mainLayout;
     public View linearLayout;
+    private ProdutoListHolder.ClickListener itemClickListener;
 
 
     public ProdutoListHolder (final View itemView){
@@ -31,15 +33,29 @@ public class ProdutoListHolder extends RecyclerView.ViewHolder {
         mainLayout = itemView.findViewById(R.id.cardViewProduto);
         linearLayout = itemView.findViewById(R.id.produtoCard);
 
+        itemView.setOnClickListener(this);
+
+        /*
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int position = getAdapterPosition();
-
-                Snackbar.make(v, "Click detected on item " + position, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
+                itemClickListener.onItemClick(v, getAdapterPosition());
             }
         });
+        */
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (itemClickListener != null){
+            itemClickListener.onItemClick(v, getAdapterPosition());
+        }
+    }
+
+    public interface ClickListener {
+        void onItemClick(View view, int position);
+    }
+    public void setOnItemClickListener(ProdutoListHolder.ClickListener clickListener){
+        itemClickListener = clickListener;
     }
 }

@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -21,7 +20,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,10 +31,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.persistencia.FirebaseController;
+import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
 import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
 import com.zstok.produto.adapter.ProdutoListHolder;
 import com.zstok.produto.dominio.Produto;
+import com.zstok.produto.negocio.ProdutoServices;
 
 public class MeusProdutosActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,10 +44,8 @@ public class MeusProdutosActivity extends AppCompatActivity
     private AlertDialog alertaSair;
 
     private RecyclerView recylerViewMeusprodutos;
-    private RecyclerView.Adapter adapter;
+    private FirebaseRecyclerAdapter adapter;
     private FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
-
-    private Intent intent = getIntent();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,8 +103,9 @@ public class MeusProdutosActivity extends AppCompatActivity
             }
         });
     }
+    //Montando adapter e jogando no list holder
     private void criandoAdapter() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("produto").child(FirebaseController.getUidUser());
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("produto").child(FirebaseController.getUidUser());
 
         if (databaseReference != null) {
 
@@ -111,34 +113,59 @@ public class MeusProdutosActivity extends AppCompatActivity
 
                 @Override
                 protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
-                    String preco = "Preço: " + String.valueOf(model.getPreco());
-                    String quantidade = "Quantidade: " + String.valueOf(model.getQuantidadeEstoque());
-                    String nomeEmpresa = "Empresa: " + user.getDisplayName();
-
+                    getItemCount();
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
                     viewHolder.tvCardViewNomeProduto.setText(model.getNomeProduto());
-                    viewHolder.tvCardViewPrecoProduto.setText(preco);
-                    viewHolder.tvCardViewQuantidadeEstoque.setText(quantidade);
-                    viewHolder.tvCardViewNomeEmpresa.setText(nomeEmpresa);
+                    viewHolder.tvCardViewPrecoProduto.setText(String.valueOf(model.getPreco()));
+                    viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
+                    viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
                     if (model.getBitmapImagemProduto() != null) {
-                        viewHolder.imgCardViewProduto.setImageBitmap(stringToBitMap(model.getBitmapImagemProduto()));
+                        Glide.with(getApplicationContext()).load(Helper.stringToBitMap(model.getBitmapImagemProduto())).into(viewHolder.imgCardViewProduto);
                     }
+                }
+
+                @NonNull
+                @Override
+                public ProdutoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+                    final ProdutoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                    viewHolder.setOnItemClickListener(new ProdutoListHolder.ClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            Produto produto = (Produto) adapter.getItem(position);
+                            dialogoProduto(produto);
+                        }
+                    });
+                    return viewHolder;
                 }
             };
             recylerViewMeusprodutos.setAdapter(adapter);
         }
     }
-    //Convertendo string para bitmap
-    //By: http://androidtrainningcenter.blogspot.com.br/2012/03/how-to-convert-string-to-bitmap-and.html
-    private Bitmap stringToBitMap(String encodedString){
-        try{
-            byte [] encodeByte = Base64.decode(encodedString,Base64.DEFAULT);
-            return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-        }catch(Exception e){
-            e.getMessage();
-            return null;
-        }
+    //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
+    private void dialogoProduto (final Produto produto) {
+        //Cria o gerador do AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //Define o titulo
+        builder.setTitle(getString(R.string.zs_dialogo_titulo_produto));
+        //Define a mensagem
+        builder.setMessage(getString(R.string.zs_dialogo_mensagem_produto));
+        //Define a opção de editar produto
+        builder.setPositiveButton(getString(R.string.zs_dialogo_editar_produto), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+                abrirTelaEditarProdutoActivity(produto);
+            }
+        });
+        //Define a opção de excluir produto
+        builder.setNegativeButton(getString(R.string.zs_dialogo_excluir_produto), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+                excluirProduto(produto);
+            }
+        });
+        //Cria o AlertDialog
+        AlertDialog alertaProduto = builder.create();
+        //Exibe
+        alertaProduto.show();
     }
     //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
     private void sair () {
@@ -166,6 +193,13 @@ public class MeusProdutosActivity extends AppCompatActivity
         //Exibe
         alertaSair.show();
     }
+    private void excluirProduto(Produto produto){
+        if (ProdutoServices.excluirProduto(produto)){
+            Helper.criarToast(getApplicationContext(), getString(R.string.zs_produto_excluido_sucesso));
+        }else {
+            Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
+        }
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -175,14 +209,12 @@ public class MeusProdutosActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.meus_produtos, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -197,7 +229,6 @@ public class MeusProdutosActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -226,6 +257,12 @@ public class MeusProdutosActivity extends AppCompatActivity
     //Intent para a tela de login
     private void abrirTelaLoginActivity(){
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+    }
+    //Intent para a tela de editar produto
+    private void abrirTelaEditarProdutoActivity(Produto produto){
+        Intent intent = new Intent(getApplicationContext(), EditarProdutoActivity.class);
+        intent.putExtra("idProduto", produto.getIdProduto());
         startActivity(intent);
     }
 }

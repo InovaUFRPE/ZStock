@@ -1,6 +1,9 @@
 package com.zstok.infraestrutura.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -8,6 +11,7 @@ import android.widget.Toast;
 import com.github.rtoshiro.util.format.SimpleMaskFormatter;
 import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 
+import java.io.ByteArrayOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -70,5 +74,24 @@ public class Helper {
     }
     public static String removerMascara(String str){
         return str.replaceAll("\\D", "");
+    }
+    //Convertendo string para bitmap
+    //By: http://androidtrainningcenter.blogspot.com.br/2012/03/how-to-convert-string-to-bitmap-and.html
+    public static Bitmap stringToBitMap(String encodedString){
+        try{
+            byte [] encodeByte = Base64.decode(encodedString,Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+        }catch(Exception e){
+            e.getMessage();
+            return null;
+        }
+    }
+    //Convertendo bitMap para string
+    //By: http://androidtrainningcenter.blogspot.com.br/2012/03/how-to-convert-string-to-bitmap-and.html
+    public static String bitMapToString(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress (Bitmap.CompressFormat.PNG, 100, baos);
+        byte [] b = baos.toByteArray ();
+        return Base64.encodeToString (b, Base64.DEFAULT);
     }
 }

@@ -7,39 +7,39 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/jabuticaba"
-    tools:context=".produto.gui.CadastrarProdutoActivity">
+    tools:context=".produto.gui.EditarProdutoActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabAbrirCameraCadastrarProduto"
+            android:id="@+id/fabAbrirCameraEditarProduto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginTop="121dp"
-            android:layout_toEndOf="@+id/cvCadastrarProduto"
-            android:layout_toRightOf="@id/cvCadastrarProduto"
+            android:layout_toEndOf="@+id/cvEditarProduto"
+            android:layout_toRightOf="@id/cvEditarProduto"
             android:clickable="true"
             android:focusable="true"
             android:src="@drawable/ic_camera"
             app:backgroundTint="@color/goiaba" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabAbrirGaleriaCadastrarProduto"
+            android:id="@+id/fabAbrirGaleriaEditarProduto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/fabAbrirCameraCadastrarProduto"
-            android:layout_toLeftOf="@+id/cvCadastrarProduto"
-            android:layout_toStartOf="@+id/cvCadastrarProduto"
+            android:layout_alignTop="@+id/fabAbrirCameraEditarProduto"
+            android:layout_toLeftOf="@+id/cvEditarProduto"
+            android:layout_toStartOf="@+id/cvEditarProduto"
             android:clickable="true"
             android:focusable="true"
             android:src="@drawable/ic_galeria"
             app:backgroundTint="@color/goiaba" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/cvCadastrarProduto"
+            android:id="@+id/cvEditarProduto"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_alignParentTop="true"
@@ -130,7 +130,7 @@
             android:inputType="text"/>
 
         <Button
-            android:id="@+id/btnCadastrarProduto"
+            android:id="@+id/btnAlterarProduto"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
@@ -138,7 +138,7 @@
             android:layout_centerInParent="true"
             android:background="@drawable/border_white"
             android:backgroundTint="@color/goiaba"
-            android:text="@string/zs_btn_cadastrar" />
+            android:text="@string/zs_btn_alterar" />
 
     </RelativeLayout>
 </LinearLayout>
