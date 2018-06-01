@@ -15,12 +15,6 @@ import com.zstok.pessoaJuridica.dominio.PessoaJuridica;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PerfilServices {
-    public static void setDadosNavHeader(FirebaseUser user, TextView tvNomeUsuarioNavHeader, TextView tvEmailUsuarioNavHeader){
-        PerfilDAO.setDadosNavHeader(user, tvNomeUsuarioNavHeader, tvEmailUsuarioNavHeader);
-    }
-    public static void resgatarFoto(CircleImageView circleImageView){
-        PerfilDAO.resgatarFoto(circleImageView);
-    }
     public static void insereFoto(Uri uriFoto){
         PerfilDAO.insereFoto(uriFoto);
     }

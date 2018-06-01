@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.zstok.R;
+import com.zstok.infraestrutura.persistencia.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.produto.dominio.Produto;
@@ -221,8 +222,9 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
     private Produto criarProduto(){
         Produto produto = new Produto();
 
+        produto.setIdEmpresa(FirebaseController.getUidUser());
         produto.setNomeProduto(edtNomeProduto.getText().toString());
-        produto.setPreco(Double.valueOf(edtPrecoProduto.getText().toString()));
+        produto.setPrecoSugerido(Double.valueOf(edtPrecoProduto.getText().toString()));
         produto.setQuantidadeEstoque(Integer.valueOf(edtQuantidadeEstoqueProduto.getText().toString()));
         produto.setDescricao(edtDescricaoProduto.getText().toString());
         if (bitmapCadstrarProduto != null) {

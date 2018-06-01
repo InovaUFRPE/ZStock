@@ -2,15 +2,14 @@ package com.zstok.produto.gui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,6 +20,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -28,24 +30,35 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.persistencia.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
+import com.zstok.perfil.negocio.PerfilServices;
 import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
 import com.zstok.produto.adapter.ProdutoListHolder;
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MeusProdutosActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private AlertDialog alertaSair;
 
+    private EditText edtPesquisaProdutoPessoaJuridica;
+    private TextView tvNomeUsuarioNavHeader;
+    private TextView tvEmailUsuarioNavHeader;
+    private CircleImageView cvNavHeaderPessoa;
+    private NavigationView navigationView;
+
     private RecyclerView recylerViewMeusprodutos;
     private FirebaseRecyclerAdapter adapter;
-    private FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +66,41 @@ public class MeusProdutosActivity extends AppCompatActivity
         setContentView(R.layout.activity_meus_produtos);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Resgantado usuário atual
+        user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+
+        //Instanciando views
+        edtPesquisaProdutoPessoaJuridica = findViewById(R.id.edtPesquisaProdutoPessoaJuridica);
+        Button btnPesquisaProdutoPessoaJuridica = findViewById(R.id.btnPesquisaProdutoPessoaJuridica);
+
+        btnPesquisaProdutoPessoaJuridica.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                criandoAdapterPesquisa(edtPesquisaProdutoPessoaJuridica.getText().toString());
+            }
+        });
+        //Evento de pesquisa
+        edtPesquisaProdutoPessoaJuridica.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                criandoAdapterPesquisa(edtPesquisaProdutoPessoaJuridica.getText().toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (edtPesquisaProdutoPessoaJuridica.getText().toString().isEmpty() ||
+                        edtPesquisaProdutoPessoaJuridica.getText().toString().trim().length() == 0){
+                    criandoAdapter();
+                }else {
+                    criandoAdapterPesquisa(edtPesquisaProdutoPessoaJuridica.getText().toString());
+                }
+            }
+        });
 
         FloatingActionButton fabCadastrarProduto = (FloatingActionButton) findViewById(R.id.fabCadastrarProduto);
         fabCadastrarProduto.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +117,7 @@ public class MeusProdutosActivity extends AppCompatActivity
         toggle.syncState();
 
         //Instanciando recyler view
-        recylerViewMeusprodutos = findViewById(R.id.recyclerID);
+        recylerViewMeusprodutos = findViewById(R.id.recyclerProdutosPessoaJuridica);
         recylerViewMeusprodutos.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MeusProdutosActivity.this);
         recylerViewMeusprodutos.setLayoutManager(layoutManager);
@@ -77,8 +125,14 @@ public class MeusProdutosActivity extends AppCompatActivity
         //Criando o adapter
         criandoAdapter();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Instanciando views do navigation header (menu lateral)
+        instanciandoView();
+
+        //Resgatando informações do menu lateral
+        setDadosMenuLateral();
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -104,12 +158,16 @@ public class MeusProdutosActivity extends AppCompatActivity
         });
     }
     //Montando adapter e jogando no list holder
-    private void criandoAdapter() {
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("produto").child(FirebaseController.getUidUser());
+    private void criandoAdapterPesquisa(String pesquisa) {
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("produtoFornecedor").child(FirebaseController.getUidUser());
+        Query query = databaseReference.orderByChild("nomeProduto").equalTo(pesquisa);
 
-        if (databaseReference != null) {
-
-            adapter = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(Produto.class, R.layout.card_produto, ProdutoListHolder.class, databaseReference) {
+        if (query != null) {
+            FirebaseRecyclerAdapter adapter1 = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
+                    Produto.class,
+                    R.layout.card_produto,
+                    ProdutoListHolder.class,
+                    query) {
 
                 @Override
                 protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
@@ -117,7 +175,36 @@ public class MeusProdutosActivity extends AppCompatActivity
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
                     viewHolder.tvCardViewNomeProduto.setText(model.getNomeProduto());
-                    viewHolder.tvCardViewPrecoProduto.setText(String.valueOf(model.getPreco()));
+                    viewHolder.tvCardViewPrecoProduto.setText(String.valueOf(model.getPrecoSugerido()));
+                    viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
+                    viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
+                    if (model.getBitmapImagemProduto() != null) {
+                        Glide.with(getApplicationContext()).load(Helper.stringToBitMap(model.getBitmapImagemProduto())).into(viewHolder.imgCardViewProduto);
+                    }
+                }
+            };
+            recylerViewMeusprodutos.setAdapter(adapter1);
+        }
+    }
+    //Montando adapter e jogando no list holder
+    private void criandoAdapter() {
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("produtoFornecedor").child(FirebaseController.getUidUser());
+
+        if (databaseReference != null) {
+
+            adapter = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
+                    Produto.class,
+                    R.layout.card_produto,
+                    ProdutoListHolder.class,
+                    databaseReference) {
+
+                @Override
+                protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
+                    getItemCount();
+                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
+                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
+                    viewHolder.tvCardViewNomeProduto.setText(model.getNomeProduto());
+                    viewHolder.tvCardViewPrecoProduto.setText(String.valueOf(model.getPrecoSugerido()));
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
                     viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
                     if (model.getBitmapImagemProduto() != null) {
@@ -193,12 +280,28 @@ public class MeusProdutosActivity extends AppCompatActivity
         //Exibe
         alertaSair.show();
     }
+    //Chamando camada de negócio para excluir produto
     private void excluirProduto(Produto produto){
         if (ProdutoServices.excluirProduto(produto)){
             Helper.criarToast(getApplicationContext(), getString(R.string.zs_produto_excluido_sucesso));
         }else {
             Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
         }
+    }
+    //Método que instancia as views
+    private void instanciandoView(){
+        View headerView = navigationView.getHeaderView(0);
+        tvNomeUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderNome);
+        tvEmailUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderEmail);
+        cvNavHeaderPessoa = headerView.findViewById(R.id.cvNavHeaderPessoa);
+    }
+    //Método que carrega nome e email do usuário e seta nas views do menu lateral
+    private void setDadosMenuLateral(){
+        if (user.getPhotoUrl() != null){
+            Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
+        }
+        tvNomeUsuarioNavHeader.setText(user.getDisplayName());
+        tvEmailUsuarioNavHeader.setText(user.getEmail());
     }
     @Override
     public void onBackPressed() {

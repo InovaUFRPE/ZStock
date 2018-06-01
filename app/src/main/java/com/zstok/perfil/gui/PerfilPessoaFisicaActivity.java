@@ -65,6 +65,8 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     private TextView tvEnderecoPerfilFisico;
     private TextView tvDataNascimentoPerfilFisico;
 
+    private FirebaseUser user;
+
     private NavigationView navigationView;
 
     @Override
@@ -79,6 +81,9 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        //Resgatando usuário atual
+        user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -223,7 +228,11 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     }
     //Carregando informações do menu lateral
     private void setDadosMenuLateral(){
-        PerfilServices.setDadosNavHeader(FirebaseController.getFirebaseAuthentication().getCurrentUser(),tvNomeUsuarioNavHeader, tvEmailUsuarioNavHeader);
+        if (user.getPhotoUrl() != null){
+            Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
+        }
+        tvNomeUsuarioNavHeader.setText(user.getDisplayName());
+        tvEmailUsuarioNavHeader.setText(user.getEmail());
     }
     //Permissão para ler e gravar arquivos do celular
     private void permissaoGravarLerArquivos(){
@@ -354,10 +363,8 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     }
     //Resgatando foto do Storage
     private void carregarFoto(){
-        FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
         if (user != null) {
             if (user.getPhotoUrl() != null) {
-                Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
                 Glide.with(this).load(user.getPhotoUrl()).into(cvPerfilPessoaFisica);
             }
         }

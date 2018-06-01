@@ -1,13 +1,11 @@
 package com.zstok.produto.adapter;
 
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zstok.R;
-import com.zstok.produto.dominio.Produto;
 
 public class ProdutoListHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -22,7 +20,7 @@ public class ProdutoListHolder extends RecyclerView.ViewHolder implements View.O
     private ProdutoListHolder.ClickListener itemClickListener;
 
 
-    public ProdutoListHolder (final View itemView){
+    public ProdutoListHolder(final View itemView){
         super(itemView);
 
         imgCardViewProduto = itemView.findViewById(R.id.imgCardViewProduto);

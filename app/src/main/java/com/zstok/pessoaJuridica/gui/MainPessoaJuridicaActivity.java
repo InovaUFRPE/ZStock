@@ -37,6 +37,8 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
     private NavigationView navigationView;
     private AlertDialog alertaSair;
 
+    private FirebaseUser user;
+
     private TextView tvNomeUsuarioNavHeader;
     private TextView tvEmailUsuarioNavHeader;
     private CircleImageView cvNavHeaderPessoa;
@@ -63,14 +65,14 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        //Resgatando usuário atual
+        user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         //Instanciando views do menu lateral
         instanciandoView();
-
-        //Carregando foto menu lateral
-        carregarFoto();
 
         //Carregando informações do menu lateral
         setDadosMenuLateral();
@@ -99,23 +101,20 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
             }
         });
     }
-    //Carregando foto do usuário
-    private void carregarFoto(){
-        FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
-        if (user != null) {
-            if (user.getPhotoUrl() != null) {
-                Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
-            }
-        }
-    }
+    //Instanciando views do navigation header
     private void instanciandoView(){
         View headerView = navigationView.getHeaderView(0);
         tvNomeUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderNome);
         tvEmailUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderEmail);
         cvNavHeaderPessoa = headerView.findViewById(R.id.cvNavHeaderPessoa);
     }
+    //Método que carrega nome e email do usuário e seta nas views do menu lateral
     private void setDadosMenuLateral(){
-        PerfilServices.setDadosNavHeader(FirebaseController.getFirebaseAuthentication().getCurrentUser(),tvNomeUsuarioNavHeader,tvEmailUsuarioNavHeader);
+        if (user.getPhotoUrl() != null) {
+            Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
+        }
+        tvNomeUsuarioNavHeader.setText(user.getDisplayName());
+        tvEmailUsuarioNavHeader.setText(user.getEmail());
     }
     //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
     private void sair () {

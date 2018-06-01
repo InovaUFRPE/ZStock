@@ -52,7 +52,6 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
 
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int GALERY_REQUEST_CODE = 71;
-    private Uri uriFoto;
 
     private AlertDialog alertaSair;
 
@@ -67,7 +66,10 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     private TextView tvCnpjPerfilJuridico;
     private TextView tvTelefonePerfilJuridico;
     private TextView tvEnderecoPerfilJuridico;
+
     private NavigationView navigationView;
+
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,9 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        //Resgatando usuário atual
+        user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -196,11 +201,9 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     }
     //Carregando foto de perfil
     private void carregarFoto(){
-        FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
         if (user != null) {
             if (user.getPhotoUrl() != null) {
                 Glide.with(this).load(user.getPhotoUrl()).into(cvPerfilPessoaJuridica);
-                Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
             }
         }
     }
@@ -239,11 +242,15 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
         tvEnderecoPerfilJuridico.setText(pessoa.getEndereco());
         tvRazaoSocialPerfilJuridico.setText(pessoaJuridica.getRazaoSocial());
     }
-
+    //Carregando informações do menu lateral
     private void setDadosMenuLateral(){
-        PerfilServices.setDadosNavHeader(FirebaseController.getFirebaseAuthentication().getCurrentUser(),tvNomeUsuarioNavHeader,tvEmailUsuarioNavHeader);
+        if (user.getPhotoUrl() != null){
+            Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
+        }
+        tvNomeUsuarioNavHeader.setText(user.getDisplayName());
+        tvEmailUsuarioNavHeader.setText(user.getEmail());
     }
-
+    //Permissão para gravar e ler arquivos do celular
     private void permissaoGravarLerArquivos(){
         //Trecho adiciona permissão de ler arquivos
         int PERMISSION_REQUEST = 0;
@@ -303,11 +310,13 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case GALERY_REQUEST_CODE:{
+            case GALERY_REQUEST_CODE:
+                Uri uriFoto;
+            {
                 if (requestCode == GALERY_REQUEST_CODE && resultCode == RESULT_OK) {
                     uriFoto = data.getData();
                     try{
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),uriFoto);
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFoto);
                         cvPerfilPessoaJuridica.setImageBitmap(bitmap);
                         cvNavHeaderPessoa.setImageBitmap(bitmap);
                         inserirFoto(uriFoto);

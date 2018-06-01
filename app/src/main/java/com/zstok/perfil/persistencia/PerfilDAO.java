@@ -64,47 +64,6 @@ public class PerfilDAO {
             });
         }
     }
-    //Resgatando foto do Storage
-    public static void resgatarFoto(final CircleImageView circleImageView){
-        StorageReference ref = storageReference.child("images/perfil/" +
-                FirebaseController.getUidUser() + ".bmp");
-
-        try {
-            final File localFile = File.createTempFile("images", "bmp");
-            ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener< FileDownloadTask.TaskSnapshot >() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    Bitmap minhaFoto = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                    circleImageView.setImageBitmap(minhaFoto);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                }
-            });
-        } catch (IOException e) {
-            Log.d("ERRO", e.getMessage());
-        }
-    }
-    public static void setDadosNavHeader(final FirebaseUser user, final TextView tvNomeUsuarioNavHeader, final TextView tvEmailUsuarioNavHeader){
-
-        //Consultando banco de dados para resgatar o nome e email
-        final DatabaseReference referencia = FirebaseController.getFirebase();
-
-        referencia.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String nomeUsuario = dataSnapshot.child("pessoa").child(user.getUid()).child("nome").getValue(String.class);
-                tvNomeUsuarioNavHeader.setText(nomeUsuario);
-                tvEmailUsuarioNavHeader.setText(user.getEmail());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
     public static boolean insereNome(String novoNome){
         boolean verificador;
 

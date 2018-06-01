@@ -59,7 +59,7 @@ public class EditarProdutoActivity extends AppCompatActivity {
 
         verificaConexao = new VerificaConexao(this);
 
-        FirebaseController.getFirebase().child("produto").child(FirebaseController.getUidUser()).child(idProduto)
+        FirebaseController.getFirebase().child("produtoFornecedor").child(FirebaseController.getUidUser()).child(idProduto)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -69,7 +69,7 @@ public class EditarProdutoActivity extends AppCompatActivity {
                         Glide.with(getApplicationContext()).load(Helper.stringToBitMap(produto.getBitmapImagemProduto())).into(cvImagemProduto);
                     }
                     edtNomeProduto.setText(produto.getNomeProduto());
-                    edtPrecoProduto.setText(String.valueOf(produto.getPreco()));
+                    edtPrecoProduto.setText(String.valueOf(produto.getPrecoSugerido()));
                     edtQuantidadeEstoqueProduto.setText(String.valueOf(produto.getQuantidadeEstoque()));
                     edtDescricaoProduto.setText(produto.getDescricao());
                 }
@@ -139,7 +139,7 @@ public class EditarProdutoActivity extends AppCompatActivity {
         Produto produto = new Produto();
 
         produto.setNomeProduto(edtNomeProduto.getText().toString());
-        produto.setPreco(Double.valueOf(edtPrecoProduto.getText().toString()));
+        produto.setPrecoSugerido(Double.valueOf(edtPrecoProduto.getText().toString()));
         produto.setQuantidadeEstoque(Integer.valueOf(edtQuantidadeEstoqueProduto.getText().toString()));
         produto.setDescricao(edtDescricaoProduto.getText().toString());
         produto.setIdProduto(idProduto);
