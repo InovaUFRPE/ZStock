@@ -1,7 +1,6 @@
 package com.zstok.perfil.gui;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +11,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
-import com.zstok.infraestrutura.persistencia.FirebaseController;
+import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.perfil.negocio.PerfilServices;

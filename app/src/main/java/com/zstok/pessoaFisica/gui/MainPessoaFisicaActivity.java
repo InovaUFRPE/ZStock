@@ -29,15 +29,17 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
-import com.zstok.infraestrutura.persistencia.FirebaseController;
+import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
-import com.zstok.perfil.negocio.PerfilServices;
 import com.zstok.produto.adapter.ProdutoListHolder;
 import com.zstok.produto.dominio.Produto;
 
@@ -104,15 +106,6 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -159,7 +152,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
     }
     //Montando adapter e jogando no list holder
     private void criandoAdapterPesquisa(String pesquisa) {
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("produtoCliente");
+        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
         Query query = databaseReference.orderByChild("nomeProduto").equalTo(pesquisa);
 
         if (query != null) {
@@ -189,7 +182,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
     //Montando adapter e jogando no list holder
     private void criandoAdapter() {
 
-        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produtoCliente");
+        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
 
         if (databaseReference != null) {
 
@@ -207,7 +200,17 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                     viewHolder.tvCardViewNomeProduto.setText(model.getNomeProduto());
                     viewHolder.tvCardViewPrecoProduto.setText(String.valueOf(model.getPrecoSugerido()));
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
-                    viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
+                    FirebaseController.getFirebase().child("pessoa").child(model.getIdEmpresa()).child("nome").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            viewHolder.tvCardViewNomeEmpresa.setText(dataSnapshot.getValue(String.class));
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                     if (model.getBitmapImagemProduto() != null) {
                         Glide.with(getApplicationContext()).load(Helper.stringToBitMap(model.getBitmapImagemProduto())).into(viewHolder.imgCardViewProduto);
                     }

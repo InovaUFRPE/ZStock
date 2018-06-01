@@ -17,13 +17,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
-import com.zstok.infraestrutura.persistencia.FirebaseController;
+import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
+import com.zstok.infraestrutura.utils.MoneyTextWatcher;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -59,7 +61,11 @@ public class EditarProdutoActivity extends AppCompatActivity {
 
         verificaConexao = new VerificaConexao(this);
 
-        FirebaseController.getFirebase().child("produtoFornecedor").child(FirebaseController.getUidUser()).child(idProduto)
+        //Mascara Monetária
+        Locale mLocale = new Locale("pt", "BR");
+        edtPrecoProduto.addTextChangedListener(new MoneyTextWatcher(edtPrecoProduto,mLocale));
+
+        FirebaseController.getFirebase().child("produto") .child(idProduto)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

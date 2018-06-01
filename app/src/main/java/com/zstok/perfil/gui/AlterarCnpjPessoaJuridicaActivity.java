@@ -11,12 +11,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
-import com.zstok.infraestrutura.persistencia.FirebaseController;
+import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.ValidarCpfCnpj;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.perfil.negocio.PerfilServices;
-import com.zstok.pessoaFisica.dominio.PessoaFisica;
 import com.zstok.pessoaJuridica.dominio.PessoaJuridica;
 
 public class AlterarCnpjPessoaJuridicaActivity extends AppCompatActivity {

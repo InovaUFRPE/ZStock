@@ -33,14 +33,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
-import com.zstok.infraestrutura.persistencia.FirebaseController;
+import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
-import com.zstok.perfil.negocio.PerfilServices;
 import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
 import com.zstok.produto.adapter.ProdutoListHolder;
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
+
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -159,7 +160,7 @@ public class MeusProdutosActivity extends AppCompatActivity
     }
     //Montando adapter e jogando no list holder
     private void criandoAdapterPesquisa(String pesquisa) {
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("produtoFornecedor").child(FirebaseController.getUidUser());
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("produto");
         Query query = databaseReference.orderByChild("nomeProduto").equalTo(pesquisa);
 
         if (query != null) {
@@ -188,8 +189,7 @@ public class MeusProdutosActivity extends AppCompatActivity
     }
     //Montando adapter e jogando no list holder
     private void criandoAdapter() {
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("produtoFornecedor").child(FirebaseController.getUidUser());
-
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("produto");
         if (databaseReference != null) {
 
             adapter = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(

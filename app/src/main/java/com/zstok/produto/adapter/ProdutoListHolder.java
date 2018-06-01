@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.zstok.R;
 
+
 public class ProdutoListHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     //public int currentItem;
@@ -20,7 +21,7 @@ public class ProdutoListHolder extends RecyclerView.ViewHolder implements View.O
     private ProdutoListHolder.ClickListener itemClickListener;
 
 
-    public ProdutoListHolder(final View itemView){
+    public ProdutoListHolder(final View itemView) {
         super(itemView);
 
         imgCardViewProduto = itemView.findViewById(R.id.imgCardViewProduto);
@@ -33,14 +34,6 @@ public class ProdutoListHolder extends RecyclerView.ViewHolder implements View.O
 
         itemView.setOnClickListener(this);
 
-        /*
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemClickListener.onItemClick(v, getAdapterPosition());
-            }
-        });
-        */
     }
 
     @Override

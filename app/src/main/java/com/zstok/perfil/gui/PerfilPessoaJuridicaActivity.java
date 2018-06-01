@@ -34,12 +34,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
-import com.zstok.infraestrutura.persistencia.FirebaseController;
+import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.perfil.negocio.PerfilServices;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.pessoaJuridica.dominio.PessoaJuridica;
 import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
+import com.zstok.produto.gui.MeusProdutosActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -90,7 +91,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //InstanciandoAsViews
+        //Instanciando AsViews
         cvPerfilPessoaJuridica = findViewById(R.id.imgPerfilPessoaJuridica);
         tvNomeFantasiaPerfilJuridico = findViewById(R.id.tvNomeFantasiaPerfilJuridico);
         tvRazaoSocialPerfilJuridico = findViewById(R.id.tvRazaoSocialPerfilJuridico);
@@ -189,6 +190,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
                         return true;
                     case R.id.nav_produtos:
                         //Função abrir tela produtos
+                        abrirTelaMeusProdutosActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -473,6 +475,11 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     //Intent para a tela main
     private void abrirTelaMainPessoaJuridicaActivity(){
         Intent intent = new Intent(getApplicationContext(), MainPessoaJuridicaActivity.class);
+        startActivity(intent);
+    }
+    //Intent meus produtos
+    private void abrirTelaMeusProdutosActivity(){
+        Intent intent = new Intent(getApplicationContext(), MeusProdutosActivity.class);
         startActivity(intent);
     }
 }

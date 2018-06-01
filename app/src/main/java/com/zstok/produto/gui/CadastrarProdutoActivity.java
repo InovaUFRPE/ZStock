@@ -18,13 +18,15 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.zstok.R;
-import com.zstok.infraestrutura.persistencia.FirebaseController;
+import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
+import com.zstok.infraestrutura.utils.MoneyTextWatcher;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -61,6 +63,11 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         edtQuantidadeEstoqueProduto = findViewById(R.id.edtQuantidadeEstoqueProduto);
         edtDescricaoProduto = findViewById(R.id.edtDescricaoProduto);
         cvCadastrarProduto = findViewById(R.id.cvCadastrarProduto);
+
+        //Mascara Monetária
+        Locale mLocale = new Locale("pt", "BR");
+        edtPrecoProduto.addTextChangedListener(new MoneyTextWatcher(edtPrecoProduto,mLocale));
+
         Button btnCadastrarProduto = findViewById(R.id.btnCadastrarProduto);
 
         btnCadastrarProduto.setOnClickListener(new View.OnClickListener() {

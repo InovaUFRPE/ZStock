@@ -1,7 +1,5 @@
 package com.zstok.produto.negocio;
 
-import android.net.Uri;
-
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.persistencia.ProdutoDAO;
 
@@ -13,6 +11,6 @@ public class ProdutoServices {
         return ProdutoDAO.excluirProduto(produto);
     }
     public static boolean alterarProduto(Produto produto){
-        return ProdutoDAO.alterarProduto(produto);
+        return ProdutoDAO.alterarProdutoVerificador(produto);
     }
 }

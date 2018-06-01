@@ -23,10 +23,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
-import com.zstok.infraestrutura.persistencia.FirebaseController;
-import com.zstok.infraestrutura.utils.Helper;
+import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
-import com.zstok.perfil.negocio.PerfilServices;
 import com.zstok.produto.gui.MeusProdutosActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
