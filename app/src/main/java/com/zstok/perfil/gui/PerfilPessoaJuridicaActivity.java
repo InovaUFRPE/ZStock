@@ -116,7 +116,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
         carregarFoto();
 
         //Máscaras cnpj e telfone
-        Helper.mascaraCpf(tvCnpjPerfilJuridico);
+        Helper.mascaraCnpj(tvCnpjPerfilJuridico);
         Helper.mascaraTelefone(tvTelefonePerfilJuridico);
 
         FloatingActionButton fabAbrirGaleriaPerfilPessoaJuridica = findViewById(R.id.fabAbrirGaleriaCameraPerfilPessoaJuridica);
