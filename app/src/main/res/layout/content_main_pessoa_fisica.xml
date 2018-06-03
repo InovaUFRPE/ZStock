@@ -18,6 +18,7 @@
         android:layout_toLeftOf="@id/btnPesquisaProdutoPessoaFisica"
         android:layout_toStartOf="@id/btnPesquisaProdutoPessoaFisica"
         android:inputType="text"
+        android:backgroundTint="@color/cimento"
         android:textColor="@color/cimento" />
 
     <Button
@@ -25,10 +26,9 @@
         android:layout_width="40dp"
         android:layout_height="45dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/ic_pesquisa"
-        android:backgroundTint="@color/white" />
+        android:backgroundTint="@color/cimento" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerProdutosPessoaFisica"
