@@ -1,5 +1,6 @@
 package com.zstok.negociacao.dominio;
 
+import com.zstok.itemcompra.dominio.ItemCompra;
 import com.zstok.produto.dominio.Produto;
 
 import java.util.ArrayList;
@@ -7,13 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 public class Negociacao {
-    
+
     private String idNegociacao;
-    private String idPessoaFisica;
-    private String idPessoaJuridica;
-    private Date dataInicio;
-    private Date dataFim;
-    private List<Produto> listaProduto = new ArrayList<>();
 
     public String getIdNegociacao() {
         return idNegociacao;
@@ -55,12 +51,19 @@ public class Negociacao {
         this.dataFim = dataFim;
     }
 
-    public List<Produto> getListaProduto() {
+    public List<ItemCompra> getListaProduto() {
         return listaProduto;
     }
 
-    public void setListaProduto(List<Produto> listaProduto) {
+    public void setListaProduto(List<ItemCompra> listaProduto) {
         this.listaProduto = listaProduto;
     }
+
+    private String idPessoaFisica;
+    private String idPessoaJuridica;
+    private Date dataInicio;
+    private Date dataFim;
+    private List<ItemCompra> listaProduto = new ArrayList<>();
+
 
 }
