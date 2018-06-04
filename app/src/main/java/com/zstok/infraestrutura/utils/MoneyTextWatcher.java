@@ -47,7 +47,7 @@ public class MoneyTextWatcher implements TextWatcher {
         editText.addTextChangedListener(this);
     }
 
-    private BigDecimal parseToBigDecimal(String value, Locale locale) {
+    public static BigDecimal parseToBigDecimal(String value, Locale locale) {
         String replaceable = String.format("[%s,.\\s]", NumberFormat.getCurrencyInstance(locale).getCurrency().getSymbol());
 
         String cleanString = value.replaceAll(replaceable, "");
@@ -56,4 +56,13 @@ public class MoneyTextWatcher implements TextWatcher {
                 2, BigDecimal.ROUND_FLOOR).divide(new BigDecimal(100), BigDecimal.ROUND_FLOOR
         );
     }
+
+    public static String convertStringToMoney(String string){
+        //Talvez tenha que colocar na activity
+        Locale mLocale = new Locale("pt", "BR");
+        BigDecimal parsed = parseToBigDecimal(string, mLocale);
+        String formatted = NumberFormat.getCurrencyInstance(mLocale).format(parsed);
+        return formatted;
+    }
+
 }

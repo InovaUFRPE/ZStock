@@ -231,7 +231,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
 
         produto.setIdEmpresa(FirebaseController.getUidUser());
         produto.setNomeProduto(edtNomeProduto.getText().toString());
-        produto.setPrecoSugerido(Double.valueOf(edtPrecoProduto.getText().toString()));
+        produto.setPrecoSugerido(Double.valueOf(Helper.removerMascara(edtPrecoProduto.getText().toString())));
         produto.setQuantidadeEstoque(Integer.valueOf(edtQuantidadeEstoqueProduto.getText().toString()));
         produto.setDescricao(edtDescricaoProduto.getText().toString());
         if (bitmapCadstrarProduto != null) {

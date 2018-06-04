@@ -35,6 +35,7 @@ import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
+import com.zstok.infraestrutura.utils.MoneyTextWatcher;
 import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
 import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
 import com.zstok.produto.adapter.ProdutoListHolder;
@@ -176,7 +177,7 @@ public class MeusProdutosActivity extends AppCompatActivity
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
                     viewHolder.tvCardViewNomeProduto.setText(model.getNomeProduto());
-                    viewHolder.tvCardViewPrecoProduto.setText(String.valueOf(model.getPrecoSugerido()));
+                    viewHolder.tvCardViewPrecoProduto.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(model.getPrecoSugerido())));
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
                     viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
                     if (model.getBitmapImagemProduto() != null) {
@@ -190,13 +191,14 @@ public class MeusProdutosActivity extends AppCompatActivity
     //Montando adapter e jogando no list holder
     private void criandoAdapter() {
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("produto");
-        if (databaseReference != null) {
+        Query queryAdapter = databaseReference.orderByChild("idEmpresa").equalTo(FirebaseController.getUidUser());
+        if (queryAdapter != null) {
 
             adapter = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
                     Produto.class,
                     R.layout.card_produto,
                     ProdutoListHolder.class,
-                    databaseReference) {
+                    queryAdapter) {
 
                 @Override
                 protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
@@ -204,7 +206,7 @@ public class MeusProdutosActivity extends AppCompatActivity
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
                     viewHolder.tvCardViewNomeProduto.setText(model.getNomeProduto());
-                    viewHolder.tvCardViewPrecoProduto.setText(String.valueOf(model.getPrecoSugerido()));
+                    viewHolder.tvCardViewPrecoProduto.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(model.getPrecoSugerido())));
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
                     viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
                     if (model.getBitmapImagemProduto() != null) {
