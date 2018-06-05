@@ -1,12 +1,14 @@
 package com.zstok.produto.gui;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ import com.zstok.VisualizarEmpresaActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.MoneyTextWatcher;
+import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.produto.dominio.Produto;
 
@@ -34,9 +37,16 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     private TextView tvEmpresaProduto;
     private ImageView imgProduto;
 
-    //Caixa Dialógo
-    private EditText edtQuantidadeCaixaDialogoCompra;
+    //Views da caixa de diálogo
+    private EditText edtQuantidadeDialogoCompra;
+    private TextView tvNomeProdutoDialogoCompra;
+    private TextView tvTotalDialogoCompra;
+    private Button btnComprarDialogoCompra;
+    private Button btnVoltarDialogoCompra;
 
+    private AlertDialog alertaCompra;
+
+    private VerificaConexao verificaConexao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +64,18 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         tvDescricaoProduto = findViewById(R.id.tvDescricaoProduto);
         tvEmpresaProduto = findViewById(R.id.tvEmpresaProduto);
         imgProduto = findViewById(R.id.imgProduto);
+        Button btnComprar = findViewById(R.id.btnComprarProduto);
+        Button btnNegociar = findViewById(R.id.btnNegociarProduto);
+
+        //Instanciando objeto para verificar conexão
+        verificaConexao = new VerificaConexao(this);
+
+        btnComprar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                iniciarCompra();
+            }
+        });
 
         //Recuperando dados do firebase e setando campos da activity
         recuperarDados();
@@ -85,6 +107,11 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
             }
         });
     }
+    //Setando campo foto do produto
+    private void setarFoto(Produto produto){
+        Bitmap bitmap = Helper.stringToBitMap(produto.getBitmapImagemProduto());
+        Glide.with(getApplicationContext()).load(bitmap).into(imgProduto);
+    }
     //Setando campos da activity
     private void setarCampos(Pessoa pessoa, Produto produto) {
         tvNomeProduto.setText(produto.getNomeProduto());
@@ -93,24 +120,102 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         tvDescricaoProduto.setText(produto.getDescricao());
         tvEmpresaProduto.setText(pessoa.getNome());
     }
-
-    private void setarFoto(Produto produto){
-        Bitmap bitmap = Helper.stringToBitMap(produto.getBitmapImagemProduto());
-        Glide.with(getApplicationContext()).load(bitmap).into(imgProduto);
-
-    }
-
     //Intent para a tela de visualização da empresa
     private void abrirTelaVisualizarEmpresaActivity(){
         Intent intent = new Intent(getApplicationContext(), VisualizarEmpresaActivity.class);
         intent.putExtra("idEmpresa", idEmpresa);
         startActivity(intent);
     }
+    //Método que abre a caixa de diálogo
     private void iniciarCompra () {
         //Cria o gerador do AlertDialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-        View mview = getLayoutInflater().inflate(R.layout.modelo_caixa_dialogo_compra, null);
-        //Instanciando views
+        AlertDialog.Builder builder = new AlertDialog.Builder(VisualizarProdutoActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.modelo_caixa_dialogo_compra, null);
 
+        //Instanciando views
+        instanciandoViews(mView);
+
+        //Setando informações das views
+        setarInformacoesViews();
+
+        builder.setView(mView);
+        alertaCompra = builder.create();
+        alertaCompra.show();
+
+        //Chamando método para tratar o clique no botão voltar
+        clickVoltar();
+
+        //Chamando método para tratar o clique no botão comprar
+        clickComprar();
+    }
+    //Validando edit text da quantidade digitavda pelo usuário na caixa de diálogo
+    private boolean validarCampos(){
+        boolean verificador = true;
+
+        if (edtQuantidadeDialogoCompra.getText().toString().isEmpty() || edtQuantidadeDialogoCompra.getText().toString().trim().length() == 0){
+            edtQuantidadeDialogoCompra.setError(getString(R.string.zs_excecao_campo_vazio));
+            verificador = false;
+        }
+        return verificador;
+    }
+    //Método que instancia as views da caixa de diálogo
+    private void instanciandoViews(View mView){
+        edtQuantidadeDialogoCompra = mView.findViewById(R.id.edtQuantidadeDesejadaDialogoCompra);
+        tvNomeProdutoDialogoCompra = mView.findViewById(R.id.tvNomeProdutoDialogoCompra);
+        tvTotalDialogoCompra = mView.findViewById(R.id.tvTotalDialogoCompra);
+        btnVoltarDialogoCompra = mView.findViewById(R.id.btnVoltarDialogoCompra);
+        btnComprarDialogoCompra = mView.findViewById(R.id.btnComprarDialogoCompra);
+    }
+    //Método que seta as informações para as views da caixa de diálogo
+    private void setarInformacoesViews(){
+        tvNomeProdutoDialogoCompra.setText(tvNomeProduto.getText());
+        edtQuantidadeDialogoCompra.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!edtQuantidadeDialogoCompra.getText().toString().isEmpty() ||
+                        !(edtQuantidadeDialogoCompra.getText().toString().trim().length() == 0)){
+                    int quantidadeItens = Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString());
+                    double precoItem = Double.valueOf(Helper.removerMascara(tvPrecoProduto.getText().toString()));
+                    tvTotalDialogoCompra.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(quantidadeItens * precoItem)));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!edtQuantidadeDialogoCompra.getText().toString().isEmpty() ||
+                        !(edtQuantidadeDialogoCompra.getText().toString().trim().length() == 0)){
+                    int quantidadeItens = Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString());
+                    double precoItem = Double.valueOf(Helper.removerMascara(tvPrecoProduto.getText().toString()));
+                    tvTotalDialogoCompra.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(quantidadeItens * precoItem)));
+                }
+            }
+        });
+    }
+    //Método que implementa o evento de click do botão voltar
+    private void clickVoltar(){
+        btnVoltarDialogoCompra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertaCompra.dismiss();
+            }
+        });
+    }
+    //Método que implementa o evento de click do botão comprar
+    private void clickComprar(){
+        btnComprarDialogoCompra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (verificaConexao.isConected()){
+                    if (validarCampos()){
+                        Helper.criarToast(getApplicationContext(), "Em construção...");
+                    }
+                }
+            }
+        });
     }
 }

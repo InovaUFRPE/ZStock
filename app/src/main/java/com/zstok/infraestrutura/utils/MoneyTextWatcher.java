@@ -58,4 +58,9 @@ public class MoneyTextWatcher implements TextWatcher {
         String formatted = NumberFormat.getCurrencyInstance(mLocale).format(parsed);
         return formatted;
     }
+    public static String convertMoneyToBigDecimal(String string){
+        String cleanString = string.replaceAll("R$", "");
+
+        return cleanString;
+    }
 }
