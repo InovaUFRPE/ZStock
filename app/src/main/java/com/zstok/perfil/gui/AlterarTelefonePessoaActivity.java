@@ -15,6 +15,7 @@ import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.perfil.negocio.PerfilServices;
+import com.zstok.pessoa.dominio.Pessoa;
 
 public class AlterarTelefonePessoaActivity extends AppCompatActivity {
 
@@ -39,7 +40,7 @@ public class AlterarTelefonePessoaActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (verificaConexao.isConected()) {
                     if (validarCampo()) {
-                        alterarTelefone(Helper.removerMascara(edtAlterarTelefonePessoa.getText().toString()));
+                        alterarTelefone(criarPessoa());
                     }
                 }
             }
@@ -55,8 +56,15 @@ public class AlterarTelefonePessoaActivity extends AppCompatActivity {
         }
         return verificador;
     }
-    private void alterarTelefone(String novoTelefone){
-        if (PerfilServices.alterarTelefone(novoTelefone)){
+    private Pessoa criarPessoa(){
+        Pessoa pessoa = new Pessoa();
+
+        pessoa.setTelefone(edtAlterarTelefonePessoa.getText().toString());
+
+        return pessoa;
+    }
+    private void alterarTelefone(Pessoa pessoa){
+        if (PerfilServices.alterarTelefone(pessoa)){
             Helper.criarToast(getApplicationContext(), getString(R.string.zs_telefone_alterado_sucesso));
             abrirTelaPerfilPessoa();
         } else {

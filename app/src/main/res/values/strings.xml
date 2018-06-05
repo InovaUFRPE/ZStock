@@ -31,6 +31,11 @@
     <string name="zs_hint_cpf_atual_alterar_perfil">Digite seu cpf atual</string>
     <string name="zs_hint_cpf_alterar_perfil">Digite novo cpf</string>
 
+    <string name="zs_texto_preco_produto">Preço:</string>
+    <string name="zs_texto_quantidade_disponivel_produto">Quantidade disponível:</string>
+    <string name="zs_texto_empresa_produto">Empresa:</string>
+    <string name="zs_texto_descricao_produto">Descrição:</string>
+
     <string name="zs_dialogo_sim">Sim</string>
     <string name="zs_dialogo_nao">Não</string>
     <string name="zs_dialogo_titulo">Sair</string>
@@ -54,6 +59,8 @@
     <string name="zs_btn_alterar_endereco">Alterar endereço</string>
     <string name="zs_btn_alterar_cpf">Alterar cpf</string>
     <string name="zs_btn_alterar_data_nascimento">Alterar data de nascimento</string>
+    <string name="zs_btn_negociar_produto">Negociar</string>
+    <string name="zs_btn_comprar_produto">Comprar</string>
 
     <string name="zs_sucesso_usuario_cadastrado">Usuário cadastrado com sucesso!</string>
     <string name="zs_email_enviado_sucesso">Email enviado com sucesso!</string>

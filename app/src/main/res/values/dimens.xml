@@ -7,4 +7,5 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="padding_left">5dp</dimen>
     <dimen name="drawable_padding">10dp</dimen>
+    <dimen name="margin_top">20dp</dimen>
 </resources>

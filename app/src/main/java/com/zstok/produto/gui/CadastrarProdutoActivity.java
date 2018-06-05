@@ -17,6 +17,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.zstok.R;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
@@ -199,11 +201,9 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case GALERY_REQUEST_CODE:
-                Uri uriFoto;
-            {
+            case GALERY_REQUEST_CODE: {
                 if (requestCode == GALERY_REQUEST_CODE && resultCode == RESULT_OK) {
-                    uriFoto = data.getData();
+                    Uri uriFoto = data.getData();
                     try{
                         bitmapCadstrarProduto = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFoto);
                         cvCadastrarProduto.setImageBitmap(bitmapCadstrarProduto);

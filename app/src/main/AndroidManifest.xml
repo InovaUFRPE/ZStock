@@ -57,6 +57,8 @@
             android:label="@string/title_activity_meus_produtos"
             android:theme="@style/AppTheme" />
         <activity android:name=".produto.gui.EditarProdutoActivity" />
+        <activity android:name=".produto.gui.VisualizarProdutoActivity" />
+        <activity android:name=".VisualizarEmpresaActivity"></activity>
     </application>
 
 </manifest>

@@ -71,11 +71,11 @@ public class PerfilDAO {
         }
         return verificador;
     }
-    public static boolean insereTelefone(String novoTelefone){
+    public static boolean insereTelefone(Pessoa pessoa){
         boolean verificador;
 
         try {
-            FirebaseController.getFirebase().child("pessoa").child(FirebaseController.getUidUser()).child("telefone").setValue(novoTelefone);
+            FirebaseController.getFirebase().child("pessoa").child(FirebaseController.getUidUser()).child("telefone").setValue(pessoa.getTelefone());
             verificador = true;
         }catch (DatabaseException e){
             verificador = false;
@@ -123,11 +123,11 @@ public class PerfilDAO {
         return verificador;
     }
 
-    public static boolean insereRazaoSocial(String razaoSocial){
+    public static boolean insereRazaoSocial(PessoaJuridica pessoaJuridica){
         boolean verificador = true;
 
         try{
-            FirebaseController.getFirebase().child("pessoaJuridica").child(FirebaseController.getUidUser()).child("razaoSocial").setValue(razaoSocial);
+            FirebaseController.getFirebase().child("pessoaJuridica").child(FirebaseController.getUidUser()).child("razaoSocial").setValue(pessoaJuridica.getRazaoSocial());
         } catch (DatabaseException e){
             verificador = false;
         }

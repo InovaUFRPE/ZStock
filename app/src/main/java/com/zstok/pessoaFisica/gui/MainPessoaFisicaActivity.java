@@ -4,8 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,7 +30,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
@@ -42,6 +39,7 @@ import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
 import com.zstok.produto.adapter.ProdutoListHolder;
 import com.zstok.produto.dominio.Produto;
+import com.zstok.produto.gui.VisualizarProdutoActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -224,6 +222,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                         @Override
                         public void onItemClick(View view, int position) {
                             Produto produto = (Produto) adapter.getItem(position);
+                            abrirTelaProdutoActivity(produto.getIdEmpresa(), produto.getIdProduto());
                         }
                     });
                     return viewHolder;
@@ -325,5 +324,12 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+    //Intent para a tela de login
+    private void abrirTelaProdutoActivity(String idEmpresa, String idProduto) {
+        Intent intent = new Intent(getApplicationContext(), VisualizarProdutoActivity.class);
+        intent.putExtra("idEmpresa", idEmpresa);
+        intent.putExtra("idProduto", idProduto);
+        startActivity(intent);
     }
 }

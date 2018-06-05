@@ -1,5 +1,7 @@
 package com.zstok.produto.negocio;
 
+import android.net.Uri;
+
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.persistencia.ProdutoDAO;
 

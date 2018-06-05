@@ -10,17 +10,13 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 public class MoneyTextWatcher implements TextWatcher {
+
     private final WeakReference<EditText> editTextWeakReference;
     private final Locale locale;
 
     public MoneyTextWatcher(EditText editText, Locale locale) {
         this.editTextWeakReference = new WeakReference<EditText>(editText);
         this.locale = locale != null ? locale : Locale.getDefault();
-    }
-
-    public MoneyTextWatcher(EditText editText) {
-        this.editTextWeakReference = new WeakReference<EditText>(editText);
-        this.locale = Locale.getDefault();
     }
 
     @Override
@@ -46,7 +42,6 @@ public class MoneyTextWatcher implements TextWatcher {
         editText.setSelection(formatted.length());
         editText.addTextChangedListener(this);
     }
-
     public static BigDecimal parseToBigDecimal(String value, Locale locale) {
         String replaceable = String.format("[%s,.\\s]", NumberFormat.getCurrencyInstance(locale).getCurrency().getSymbol());
 
@@ -56,7 +51,6 @@ public class MoneyTextWatcher implements TextWatcher {
                 2, BigDecimal.ROUND_FLOOR).divide(new BigDecimal(100), BigDecimal.ROUND_FLOOR
         );
     }
-
     public static String convertStringToMoney(String string){
         //Talvez tenha que colocar na activity
         Locale mLocale = new Locale("pt", "BR");
@@ -64,5 +58,4 @@ public class MoneyTextWatcher implements TextWatcher {
         String formatted = NumberFormat.getCurrencyInstance(mLocale).format(parsed);
         return formatted;
     }
-
 }

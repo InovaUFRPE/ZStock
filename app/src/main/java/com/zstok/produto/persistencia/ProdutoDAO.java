@@ -1,6 +1,10 @@
 package com.zstok.produto.persistencia;
 
+import android.net.Uri;
+
 import com.google.firebase.database.DatabaseException;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.produto.dominio.Produto;
 
