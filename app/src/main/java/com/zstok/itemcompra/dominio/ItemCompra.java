@@ -7,7 +7,6 @@ public class ItemCompra {
     private Double valor;
     private int quantidade;
     private Double desconto;
-    private Double total = (valor*quantidade)-((valor*quantidade)*(desconto/100));
 
 
     public String getIdItemCompra() {
@@ -51,10 +50,6 @@ public class ItemCompra {
     }
 
     public Double getTotal() {
-        return total;
-    }
-
-    public void setTotal(Double total) {
-        this.total = total;
+        return (valor*quantidade)-((valor*quantidade)*(desconto/100));
     }
 }

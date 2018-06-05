@@ -173,6 +173,20 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                         Glide.with(getApplicationContext()).load(Helper.stringToBitMap(model.getBitmapImagemProduto())).into(viewHolder.imgCardViewProduto);
                     }
                 }
+
+                @NonNull
+                @Override
+                public ProdutoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+                    final ProdutoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                    viewHolder.setOnItemClickListener(new ProdutoListHolder.ClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            Produto produto = (Produto) adapter.getItem(position);
+                            abrirTelaProdutoActivity(produto.getIdEmpresa(), produto.getIdProduto());
+                        }
+                    });
+                    return viewHolder;
+                }
             };
             recylerViewMeusprodutos.setAdapter(adapter1);
         }

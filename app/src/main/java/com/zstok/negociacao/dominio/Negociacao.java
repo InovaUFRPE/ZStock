@@ -10,6 +10,11 @@ import java.util.List;
 public class Negociacao {
 
     private String idNegociacao;
+    private String idPessoaFisica;
+    private String idPessoaJuridica;
+    private Date dataInicio;
+    private Date dataFim;
+    private List<ItemCompra> listaProduto = new ArrayList<>();
 
     public String getIdNegociacao() {
         return idNegociacao;
@@ -58,12 +63,6 @@ public class Negociacao {
     public void setListaProduto(List<ItemCompra> listaProduto) {
         this.listaProduto = listaProduto;
     }
-
-    private String idPessoaFisica;
-    private String idPessoaJuridica;
-    private Date dataInicio;
-    private Date dataFim;
-    private List<ItemCompra> listaProduto = new ArrayList<>();
 
 
 }

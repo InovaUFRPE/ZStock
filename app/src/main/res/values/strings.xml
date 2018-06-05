@@ -44,6 +44,7 @@
     <string name="zs_dialogo_excluir_produto">Excluir</string>
     <string name="zs_dialogo_mensagem_produto">O que deseja fazer com o produto?</string>
     <string name="zs_dialogo_titulo_produto">Produto</string>
+    <string name="zs_dialogo_compra_titulo">Comprar</string>
 
     <string name="zs_txt_registro">Não é registrado?</string>
     <string name="zs_txt_registre_se"><b><u>Registre-se</u></b></string>
