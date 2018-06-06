@@ -55,7 +55,6 @@
             android:gravity="center"
             android:layout_toRightOf="@id/tvTextoTotalDialogoCompra"
             android:layout_toEndOf="@id/tvTextoTotalDialogoCompra"
-            android:text="S"
             android:layout_gravity="end"
             android:textSize="18sp"
             android:textStyle="bold" />

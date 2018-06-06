@@ -146,7 +146,7 @@ public class EditarProdutoActivity extends AppCompatActivity {
         Produto produto = new Produto();
 
         produto.setNomeProduto(edtNomeProduto.getText().toString());
-        produto.setPrecoSugerido(Double.valueOf(Helper.removerMascara(edtPrecoProduto.getText().toString())));
+        produto.setPrecoSugerido(MoneyTextWatcher.convertToBigDecimal(edtPrecoProduto.getText().toString()).doubleValue());
         produto.setQuantidadeEstoque(Integer.valueOf(edtQuantidadeEstoqueProduto.getText().toString()));
         produto.setDescricao(edtDescricaoProduto.getText().toString());
         produto.setIdProduto(idProduto);

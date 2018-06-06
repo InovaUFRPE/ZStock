@@ -52,7 +52,7 @@ public class ProdutoDAO {
             FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("bitmapImagemProduto").setValue(produto.getBitmapImagemProduto());
         }
         FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("nomeProduto").setValue(produto.getNomeProduto());
-        FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("preco").setValue(produto.getPrecoSugerido());
+        FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("precoSugerido").setValue(produto.getPrecoSugerido());
         FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("quantidadeEstoque").setValue(produto.getQuantidadeEstoque());
         FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("descricao").setValue(produto.getDescricao());
     }

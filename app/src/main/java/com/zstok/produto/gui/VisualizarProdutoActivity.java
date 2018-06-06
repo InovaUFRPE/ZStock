@@ -26,6 +26,8 @@ import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.produto.dominio.Produto;
 
+import java.math.BigDecimal;
+
 public class VisualizarProdutoActivity extends AppCompatActivity {
 
     private String idEmpresa;
@@ -180,8 +182,8 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
                 if (!edtQuantidadeDialogoCompra.getText().toString().isEmpty() ||
                         !(edtQuantidadeDialogoCompra.getText().toString().trim().length() == 0)){
                     int quantidadeItens = Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString());
-                    double precoItem = Double.valueOf(MoneyTextWatcher.convertToBigDecimal(tvPrecoProduto.getText().toString()));
-                    tvTotalDialogoCompra.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(quantidadeItens * precoItem)));
+                    BigDecimal precoItem = MoneyTextWatcher.convertToBigDecimal(tvPrecoProduto.getText().toString());
+                    tvTotalDialogoCompra.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(precoItem.multiply(new BigDecimal(quantidadeItens)))));
                 }
             }
 
@@ -190,8 +192,8 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
                 if (!edtQuantidadeDialogoCompra.getText().toString().isEmpty() ||
                         !(edtQuantidadeDialogoCompra.getText().toString().trim().length() == 0)){
                     int quantidadeItens = Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString());
-                    double precoItem = Double.valueOf(MoneyTextWatcher.convertToBigDecimal(tvPrecoProduto.getText().toString()));
-                    tvTotalDialogoCompra.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(quantidadeItens * precoItem)));
+                    BigDecimal precoItem = MoneyTextWatcher.convertToBigDecimal(tvPrecoProduto.getText().toString());
+                    tvTotalDialogoCompra.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(precoItem.multiply(new BigDecimal(quantidadeItens)))));
                 }
             }
         });

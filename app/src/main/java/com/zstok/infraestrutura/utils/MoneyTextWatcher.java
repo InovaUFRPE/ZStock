@@ -43,7 +43,7 @@ public class MoneyTextWatcher implements TextWatcher {
         editText.setSelection(formatted.length());
         editText.addTextChangedListener(this);
     }
-    public static BigDecimal parseToBigDecimal(String value, Locale locale) {
+    private static BigDecimal parseToBigDecimal(String value, Locale locale) {
         String replaceable = String.format("[%s,.\\s]", NumberFormat.getCurrencyInstance(locale).getCurrency().getSymbol());
 
         String cleanString = value.replaceAll(replaceable, "");
@@ -52,21 +52,22 @@ public class MoneyTextWatcher implements TextWatcher {
                 2, BigDecimal.ROUND_FLOOR).divide(new BigDecimal(100), BigDecimal.ROUND_FLOOR
         );
     }
+    //Aplicando máscara na string
     public static String convertStringToMoney(String string){
         //Talvez tenha que colocar na activity
         Locale mLocale = new Locale("pt", "BR");
         BigDecimal parsed = parseToBigDecimal(string, mLocale);
-        String formatted = NumberFormat.getCurrencyInstance(mLocale).format(parsed);
-        return formatted;
+        return NumberFormat.getCurrencyInstance(mLocale).format(parsed);
     }
-    public static Double convertToBigDecimal(String value){
+    //Retirando máscara da string
+    public static BigDecimal convertToBigDecimal(String value){
         BigDecimal parsed = null;
         try {
             String cleanString = value.replaceAll("[R,$,.]", "");
             parsed = new BigDecimal(cleanString).setScale(2,BigDecimal.ROUND_FLOOR).divide(new BigDecimal(100),BigDecimal.ROUND_FLOOR);
         } catch (Exception e) {
-            Log.e("Erro conversão: ", e.getMessage(), e);
+            Log.e("Erro na conversão: ", e.getMessage(), e);
         }
-        return parsed.doubleValue();
+        return parsed;
     }
 }
