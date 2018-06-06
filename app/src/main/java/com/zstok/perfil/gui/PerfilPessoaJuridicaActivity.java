@@ -188,7 +188,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
                         //Função abrir tela negociacao
                         abrirTelaMainPessoaJuridicaActivity();
                         return true;
-                    case R.id.nav_produtos:
+                    case R.id.nav_produtos_juridico:
                         //Função abrir tela produtos
                         abrirTelaMeusProdutosActivity();
                         return true;

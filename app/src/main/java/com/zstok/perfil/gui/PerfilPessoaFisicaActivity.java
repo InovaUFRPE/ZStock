@@ -127,6 +127,8 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                         return true;
                     case R.id.nav_negociacao_fisico:
                         //Intent para tela de negocicao
+                        return true;
+                    case R.id.nav_produtos_fisico:
                         abrirTelaMainPessoaFisicaActivity();
                         return true;
                     case R.id.nav_sair:

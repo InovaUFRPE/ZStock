@@ -13,7 +13,7 @@
             android:icon="@drawable/ic_negociacao"
             android:title="@string/zs_menu_lateral_negociacao" />
         <item
-            android:id="@+id/nav_produtos"
+            android:id="@+id/nav_produtos_juridico"
             android:icon="@drawable/ic_produtos"
             android:title="@string/zs_menu_lateral_produtos_pessoa_juridica" />
         <item

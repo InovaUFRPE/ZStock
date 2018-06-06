@@ -1,5 +1,6 @@
 package com.zstok.pessoa.gui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +35,9 @@ import com.zstok.pessoaFisica.negocio.PessoaFisicaServices;
 import com.zstok.pessoaJuridica.dominio.PessoaJuridica;
 import com.zstok.pessoaJuridica.negocio.PessoaJuridicaServices;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RegistroActivity extends AppCompatActivity {
 
     private EditText edtRegCpfCnpj;
@@ -43,6 +47,8 @@ public class RegistroActivity extends AppCompatActivity {
     private EditText edtRegNome;
 
     private VerificaConexao verificaConexao;
+
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +65,8 @@ public class RegistroActivity extends AppCompatActivity {
 
         //Inicializando a instância da classe VerificaConexao
         verificaConexao = new VerificaConexao(this);
+
+        progressDialog = new ProgressDialog(this);
 
         btnCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +124,7 @@ public class RegistroActivity extends AppCompatActivity {
     //Inserir pessoa jurídica
     private void inserirPessoaJuridica() {
         if (PessoaJuridicaServices.inserirPessoaJuridica(criarPessoaJuridica())){
+            progressDialog.dismiss();
             Helper.criarToast(getApplicationContext(), getString(R.string.zs_sucesso_usuario_cadastrado));
             abrirTelaLoginActivity();
         }else {
@@ -157,6 +166,9 @@ public class RegistroActivity extends AppCompatActivity {
     }
     //Validando cpf antes de inserir no banco
     private void verificarCpfCnpj(){
+        progressDialog.setTitle("Cadastrando Usuário...");
+        progressDialog.show();
+
         FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -179,11 +191,14 @@ public class RegistroActivity extends AppCompatActivity {
     private boolean verificarCpf(DataSnapshot dataSnapshot){
         boolean verificador = true;
         Iterable<DataSnapshot> cpfs = dataSnapshot.child("pessoaFisica").getChildren();
-        for (DataSnapshot dataSnapshotChild: cpfs){
+        for (DataSnapshot dataSnapshotChild: cpfs) {
             String cpf = dataSnapshotChild.child("cpf").getValue(String.class);
-            if (cpf.equals(edtRegCpfCnpj.getText().toString())){
-                edtRegCpfCnpj.setError(getString(R.string.zs_excecao_cpf_cadastrado_sistema));
-                verificador = false;
+            if (cpf != null) {
+                if (cpf.equals(edtRegCpfCnpj.getText().toString())) {
+                    progressDialog.dismiss();
+                    edtRegCpfCnpj.setError(getString(R.string.zs_excecao_cpf_cadastrado_sistema));
+                    verificador = false;
+                }
             }
         }
         return verificador;
@@ -194,9 +209,12 @@ public class RegistroActivity extends AppCompatActivity {
         Iterable<DataSnapshot> cnpjs = dataSnapshot.child("pessoaJuridica").getChildren();
         for (DataSnapshot dataSnapshotChild: cnpjs) {
             String cnpj = dataSnapshotChild.child("cnpj").getValue(String.class);
-            if (cnpj.equals(edtRegCpfCnpj.getText().toString())) {
-                edtRegCpfCnpj.setError(getString(R.string.zs_excecao_cnpj_cadastrado_sistema));
-                verificador = false;
+            if (cnpj != null) {
+                if (cnpj.equals(edtRegCpfCnpj.getText().toString())) {
+                    progressDialog.dismiss();
+                    edtRegCpfCnpj.setError(getString(R.string.zs_excecao_cnpj_cadastrado_sistema));
+                    verificador = false;
+                }
             }
         }
         return verificador;
@@ -210,6 +228,7 @@ public class RegistroActivity extends AppCompatActivity {
                 verificador = true;
             }else {
                 verificador = false;
+                progressDialog.dismiss();
                 throw task.getException();
             }
         }catch (FirebaseAuthWeakPasswordException e){
@@ -275,6 +294,7 @@ public class RegistroActivity extends AppCompatActivity {
     }
     //Intent para a tela de login
     private void abrirTelaLoginActivity() {
+        progressDialog.dismiss();
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(intent);
     }

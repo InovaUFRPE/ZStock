@@ -138,6 +138,8 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                         return true;
                     case R.id.nav_negociacao_fisico:
                         //Activity de turmas
+                        return true;
+                    case R.id.nav_produtos_fisico:
                         drawer.closeDrawers();
                         return true;
                     case R.id.nav_sair:

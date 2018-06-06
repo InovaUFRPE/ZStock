@@ -2,6 +2,7 @@ package com.zstok.infraestrutura.utils;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.EditText;
 
 import java.lang.ref.WeakReference;
@@ -58,9 +59,14 @@ public class MoneyTextWatcher implements TextWatcher {
         String formatted = NumberFormat.getCurrencyInstance(mLocale).format(parsed);
         return formatted;
     }
-    public static String convertMoneyToBigDecimal(String string){
-        String cleanString = string.replaceAll("R$", "");
-
-        return cleanString;
+    public static Double convertToBigDecimal(String value){
+        BigDecimal parsed = null;
+        try {
+            String cleanString = value.replaceAll("[R,$,.]", "");
+            parsed = new BigDecimal(cleanString).setScale(2,BigDecimal.ROUND_FLOOR).divide(new BigDecimal(100),BigDecimal.ROUND_FLOOR);
+        } catch (Exception e) {
+            Log.e("Erro conversão: ", e.getMessage(), e);
+        }
+        return parsed.doubleValue();
     }
 }

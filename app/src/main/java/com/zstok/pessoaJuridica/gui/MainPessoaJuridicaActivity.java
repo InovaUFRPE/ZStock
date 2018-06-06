@@ -86,7 +86,7 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
                         //Função abrir tela negociacao
                         drawer.closeDrawers();
                         return true;
-                    case R.id.nav_produtos:
+                    case R.id.nav_produtos_juridico:
                         abrirTelaMeusProdutosActivity();
                         //Função abrir tela produtos
                         return true;

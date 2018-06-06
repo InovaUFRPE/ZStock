@@ -180,7 +180,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
                 if (!edtQuantidadeDialogoCompra.getText().toString().isEmpty() ||
                         !(edtQuantidadeDialogoCompra.getText().toString().trim().length() == 0)){
                     int quantidadeItens = Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString());
-                    double precoItem = Double.valueOf(Helper.removerMascara(tvPrecoProduto.getText().toString()));
+                    double precoItem = Double.valueOf(MoneyTextWatcher.convertToBigDecimal(tvPrecoProduto.getText().toString()));
                     tvTotalDialogoCompra.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(quantidadeItens * precoItem)));
                 }
             }
@@ -190,7 +190,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
                 if (!edtQuantidadeDialogoCompra.getText().toString().isEmpty() ||
                         !(edtQuantidadeDialogoCompra.getText().toString().trim().length() == 0)){
                     int quantidadeItens = Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString());
-                    double precoItem = Double.valueOf(Helper.removerMascara(tvPrecoProduto.getText().toString()));
+                    double precoItem = Double.valueOf(MoneyTextWatcher.convertToBigDecimal(tvPrecoProduto.getText().toString()));
                     tvTotalDialogoCompra.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(quantidadeItens * precoItem)));
                 }
             }
