@@ -166,9 +166,7 @@ public class RegistroActivity extends AppCompatActivity {
     }
     //Validando cpf antes de inserir no banco
     private void verificarCpfCnpj(){
-        progressDialog.setTitle("Cadastrando Usuário...");
-        progressDialog.show();
-
+        iniciarProgressDialog();
         FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -186,6 +184,11 @@ public class RegistroActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+    //Método que gera o progress dialog
+    private void iniciarProgressDialog() {
+        progressDialog.setTitle("Cadastrando Usuário...");
+        progressDialog.show();
     }
     //Verificando se o cpf está cadastrado no sistema
     private boolean verificarCpf(DataSnapshot dataSnapshot){

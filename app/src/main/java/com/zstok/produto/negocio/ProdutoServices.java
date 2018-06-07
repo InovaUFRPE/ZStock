@@ -15,4 +15,8 @@ public class ProdutoServices {
     public static boolean alterarProduto(Produto produto){
         return ProdutoDAO.alterarProdutoVerificador(produto);
     }
+    //Método provisório
+    public static boolean comprarProduto(String idProduto, int novaQuantidade){
+        return ProdutoDAO.comprarProduto(idProduto, novaQuantidade);
+    }
 }

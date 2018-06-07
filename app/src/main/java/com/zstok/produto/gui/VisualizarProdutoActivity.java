@@ -1,5 +1,6 @@
 package com.zstok.produto.gui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.app.AlertDialog;
@@ -25,6 +26,7 @@ import com.zstok.infraestrutura.utils.MoneyTextWatcher;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.produto.dominio.Produto;
+import com.zstok.produto.negocio.ProdutoServices;
 
 import java.math.BigDecimal;
 
@@ -50,6 +52,8 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
 
     private VerificaConexao verificaConexao;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +72,9 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         imgProduto = findViewById(R.id.imgProduto);
         Button btnComprar = findViewById(R.id.btnComprarProduto);
         Button btnNegociar = findViewById(R.id.btnNegociarProduto);
+
+        //Instanciando progress dialog
+        progressDialog = new ProgressDialog(this);
 
         //Instanciando objeto para verificar conexão
         verificaConexao = new VerificaConexao(this);
@@ -104,6 +111,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     }
     //Recuperando dados do firebase
     private void recuperarDados(){
+        iniciarProgressDialog();
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -121,10 +129,16 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
             }
         });
     }
+    //Método que inicia o progress dialog
+    private void iniciarProgressDialog() {
+        progressDialog.setTitle("Carregando produto...");
+        progressDialog.show();
+    }
     //Setando campo foto do produto
     private void setarFoto(Produto produto){
         Bitmap bitmap = Helper.stringToBitMap(produto.getBitmapImagemProduto());
         Glide.with(getApplicationContext()).load(bitmap).into(imgProduto);
+        progressDialog.dismiss();
     }
     //Setando campos da activity
     private void setarCampos(Pessoa pessoa, Produto produto) {
@@ -230,18 +244,25 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
                 if (verificaConexao.isConected()){
                     if (validarCampos()){
                         if(validarClickCompra()){
-                            int novaQuantidadeEstoque = Integer.valueOf(tvQuantidadeDisponivelProduto.getText().toString()) - Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString());
-                            FirebaseController.getFirebase().child("produto").child(idProduto).child("quantidadeEstoque").setValue(novaQuantidadeEstoque);
-                            Helper.criarToast(getApplicationContext(),"Compra efetuada com sucesso! ");
-                            alertaCompra.dismiss();
-
-
+                            comprarProduto();
                         }
                     }
                 }
             }
         });
     }
+    //Chamando camada de negócio para fazer a redução da quantidade
+    private void comprarProduto(){
+        if (ProdutoServices.comprarProduto(idProduto, calcularNovaQuantidade())){
+            alertaCompra.dismiss();
+            Helper.criarToast(getApplicationContext(), "Compra efetuada com sucesso!");
+        }
+    }
+    //Calculando nova quantidade
+    private int calcularNovaQuantidade() {
+        return Integer.valueOf(tvQuantidadeDisponivelProduto.getText().toString()) - Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString());
+    }
+    //Validando compra
     private boolean validarClickCompra(){
         boolean verificador = true;
         BigDecimal bigDecimal = MoneyTextWatcher.convertToBigDecimal(tvTotalDialogoCompra.getText().toString());

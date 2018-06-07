@@ -56,4 +56,16 @@ public class ProdutoDAO {
         FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("quantidadeEstoque").setValue(produto.getQuantidadeEstoque());
         FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("descricao").setValue(produto.getDescricao());
     }
+    //Método provisório
+    public static boolean comprarProduto(String idProduto, int novaQuantidade){
+        boolean verificador;
+
+        try {
+            FirebaseController.getFirebase().child("produto").child(idProduto).child("quantidadeEstoque").setValue(String.valueOf(novaQuantidade));
+            verificador = true;
+        }catch (DatabaseException e){
+            verificador = false;
+        }
+        return verificador;
+    }
 }
