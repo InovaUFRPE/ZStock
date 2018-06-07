@@ -25,6 +25,7 @@
     <EditText
         android:id="@+id/edtQuantidadeDesejadaDialogoCompra"
         android:inputType="number"
+        android:maxLength="4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

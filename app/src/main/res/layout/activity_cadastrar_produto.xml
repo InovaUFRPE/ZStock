@@ -57,6 +57,7 @@
 
         <EditText
             android:id="@+id/edtNomeProduto"
+            android:maxLength="60"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center_vertical"
@@ -75,6 +76,7 @@
 
         <EditText
             android:id="@+id/edtPrecoProduto"
+            android:maxLength="11"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center_vertical"
@@ -94,6 +96,7 @@
 
         <EditText
             android:id="@+id/edtQuantidadeEstoqueProduto"
+            android:maxLength="6"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_below="@id/edtPrecoProduto"

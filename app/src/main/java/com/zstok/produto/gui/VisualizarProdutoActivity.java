@@ -33,7 +33,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     private String idEmpresa;
     private String idProduto;
     private TextView tvNomeProduto;
-    private TextView tvQuantidadeEstoqueProduto;
+    private TextView tvQuantidadeDisponivelProduto;
     private TextView tvPrecoProduto;
     private TextView tvDescricaoProduto;
     private TextView tvEmpresaProduto;
@@ -61,7 +61,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
 
         //Instanciando views
         tvNomeProduto = findViewById(R.id.tvNomeProduto);
-        tvQuantidadeEstoqueProduto = findViewById(R.id.tvQuantidadeDisponivelProduto);
+        tvQuantidadeDisponivelProduto = findViewById(R.id.tvQuantidadeDisponivelProduto);
         tvPrecoProduto = findViewById(R.id.tvPrecoProduto);
         tvDescricaoProduto = findViewById(R.id.tvDescricaoProduto);
         tvEmpresaProduto = findViewById(R.id.tvEmpresaProduto);
@@ -86,6 +86,18 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 abrirTelaVisualizarEmpresaActivity();
+
+            }
+        });
+
+        FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                tvQuantidadeDisponivelProduto.setText(String.valueOf(dataSnapshot.child("produto").child(idProduto).child("quantidadeEstoque").getValue()));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
@@ -117,7 +129,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     //Setando campos da activity
     private void setarCampos(Pessoa pessoa, Produto produto) {
         tvNomeProduto.setText(produto.getNomeProduto());
-        tvQuantidadeEstoqueProduto.setText(String.valueOf(produto.getQuantidadeEstoque()));
+        //tvQuantidadeDisponivelProduto.setText(String.valueOf(produto.getQuantidadeEstoque()));
         tvPrecoProduto.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(produto.getPrecoSugerido())));
         tvDescricaoProduto.setText(produto.getDescricao());
         tvEmpresaProduto.setText(pessoa.getNome());
@@ -149,6 +161,8 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
 
         //Chamando método para tratar o clique no botão comprar
         clickComprar();
+
+
     }
     //Validando edit text da quantidade digitavda pelo usuário na caixa de diálogo
     private boolean validarCampos(){
@@ -185,13 +199,8 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
                     BigDecimal precoItem = MoneyTextWatcher.convertToBigDecimal(tvPrecoProduto.getText().toString());
                     tvTotalDialogoCompra.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(precoItem.multiply(new BigDecimal(quantidadeItens)))));
                 }
-                BigDecimal bigDecimal = MoneyTextWatcher.convertToBigDecimal(tvTotalDialogoCompra.getText().toString());
-                BigDecimal bigDecimal1 = new BigDecimal(50000);
-                if ((bigDecimal.compareTo(bigDecimal1)) == -1){
-                    edtQuantidadeDialogoCompra.setError("Valor de compra excedido!Tente comprar uma quantidade menor.");
-                }
-            }
 
+        }
             @Override
             public void afterTextChanged(Editable s) {
                 if (!edtQuantidadeDialogoCompra.getText().toString().isEmpty() ||
@@ -199,11 +208,6 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
                     int quantidadeItens = Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString());
                     BigDecimal precoItem = MoneyTextWatcher.convertToBigDecimal(tvPrecoProduto.getText().toString());
                     tvTotalDialogoCompra.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(precoItem.multiply(new BigDecimal(quantidadeItens)))));
-                }
-                BigDecimal bigDecimal = MoneyTextWatcher.convertToBigDecimal(tvTotalDialogoCompra.getText().toString());
-                BigDecimal bigDecimal1 = new BigDecimal(50000);
-                if ((bigDecimal.compareTo(bigDecimal1)) == -1){
-                    edtQuantidadeDialogoCompra.setError("Valor de compra excedido!Tente comprar uma quantidade menor.");
                 }
             }
         });
@@ -218,16 +222,38 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         });
     }
     //Método que implementa o evento de click do botão comprar
+    //Value listener of quantidade
     private void clickComprar(){
         btnComprarDialogoCompra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (verificaConexao.isConected()){
                     if (validarCampos()){
-                        Helper.criarToast(getApplicationContext(), "Em construção...");
+                        if(validarClickCompra()){
+                            int novaQuantidadeEstoque = Integer.valueOf(tvQuantidadeDisponivelProduto.getText().toString()) - Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString());
+                            FirebaseController.getFirebase().child("produto").child(idProduto).child("quantidadeEstoque").setValue(novaQuantidadeEstoque);
+                            Helper.criarToast(getApplicationContext(),"Compra efetuada com sucesso! ");
+                            alertaCompra.dismiss();
+
+
+                        }
                     }
                 }
             }
         });
+    }
+    private boolean validarClickCompra(){
+        boolean verificador = true;
+        BigDecimal bigDecimal = MoneyTextWatcher.convertToBigDecimal(tvTotalDialogoCompra.getText().toString());
+        BigDecimal bigDecimal1 = new BigDecimal(50000);
+        if ((bigDecimal.compareTo(bigDecimal1)) == 1){
+            edtQuantidadeDialogoCompra.setError("Valor de compra excedido! Tente comprar uma quantidade menor.");
+            verificador = false;
+        }
+        if(Integer.valueOf(tvQuantidadeDisponivelProduto.getText().toString()) < Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString())){
+            verificador=false;
+            edtQuantidadeDialogoCompra.setError("Quantidade máxima excedida.");
+        }
+        return verificador;
     }
 }
