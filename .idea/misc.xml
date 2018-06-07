@@ -25,7 +25,15 @@
       </value>
     </option>
   </component>
+<<<<<<< refs/remotes/origin/develop
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="JDK" project-jdk-type="JavaSDK">
+=======
+<<<<<<< Updated upstream
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="JDK" project-jdk-type="JavaSDK">
+=======
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+>>>>>>> Stashed changes
+>>>>>>> Auto stash before rebase of "origin/develop"
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
