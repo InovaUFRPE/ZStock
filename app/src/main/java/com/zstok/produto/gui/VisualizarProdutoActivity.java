@@ -185,6 +185,11 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
                     BigDecimal precoItem = MoneyTextWatcher.convertToBigDecimal(tvPrecoProduto.getText().toString());
                     tvTotalDialogoCompra.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(precoItem.multiply(new BigDecimal(quantidadeItens)))));
                 }
+                BigDecimal bigDecimal = MoneyTextWatcher.convertToBigDecimal(tvTotalDialogoCompra.getText().toString());
+                BigDecimal bigDecimal1 = new BigDecimal(50000);
+                if ((bigDecimal.compareTo(bigDecimal1)) == -1){
+                    edtQuantidadeDialogoCompra.setError("Valor de compra excedido!Tente comprar uma quantidade menor.");
+                }
             }
 
             @Override
@@ -194,6 +199,11 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
                     int quantidadeItens = Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString());
                     BigDecimal precoItem = MoneyTextWatcher.convertToBigDecimal(tvPrecoProduto.getText().toString());
                     tvTotalDialogoCompra.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(precoItem.multiply(new BigDecimal(quantidadeItens)))));
+                }
+                BigDecimal bigDecimal = MoneyTextWatcher.convertToBigDecimal(tvTotalDialogoCompra.getText().toString());
+                BigDecimal bigDecimal1 = new BigDecimal(50000);
+                if ((bigDecimal.compareTo(bigDecimal1)) == -1){
+                    edtQuantidadeDialogoCompra.setError("Valor de compra excedido!Tente comprar uma quantidade menor.");
                 }
             }
         });
