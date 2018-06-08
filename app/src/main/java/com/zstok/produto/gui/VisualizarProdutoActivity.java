@@ -29,6 +29,7 @@ import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 
 public class VisualizarProdutoActivity extends AppCompatActivity {
 
@@ -143,8 +144,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     //Setando campos da activity
     private void setarCampos(Pessoa pessoa, Produto produto) {
         tvNomeProduto.setText(produto.getNomeProduto());
-        //tvQuantidadeDisponivelProduto.setText(String.valueOf(produto.getQuantidadeEstoque()));
-        tvPrecoProduto.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(produto.getPrecoSugerido())));
+        tvPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
         tvDescricaoProduto.setText(produto.getDescricao());
         tvEmpresaProduto.setText(pessoa.getNome());
     }
