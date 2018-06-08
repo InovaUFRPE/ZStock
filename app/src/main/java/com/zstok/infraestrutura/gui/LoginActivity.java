@@ -27,8 +27,11 @@ import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private TextView tvRegistreSe;
+    private TextView tvEsqueciSenha;
     private EditText edtEmail;
     private EditText edtSenha;
+    private Button btnEntrar;
 
     private VerificaConexao verificaConexao;
 
@@ -42,9 +45,9 @@ public class LoginActivity extends AppCompatActivity {
         //Instanciando views
         edtEmail = findViewById(R.id.edtEmail);
         edtSenha = findViewById(R.id.edtSenha);
-        TextView tvRegistreSe = findViewById(R.id.tvRegistreSe);
-        TextView tvEsqueciSenha = findViewById(R.id.tvEsqueciSenha);
-        Button btnEntrar = findViewById(R.id.btnEntrar);
+        tvRegistreSe = findViewById(R.id.tvRegistreSe);
+        tvEsqueciSenha = findViewById(R.id.tvEsqueciSenha);
+        btnEntrar = findViewById(R.id.btnEntrar);
 
         mProgressBar = findViewById(R.id.loginProgressBar);
 
@@ -96,9 +99,26 @@ public class LoginActivity extends AppCompatActivity {
         }
         return verificador;
     }
+    //Bloquenado views enquanto o progress bar está visível
+    private void bloquearViews(){
+        btnEntrar.setEnabled(false);
+        tvRegistreSe.setEnabled(false);
+        tvEsqueciSenha.setEnabled(false);
+        edtSenha.setEnabled(false);
+        edtEmail.setEnabled(false);
+    }
+    //Desbloqueando views enquanto o progress bar está invisível
+    private void desbloquearViews(){
+        btnEntrar.setEnabled(true);
+        tvRegistreSe.setEnabled(true);
+        tvEsqueciSenha.setEnabled(true);
+        edtSenha.setEnabled(true);
+        edtEmail.setEnabled(true);
+    }
     //Verificando se o usuário está autenticado
     private void verificarAutenticacao(String email, String senha){
         mProgressBar.setVisibility(View.VISIBLE);
+        bloquearViews();
         FirebaseController.getFirebaseAuthentication().signInWithEmailAndPassword(email, senha).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -108,10 +128,12 @@ public class LoginActivity extends AppCompatActivity {
                         verificarTipoConta(user);
                     } else {
                         mProgressBar.setVisibility(View.INVISIBLE);
+                        desbloquearViews();
                         Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_usuario_nao_encontrado));
                     }
                 } else {
                     mProgressBar.setVisibility(View.INVISIBLE);
+                    desbloquearViews();
                     Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_usuario_senha));
                 }
             }
