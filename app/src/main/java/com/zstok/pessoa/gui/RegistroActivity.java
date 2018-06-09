@@ -185,10 +185,33 @@ public class RegistroActivity extends AppCompatActivity {
             }
         });
     }
+    //Bloqueando views
+    private void bloquearViews(){
+        edtRegNome.setEnabled(false);
+        edtRegCpfCnpj.setEnabled(false);
+        edtRegEmail.setEnabled(false);
+        edtRegSenha.setEnabled(false);
+        edtRegConfirmarSenha.setEnabled(false);
+    }
+    //Desbloqueando views
+    private void desbloquearViews(){
+        edtRegNome.setEnabled(true);
+        edtRegCpfCnpj.setEnabled(true);
+        edtRegEmail.setEnabled(true);
+        edtRegSenha.setEnabled(true);
+        edtRegConfirmarSenha.setEnabled(true);
+    }
     //Método que gera o progress dialog
     private void iniciarProgressDialog() {
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setTitle("Cadastrando Usuário...");
         progressDialog.show();
+        bloquearViews();
+    }
+    //Fechando progress dialog
+    private void fecharProgressDialog(){
+        progressDialog.dismiss();
+        desbloquearViews();
     }
     //Verificando se o cpf está cadastrado no sistema
     private boolean verificarCpf(DataSnapshot dataSnapshot){
@@ -198,8 +221,8 @@ public class RegistroActivity extends AppCompatActivity {
             String cpf = dataSnapshotChild.child("cpf").getValue(String.class);
             if (cpf != null) {
                 if (cpf.equals(edtRegCpfCnpj.getText().toString())) {
-                    progressDialog.dismiss();
                     edtRegCpfCnpj.setError(getString(R.string.zs_excecao_cpf_cadastrado_sistema));
+                    fecharProgressDialog();
                     verificador = false;
                 }
             }
@@ -214,7 +237,7 @@ public class RegistroActivity extends AppCompatActivity {
             String cnpj = dataSnapshotChild.child("cnpj").getValue(String.class);
             if (cnpj != null) {
                 if (cnpj.equals(edtRegCpfCnpj.getText().toString())) {
-                    progressDialog.dismiss();
+                    fecharProgressDialog();
                     edtRegCpfCnpj.setError(getString(R.string.zs_excecao_cnpj_cadastrado_sistema));
                     verificador = false;
                 }
@@ -231,7 +254,7 @@ public class RegistroActivity extends AppCompatActivity {
                 verificador = true;
             }else {
                 verificador = false;
-                progressDialog.dismiss();
+                fecharProgressDialog();
                 throw task.getException();
             }
         }catch (FirebaseAuthWeakPasswordException e){
