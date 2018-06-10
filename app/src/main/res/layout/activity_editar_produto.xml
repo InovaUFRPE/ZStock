@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="16dp"
     android:background="@color/jabuticaba"
     tools:context="com.zstok.produto.gui.EditarProdutoActivity">
 
@@ -70,6 +71,7 @@
             android:drawableTint="@color/white"
             android:drawablePadding="@dimen/drawable_padding"
             android:paddingLeft="@dimen/padding_left"
+            android:backgroundTint="@color/cimento"
             android:paddingStart="@dimen/padding_left"
             android:inputType="text"/>
 
@@ -90,6 +92,7 @@
             android:drawablePadding="@dimen/drawable_padding"
             android:paddingLeft="@dimen/padding_left"
             android:paddingStart="@dimen/padding_left"
+            android:backgroundTint="@color/cimento"
             android:inputType="numberDecimal"/>
 
         <EditText
@@ -108,6 +111,7 @@
             android:drawablePadding="@dimen/drawable_padding"
             android:paddingLeft="@dimen/padding_left"
             android:paddingStart="@dimen/padding_left"
+            android:backgroundTint="@color/cimento"
             android:inputType="number"/>
 
         <EditText
@@ -121,6 +125,7 @@
             android:drawablePadding="@dimen/drawable_padding"
             android:paddingLeft="@dimen/padding_left"
             android:paddingStart="@dimen/padding_left"
+            android:backgroundTint="@color/cimento"
             android:hint="@string/zs_hint_descricao_produto"
             android:paddingBottom="70dp"
             android:maxLength="1000"

@@ -37,7 +37,7 @@
             android:layout_marginTop="@dimen/margin_top"
             android:layout_centerHorizontal="true"
             android:contentDescription="@null"
-            android:src="@drawable/ic_sem_foto" />
+            android:src="@drawable/ic_camera2" />
 
         <TextView
             android:id="@+id/tvTextoEmpresaProduto"
