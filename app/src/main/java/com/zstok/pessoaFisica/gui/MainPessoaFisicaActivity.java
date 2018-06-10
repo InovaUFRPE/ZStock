@@ -1,5 +1,6 @@
 package com.zstok.pessoaFisica.gui;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -173,7 +174,17 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                     viewHolder.tvCardViewNomeProduto.setText(model.getNomeProduto());
                     viewHolder.tvCardViewPrecoProduto.setText(String.valueOf(model.getPrecoSugerido()));
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
-                    viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
+                    FirebaseController.getFirebase().child("pessoa").child(model.getIdEmpresa()).child("nome").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            viewHolder.tvCardViewNomeEmpresa.setText(dataSnapshot.getValue(String.class));
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                     if (model.getBitmapImagemProduto() != null) {
                         Glide.with(getApplicationContext()).load(Helper.stringToBitMap(model.getBitmapImagemProduto())).into(viewHolder.imgCardViewProduto);
                     }
@@ -198,7 +209,6 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
     }
     //Montando adapter e jogando no list holder
     private void criandoAdapter() {
-
         final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
 
         if (databaseReference != null) {

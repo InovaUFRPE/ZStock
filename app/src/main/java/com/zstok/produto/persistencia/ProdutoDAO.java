@@ -61,7 +61,7 @@ public class ProdutoDAO {
         boolean verificador;
 
         try {
-            FirebaseController.getFirebase().child("produto").child(idProduto).child("quantidadeEstoque").setValue(String.valueOf(novaQuantidade));
+            FirebaseController.getFirebase().child("produto").child(idProduto).child("quantidadeEstoque").setValue(novaQuantidade);
             verificador = true;
         }catch (DatabaseException e){
             verificador = false;
