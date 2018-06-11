@@ -58,7 +58,7 @@
     <string name="zs_btn_cadastrar">Cadastrar</string>
     <string name="zs_btn_alterar">Alterar</string>
     <string name="zs_btn_enviar">Enviar</string>
-    <string name="zs_btn_alterar_nome">Alterar nomeProduto</string>
+    <string name="zs_btn_alterar_nome">Alterar nome</string>
     <string name="zs_btn_alterar_email">Alterar email</string>
     <string name="zs_btn_alterar_telefone">Alterar telefone</string>
     <string name="zs_btn_alterar_endereco">Alterar endereço</string>
@@ -98,6 +98,9 @@
     <string name="zs_excecao_espaco_branco">Não é permitido deixar espaços em branco</string>
     <string name="zs_excecao_dia_invalido">Digite um dia válido!</string>
     <string name="zs_excecao_mes_invalido">Digite um mês válido!</string>
+    <string name="zs_excecao_quantidade_maxima">Quantidade não disponível em estoque!</string>
+    <string name="zs_excecao_quantidade_excedida">Valor de compra excedido! Tente comprar uma quantidade menor.</string>
+    <string name="zs_excecao_quantidade_invalida">Quantidade inválida!</string>
 
     <string name="zs_menu_lateral_perfil">Meu perfil</string>
     <string name="zs_menu_lateral_negociacao">Negociação</string>
@@ -119,5 +122,9 @@
     <string name="title_activity_perfil_pessoa_juridica">Meu perfil</string>
     <string name="title_activity_main_pessoa_juridica">Negociações</string>
     <string name="title_activity_meus_produtos">Meus produtos</string>
+
+    <string name="zs_titulo_progress_dialog_registro">Cadastrando usuário...</string>
+    <string name="zs_titulo_progress_dialog_produto">Carregando produto...</string>
+    <string name="zs_titulo_progress_dialog_perfil">Carregando informações...</string>
 
 </resources>

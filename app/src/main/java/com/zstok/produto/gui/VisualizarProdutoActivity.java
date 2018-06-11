@@ -58,7 +58,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_produto);
+        setContentView(R.layout.activity_visualizar_produto);
 
         //Resgatando elementos passados pela intent
         idEmpresa = getIntent().getStringExtra("idEmpresa");
@@ -132,7 +132,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     }
     //Método que inicia o progress dialog
     private void iniciarProgressDialog() {
-        progressDialog.setTitle("Carregando produto...");
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_produto));
         progressDialog.show();
     }
     //Setando campo foto do produto
@@ -255,7 +255,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     private void comprarProduto(){
         if (ProdutoServices.comprarProduto(idProduto, calcularNovaQuantidade())){
             alertaCompra.dismiss();
-            Helper.criarToast(getApplicationContext(), "Compra efetuada com sucesso!");
+            Helper.criarToast(getApplicationContext(), getString(R.string.zs_compra_realizada_sucesso));
         }
     }
     //Calculando nova quantidade
@@ -268,12 +268,16 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         BigDecimal bigDecimal = MoneyTextWatcher.convertToBigDecimal(tvTotalDialogoCompra.getText().toString());
         BigDecimal bigDecimal1 = new BigDecimal(50000);
         if ((bigDecimal.compareTo(bigDecimal1)) == 1){
-            edtQuantidadeDialogoCompra.setError("Valor de compra excedido! Tente comprar uma quantidade menor.");
+            edtQuantidadeDialogoCompra.setError(getString(R.string.zs_excecao_quantidade_excedida));
             verificador = false;
         }
         if(Integer.valueOf(tvQuantidadeDisponivelProduto.getText().toString()) < Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString())){
-            verificador=false;
-            edtQuantidadeDialogoCompra.setError("Quantidade máxima excedida.");
+            edtQuantidadeDialogoCompra.setError(getString(R.string.zs_excecao_quantidade_maxima));
+            verificador = false;
+        }
+        if (Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString()) == 0){
+            edtQuantidadeDialogoCompra.setError(getString(R.string.zs_excecao_quantidade_invalida));
+            verificador = false;
         }
         return verificador;
     }

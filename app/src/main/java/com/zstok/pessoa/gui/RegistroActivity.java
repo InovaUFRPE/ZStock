@@ -204,7 +204,7 @@ public class RegistroActivity extends AppCompatActivity {
     //Método que gera o progress dialog
     private void iniciarProgressDialog() {
         progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setTitle("Cadastrando Usuário...");
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_registro));
         progressDialog.show();
         bloquearViews();
     }

@@ -81,7 +81,8 @@
                 android:drawableStart="@drawable/ic_nome"
                 android:drawablePadding="@dimen/drawable_padding"
                 android:paddingLeft="@dimen/padding_left"
-                android:paddingStart="@dimen/padding_left"/>
+                android:paddingStart="@dimen/padding_left"
+                android:paddingRight="@dimen/padding_left"/>
 
             <View
                 android:id="@+id/vwNomePerfilFisico"

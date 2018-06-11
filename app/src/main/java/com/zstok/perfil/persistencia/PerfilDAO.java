@@ -43,6 +43,13 @@ public class PerfilDAO {
 
         try {
             FirebaseController.getFirebase().child("pessoa").child(FirebaseController.getUidUser()).child("nome").setValue(novoNome);
+            FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+            if (user != null) {
+                UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
+                        .setDisplayName(novoNome)
+                        .build();
+                user.updateProfile(profileChangeRequest);
+            }
             verificador = true;
         }catch (DatabaseException e){
             verificador = false;
@@ -135,23 +142,3 @@ public class PerfilDAO {
     }
 
 }
-/*//Método que seta o email para o TextView id: txt_nav_UserEmail
-    private static void setEmailUsuario(NavigationView navView, String email){
-        View headerView = navView.getHeaderView(0);
-        TextView userEmail = headerView.findViewById(R.id.tvNavHeaderEmail);
-        userEmail.setText(email);
-    }
-    //Método que seta o nome para o TextView id: txt_nav_UserName
-    private static void setNomeUsuario(NavigationView navView, String nome){
-        View headerView = navView.getHeaderView(0);
-        TextView userName = headerView.findViewById(R.id.tvNavHeaderNome);
-        userName.setText(nome);
-    }
-    //Método que seta a foto do menu lateral
-    private static void setImagemNavHeader(NavigationView navView, Bitmap image) {
-        if(image!=null){
-            View headerView = navView.getHeaderView(0);
-            ImageView imagemPerfilLateral = headerView.findViewById(R.id.cvNavHeaderPessoa);
-            imagemPerfilLateral.setImageBitmap(image);
-        }
-    }*/

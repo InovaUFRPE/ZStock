@@ -86,28 +86,6 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
             }
         });
 
-        //Evento de pesquisa
-        edtPesquisaProdutoPessoaFisica.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                criandoAdapterPesquisa(edtPesquisaProdutoPessoaFisica.getText().toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (edtPesquisaProdutoPessoaFisica.getText().toString().isEmpty() ||
-                        edtPesquisaProdutoPessoaFisica.getText().toString().trim().length() == 0){
-                    criandoAdapter();
-                }else {
-                    criandoAdapterPesquisa(edtPesquisaProdutoPessoaFisica.getText().toString());
-                }
-            }
-        });
-
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -132,6 +110,28 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
         //Carregando informações do menu lateral
         setDadosMenuLateral();
 
+        //Evento de pesquisa
+        edtPesquisaProdutoPessoaFisica.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                criandoAdapterPesquisa(edtPesquisaProdutoPessoaFisica.getText().toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (edtPesquisaProdutoPessoaFisica.getText().toString().isEmpty() ||
+                        edtPesquisaProdutoPessoaFisica.getText().toString().trim().length() == 0){
+                    criandoAdapter();
+                }else {
+                    criandoAdapterPesquisa(edtPesquisaProdutoPessoaFisica.getText().toString());
+                }
+            }
+        });
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -141,6 +141,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                         return true;
                     case R.id.nav_negociacao_fisico:
                         //Activity de turmas
+                        Helper.criarToast(getApplicationContext(), "Em construção...");
                         return true;
                     case R.id.nav_produtos_fisico:
                         drawer.closeDrawers();
@@ -172,7 +173,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
                     viewHolder.tvCardViewNomeProduto.setText(model.getNomeProduto());
-                    viewHolder.tvCardViewPrecoProduto.setText(String.valueOf(model.getPrecoSugerido()));
+                    viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
                     FirebaseController.getFirebase().child("pessoa").child(model.getIdEmpresa()).child("nome").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

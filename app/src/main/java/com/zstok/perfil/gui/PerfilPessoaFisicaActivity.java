@@ -1,6 +1,7 @@
 package com.zstok.perfil.gui;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -69,6 +70,8 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
 
     private NavigationView navigationView;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +87,9 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
 
         //Resgatando usuário atual
         user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+
+        //Instanciando progress dialog
+        progressDialog = new ProgressDialog(this);
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -127,6 +133,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                         return true;
                     case R.id.nav_negociacao_fisico:
                         //Intent para tela de negocicao
+                        Helper.criarToast(getApplicationContext(), "Em construção...");
                         return true;
                     case R.id.nav_produtos_fisico:
                         abrirTelaMainPessoaFisicaActivity();
@@ -197,6 +204,8 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         });
     }
     private void recuperarDados(){
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
+        progressDialog.show();
         FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -227,6 +236,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         tvTelefonePerfilFisico.setText(pessoa.getTelefone());
         tvEnderecoPerfilFisico.setText(pessoa.getEndereco());
         tvDataNascimentoPerfilFisico.setText(pessoaFisica.getDataNascimento());
+        progressDialog.dismiss();
     }
     //Carregando informações do menu lateral
     private void setDadosMenuLateral(){

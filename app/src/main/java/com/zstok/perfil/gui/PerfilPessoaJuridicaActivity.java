@@ -1,6 +1,7 @@
 package com.zstok.perfil.gui;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -72,6 +73,8 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
 
     private FirebaseUser user;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +90,9 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
 
         //Resgatando usuário atual
         user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+
+        //Instanciando progress dialog
+        progressDialog = new ProgressDialog(this);
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -218,6 +224,8 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     }
     //Recuperando os dados do perfil
     private void recuperarDados(){
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
+        progressDialog.show();
         FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -243,6 +251,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
         tvEmailPerfilJuridico.setText(FirebaseController.getFirebaseAuthentication().getCurrentUser().getEmail());
         tvEnderecoPerfilJuridico.setText(pessoa.getEndereco());
         tvRazaoSocialPerfilJuridico.setText(pessoaJuridica.getRazaoSocial());
+        progressDialog.dismiss();
     }
     //Carregando informações do menu lateral
     private void setDadosMenuLateral(){

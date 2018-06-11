@@ -10,7 +10,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/jabuticaba"
         android:padding="16dp"
         tools:context="com.zstok.produto.gui.VisualizarProdutoActivity">
@@ -63,6 +63,15 @@
             android:paddingStart="20dp"
             android:paddingRight="20dp"/>
 
+        <View
+            android:id="@+id/vwNomeEmpresaProduto"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_below="@id/tvEmpresaProduto"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@color/cloudGrey" />
+
         <TextView
             android:id="@+id/tvTextoQuantidadeDisponivel"
             android:layout_width="wrap_content"
@@ -87,6 +96,15 @@
             android:paddingStart="20dp"
             android:textColor="@color/white"
             android:textSize="18sp" />
+
+        <View
+            android:id="@+id/vwQuantidadeDisponivelProduto"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_below="@id/tvQuantidadeDisponivelProduto"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@color/cloudGrey" />
 
         <TextView
             android:id="@+id/tvTextoPrecoProduto"
@@ -113,6 +131,15 @@
             android:textColor="@color/white"
             android:textSize="18sp" />
 
+        <View
+            android:id="@+id/vwPrecoProduto"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_below="@id/tvPrecoProduto"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@color/cloudGrey" />
+
         <TextView
             android:id="@+id/tvTextoDescricaoProduto"
             android:layout_width="wrap_content"
@@ -126,15 +153,25 @@
         <TextView
             android:id="@+id/tvDescricaoProduto"
             android:layout_width="wrap_content"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
             android:layout_toRightOf="@id/tvTextoDescricaoProduto"
             android:layout_toEndOf="@id/tvTextoDescricaoProduto"
             android:layout_alignTop="@+id/tvTextoDescricaoProduto"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingStart="20dp"
+            android:paddingBottom="20dp"
             android:textColor="@color/white"
             android:textSize="18sp" />
+
+        <View
+            android:id="@+id/vwDescricaoProduto"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_below="@id/tvDescricaoProduto"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@color/cloudGrey" />
 
         <Button
             android:id="@+id/btnNegociarProduto"

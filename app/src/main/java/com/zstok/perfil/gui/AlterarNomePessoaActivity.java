@@ -25,9 +25,11 @@ public class AlterarNomePessoaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alterar_nome_pessoa);
+
+        //Instanciando objeto para verificar conexão
         verificaConexao = new VerificaConexao(this);
 
-        //Esconder ActionBar
+        //Instanciando views
         edtAlterarNomePessoa = findViewById(R.id.edtAlterarNomePessoa);
         Button btnAlterarNomePessoa =  findViewById(R.id.btnAlterarNomePessoa);
 

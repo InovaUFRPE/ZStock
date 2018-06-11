@@ -26,6 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/goiaba"
-        android:hint="@string/zs_btn_enviar"/>
+        android:hint="@string/zs_btn_enviar"
+        android:textColor="@color/preto"/>
 
 </LinearLayout>
