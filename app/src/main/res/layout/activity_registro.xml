@@ -40,7 +40,7 @@
         android:drawableLeft="@drawable/ic_cpf_cnpj"
         android:drawableStart="@drawable/ic_cpf_cnpj"
         android:drawablePadding="10dp"
-        android:inputType="numberDecimal"
+        android:inputType="number"
         android:ems="10"
         android:hint="@string/zs_hint_cf_cnpj"/>
 

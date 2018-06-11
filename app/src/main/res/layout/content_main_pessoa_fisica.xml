@@ -1,11 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/jabuticaba"
+    android:focusableInTouchMode="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".pessoaFisica.gui.MainPessoaFisicaActivity"
-    tools:showIn="@layout/app_bar_main_pessoa_fisica">
+    tools:showIn="@layout/app_bar_main_pessoa_fisica" >
 
-</android.support.constraint.ConstraintLayout>
+    <EditText
+        android:id="@+id/edtPesquisaProdutoPessoaFisica"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/btnPesquisaProdutoPessoaFisica"
+        android:layout_toStartOf="@id/btnPesquisaProdutoPessoaFisica"
+        android:inputType="text"
+        android:backgroundTint="@color/cimento"
+        android:textColor="@color/cimento" />
+
+    <Button
+        android:id="@+id/btnPesquisaProdutoPessoaFisica"
+        android:layout_width="40dp"
+        android:layout_height="45dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/ic_pesquisa"
+        android:backgroundTint="@color/cimento" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerProdutosPessoaFisica"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/edtPesquisaProdutoPessoaFisica"
+        android:padding="16dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+</RelativeLayout>

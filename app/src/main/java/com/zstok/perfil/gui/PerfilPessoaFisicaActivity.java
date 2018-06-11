@@ -1,6 +1,7 @@
 package com.zstok.perfil.gui;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,7 +35,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
-import com.zstok.infraestrutura.persistencia.FirebaseController;
+import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.perfil.negocio.PerfilServices;
 import com.zstok.pessoa.dominio.Pessoa;
@@ -65,7 +66,11 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     private TextView tvEnderecoPerfilFisico;
     private TextView tvDataNascimentoPerfilFisico;
 
+    private FirebaseUser user;
+
     private NavigationView navigationView;
+
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +84,12 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        //Resgatando usuário atual
+        user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+
+        //Instanciando progress dialog
+        progressDialog = new ProgressDialog(this);
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -122,6 +133,9 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                         return true;
                     case R.id.nav_negociacao_fisico:
                         //Intent para tela de negocicao
+                        Helper.criarToast(getApplicationContext(), "Em construção...");
+                        return true;
+                    case R.id.nav_produtos_fisico:
                         abrirTelaMainPessoaFisicaActivity();
                         return true;
                     case R.id.nav_sair:
@@ -190,6 +204,8 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         });
     }
     private void recuperarDados(){
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
+        progressDialog.show();
         FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -220,10 +236,15 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         tvTelefonePerfilFisico.setText(pessoa.getTelefone());
         tvEnderecoPerfilFisico.setText(pessoa.getEndereco());
         tvDataNascimentoPerfilFisico.setText(pessoaFisica.getDataNascimento());
+        progressDialog.dismiss();
     }
     //Carregando informações do menu lateral
     private void setDadosMenuLateral(){
-        PerfilServices.setDadosNavHeader(FirebaseController.getFirebaseAuthentication().getCurrentUser(),tvNomeUsuarioNavHeader, tvEmailUsuarioNavHeader);
+        if (user.getPhotoUrl() != null){
+            Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
+        }
+        tvNomeUsuarioNavHeader.setText(user.getDisplayName());
+        tvEmailUsuarioNavHeader.setText(user.getEmail());
     }
     //Permissão para ler e gravar arquivos do celular
     private void permissaoGravarLerArquivos(){
@@ -354,13 +375,9 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     }
     //Resgatando foto do Storage
     private void carregarFoto(){
-        FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
         if (user != null) {
             if (user.getPhotoUrl() != null) {
-                Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
                 Glide.with(this).load(user.getPhotoUrl()).into(cvPerfilPessoaFisica);
-            }else {
-                Helper.criarToast(getApplicationContext(), "ERROR");
             }
         }
     }

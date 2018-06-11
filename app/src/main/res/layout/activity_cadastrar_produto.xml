@@ -19,8 +19,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginTop="121dp"
-            android:layout_toEndOf="@+id/cvCadstrarProduto"
-            android:layout_toRightOf="@id/cvCadstrarProduto"
+            android:layout_toEndOf="@+id/cvCadastrarProduto"
+            android:layout_toRightOf="@id/cvCadastrarProduto"
             android:clickable="true"
             android:focusable="true"
             android:src="@drawable/ic_camera"
@@ -31,15 +31,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/fabAbrirCameraCadastrarProduto"
-            android:layout_toLeftOf="@+id/cvCadstrarProduto"
-            android:layout_toStartOf="@+id/cvCadstrarProduto"
+            android:layout_toLeftOf="@+id/cvCadastrarProduto"
+            android:layout_toStartOf="@+id/cvCadastrarProduto"
             android:clickable="true"
             android:focusable="true"
             android:src="@drawable/ic_galeria"
             app:backgroundTint="@color/goiaba" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/cvCadstrarProduto"
+            android:id="@+id/cvCadastrarProduto"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_alignParentTop="true"
@@ -57,6 +57,7 @@
 
         <EditText
             android:id="@+id/edtNomeProduto"
+            android:maxLength="60"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center_vertical"
@@ -75,13 +76,14 @@
 
         <EditText
             android:id="@+id/edtPrecoProduto"
+            android:maxLength="11"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center_vertical"
             android:hint="@string/zs_hint_preco_produto"
             android:textSize="18sp"
-            android:textColorHint="@color/cimento"
             android:textColor="@color/cloudGrey"
+            android:textColorHint="@color/cimento"
             android:layout_margin="5dp"
             android:layout_below="@id/edtNomeProduto"
             android:drawableLeft="@drawable/ic_negociacao"
@@ -90,14 +92,16 @@
             android:drawablePadding="@dimen/drawable_padding"
             android:paddingLeft="@dimen/padding_left"
             android:paddingStart="@dimen/padding_left"
-            android:inputType="number"/>
+            android:inputType="numberDecimal"/>
 
         <EditText
             android:id="@+id/edtQuantidadeEstoqueProduto"
+            android:maxLength="6"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_below="@id/edtPrecoProduto"
             android:textSize="18sp"
+            android:textColor="@color/cloudGrey"
             android:textColorHint="@color/cimento"
             android:hint="@string/zs_hint_quantidade_estoque_produto"
             android:layout_margin="5dp"
@@ -123,7 +127,10 @@
             android:hint="@string/zs_hint_descricao_produto"
             android:paddingBottom="70dp"
             android:maxLength="1000"
-            android:textColorHint="@color/cimento"/>
+            android:textSize="18sp"
+            android:textColor="@color/cloudGrey"
+            android:textColorHint="@color/cimento"
+            android:inputType="text"/>
 
         <Button
             android:id="@+id/btnCadastrarProduto"

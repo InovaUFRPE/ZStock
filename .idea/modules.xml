@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Zstok.iml" filepath="$PROJECT_DIR$/Zstok.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ZStock.iml" filepath="$PROJECT_DIR$/ZStock.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

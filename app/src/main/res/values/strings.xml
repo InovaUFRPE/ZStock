@@ -6,7 +6,7 @@
     <string name="zs_hint_confirmar_senha">Confirmar senha</string>
     <string name="zs_hint_cf_cnpj">CPF/CNPJ</string>
     <string name="zs_hint_nome">Nome</string>
-    <string name="zs_hint_nome_produto">Digite o nomeProduto do produto</string>
+    <string name="zs_hint_nome_produto">Digite o nome do produto</string>
     <string name="zs_hint_preco_produto">Digite o preço do produto</string>
     <string name="zs_hint_quantidade_estoque_produto">Quantidade de produtos no estoque</string>
     <string name="zs_hint_descricao_produto">Descreva o produto</string>
@@ -31,10 +31,24 @@
     <string name="zs_hint_cpf_atual_alterar_perfil">Digite seu cpf atual</string>
     <string name="zs_hint_cpf_alterar_perfil">Digite novo cpf</string>
 
+    <string name="zs_texto_preco_produto">Preço:</string>
+    <string name="zs_texto_quantidade_disponivel_produto">Quantidade disponível:</string>
+    <string name="zs_texto_empresa_produto">Empresa:</string>
+    <string name="zs_texto_descricao_produto">Descrição:</string>
+
     <string name="zs_dialogo_sim">Sim</string>
     <string name="zs_dialogo_nao">Não</string>
     <string name="zs_dialogo_titulo">Sair</string>
     <string name="zs_dialogo_mensagem_sair_conta">Tem certeza que deseja sair?</string>
+    <string name="zs_dialogo_editar_produto">Editar</string>
+    <string name="zs_dialogo_excluir_produto">Excluir</string>
+    <string name="zs_dialogo_mensagem_produto">O que deseja fazer com o produto?</string>
+    <string name="zs_dialogo_titulo_produto">Produto</string>
+
+    <string name="zs_btn_voltar_dialogo_compra">Voltar</string>
+    <string name="zs_btn_comprar_dialogo_compra">Comprar</string>
+    <string name="zs_texto_total_dialogo_compra">TOTAL:</string>
+    <string name="zs_hint_quantidade_dialogo_compra">Digite a quantidade desejada</string>
 
     <string name="zs_txt_registro">Não é registrado?</string>
     <string name="zs_txt_registre_se"><b><u>Registre-se</u></b></string>
@@ -42,13 +56,16 @@
 
     <string name="zs_btn_entrar">Entrar</string>
     <string name="zs_btn_cadastrar">Cadastrar</string>
+    <string name="zs_btn_alterar">Alterar</string>
     <string name="zs_btn_enviar">Enviar</string>
-    <string name="zs_btn_alterar_nome">Alterar nomeProduto</string>
+    <string name="zs_btn_alterar_nome">Alterar nome</string>
     <string name="zs_btn_alterar_email">Alterar email</string>
     <string name="zs_btn_alterar_telefone">Alterar telefone</string>
     <string name="zs_btn_alterar_endereco">Alterar endereço</string>
     <string name="zs_btn_alterar_cpf">Alterar cpf</string>
     <string name="zs_btn_alterar_data_nascimento">Alterar data de nascimento</string>
+    <string name="zs_btn_negociar_produto">Negociar</string>
+    <string name="zs_btn_comprar_produto">Comprar</string>
 
     <string name="zs_sucesso_usuario_cadastrado">Usuário cadastrado com sucesso!</string>
     <string name="zs_email_enviado_sucesso">Email enviado com sucesso!</string>
@@ -58,6 +75,9 @@
     <string name="zs_endereco_alterado_sucesso">Endereço alterado com sucesso!</string>
     <string name="zs_cpf_alterado_sucesso">CPF alterado com sucesso!</string>
     <string name="zs_data_nascimento_alterado_sucesso">Data de nascimento alterada com sucesso!</string>
+    <string name="zs_produto_excluido_sucesso">Produto excluído com sucesso!</string>
+    <string name="zs_produto_alterado_sucesso">Produto alterado com sucesso!</string>
+    <string name="zs_compra_realizada_sucesso">Compra realizada com sucesso!</string>
 
     <string name="zs_excecao_campo_vazio">Preencha o campo vazio</string>
     <string name="zs_excecao_cpf_cnpj">Digite um CPF ou CNPJ válido</string>
@@ -78,12 +98,16 @@
     <string name="zs_excecao_espaco_branco">Não é permitido deixar espaços em branco</string>
     <string name="zs_excecao_dia_invalido">Digite um dia válido!</string>
     <string name="zs_excecao_mes_invalido">Digite um mês válido!</string>
+    <string name="zs_excecao_quantidade_maxima">Quantidade não disponível em estoque!</string>
+    <string name="zs_excecao_quantidade_excedida">Valor de compra excedido! Tente comprar uma quantidade menor.</string>
+    <string name="zs_excecao_quantidade_invalida">Quantidade inválida!</string>
 
     <string name="zs_menu_lateral_perfil">Meu perfil</string>
     <string name="zs_menu_lateral_negociacao">Negociação</string>
-    <string name="zs_menu_lateral_produtos">Meus produtos</string>
+    <string name="zs_menu_lateral_produtos_pessoa_fisica">Produtos</string>
+    <string name="zs_menu_lateral_produtos_pessoa_juridica">Meus produtos</string>
+    <string name="zs_menu_lateral_compras">Compras</string>
     <string name="zs_menu_lateral_sair">Sair</string>
-
 
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -93,11 +117,14 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
 
-    <string name="title_activity_main_pessoa_fisica">Negociações</string>
+    <string name="title_activity_main_pessoa_fisica">Produtos</string>
     <string name="title_activity_pessoa_fisica">Meu perfil</string>
     <string name="title_activity_perfil_pessoa_juridica">Meu perfil</string>
     <string name="title_activity_main_pessoa_juridica">Negociações</string>
     <string name="title_activity_meus_produtos">Meus produtos</string>
 
+    <string name="zs_titulo_progress_dialog_registro">Cadastrando usuário...</string>
+    <string name="zs_titulo_progress_dialog_produto">Carregando produto...</string>
+    <string name="zs_titulo_progress_dialog_perfil">Carregando informações...</string>
 
 </resources>

@@ -1,6 +1,5 @@
 package com.zstok.infraestrutura.gui;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -20,8 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
 import com.zstok.R;
-import com.zstok.ResgatarSenhaActivity;
-import com.zstok.infraestrutura.persistencia.FirebaseController;
+import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.pessoa.gui.RegistroActivity;
@@ -29,8 +27,11 @@ import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private TextView tvRegistreSe;
+    private TextView tvEsqueciSenha;
     private EditText edtEmail;
     private EditText edtSenha;
+    private Button btnEntrar;
 
     private VerificaConexao verificaConexao;
 
@@ -44,9 +45,9 @@ public class LoginActivity extends AppCompatActivity {
         //Instanciando views
         edtEmail = findViewById(R.id.edtEmail);
         edtSenha = findViewById(R.id.edtSenha);
-        TextView tvRegistreSe = findViewById(R.id.tvRegistreSe);
-        TextView tvEsqueciSenha = findViewById(R.id.tvEsqueciSenha);
-        Button btnEntrar = findViewById(R.id.btnEntrar);
+        tvRegistreSe = findViewById(R.id.tvRegistreSe);
+        tvEsqueciSenha = findViewById(R.id.tvEsqueciSenha);
+        btnEntrar = findViewById(R.id.btnEntrar);
 
         mProgressBar = findViewById(R.id.loginProgressBar);
 
@@ -98,9 +99,26 @@ public class LoginActivity extends AppCompatActivity {
         }
         return verificador;
     }
+    //Bloquenado views enquanto o progress bar está visível
+    private void bloquearViews(){
+        btnEntrar.setEnabled(false);
+        tvRegistreSe.setEnabled(false);
+        tvEsqueciSenha.setEnabled(false);
+        edtSenha.setEnabled(false);
+        edtEmail.setEnabled(false);
+    }
+    //Desbloqueando views enquanto o progress bar está invisível
+    private void desbloquearViews(){
+        btnEntrar.setEnabled(true);
+        tvRegistreSe.setEnabled(true);
+        tvEsqueciSenha.setEnabled(true);
+        edtSenha.setEnabled(true);
+        edtEmail.setEnabled(true);
+    }
     //Verificando se o usuário está autenticado
     private void verificarAutenticacao(String email, String senha){
         mProgressBar.setVisibility(View.VISIBLE);
+        bloquearViews();
         FirebaseController.getFirebaseAuthentication().signInWithEmailAndPassword(email, senha).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -110,10 +128,12 @@ public class LoginActivity extends AppCompatActivity {
                         verificarTipoConta(user);
                     } else {
                         mProgressBar.setVisibility(View.INVISIBLE);
+                        desbloquearViews();
                         Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_usuario_nao_encontrado));
                     }
                 } else {
                     mProgressBar.setVisibility(View.INVISIBLE);
+                    desbloquearViews();
                     Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_usuario_senha));
                 }
             }

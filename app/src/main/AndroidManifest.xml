@@ -26,8 +26,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".pessoa.gui.RegistroActivity" />
-        <activity android:name=".ResgatarSenhaActivity" />
-        <activity android:name=".cardView.gui.CardProdutoActivity" />
+        <activity android:name=".infraestrutura.gui.ResgatarSenhaActivity" />
         <activity
             android:name=".perfil.gui.PerfilPessoaFisicaActivity"
             android:label="@string/title_activity_pessoa_fisica"
@@ -56,8 +55,10 @@
         <activity
             android:name=".produto.gui.MeusProdutosActivity"
             android:label="@string/title_activity_meus_produtos"
-            android:theme="@style/AppTheme">
-        </activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".produto.gui.EditarProdutoActivity" />
+        <activity android:name=".produto.gui.VisualizarProdutoActivity" />
+        <activity android:name=".VisualizarEmpresaActivity"></activity>
     </application>
 
 </manifest>

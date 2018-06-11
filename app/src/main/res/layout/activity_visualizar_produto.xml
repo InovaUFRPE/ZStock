@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/jabuticaba"
+        android:padding="16dp"
+        tools:context="com.zstok.produto.gui.VisualizarProdutoActivity">
+
+        <TextView
+            android:id="@+id/tvNomeProduto"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:paddingLeft="@dimen/drawable_padding"
+            android:paddingRight="@dimen/drawable_padding"
+            android:paddingStart="@dimen/drawable_padding"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/imgProduto"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_below="@+id/tvNomeProduto"
+            android:layout_marginTop="@dimen/margin_top"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_camera2" />
+
+        <TextView
+            android:id="@+id/tvTextoEmpresaProduto"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_below="@+id/imgProduto"
+            android:layout_marginTop="@dimen/margin_top"
+            android:text="@string/zs_texto_empresa_produto"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvEmpresaProduto"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignTop="@+id/tvTextoEmpresaProduto"
+            android:layout_toRightOf="@id/tvTextoEmpresaProduto"
+            android:layout_toEndOf="@id/tvTextoEmpresaProduto"
+            android:autoLink="web"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:paddingLeft="20dp"
+            android:paddingStart="20dp"
+            android:paddingRight="20dp"/>
+
+        <View
+            android:id="@+id/vwNomeEmpresaProduto"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_below="@id/tvEmpresaProduto"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@color/cloudGrey" />
+
+        <TextView
+            android:id="@+id/tvTextoQuantidadeDisponivel"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_below="@+id/tvTextoEmpresaProduto"
+            android:layout_marginTop="@dimen/margin_top"
+            android:text="@string/zs_texto_quantidade_disponivel_produto"
+            android:textColor="@color/white"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tvQuantidadeDisponivelProduto"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/tvTextoQuantidadeDisponivel"
+            android:layout_toEndOf="@id/tvTextoQuantidadeDisponivel"
+            android:layout_alignTop="@+id/tvTextoQuantidadeDisponivel"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingStart="20dp"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <View
+            android:id="@+id/vwQuantidadeDisponivelProduto"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_below="@id/tvQuantidadeDisponivelProduto"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@color/cloudGrey" />
+
+        <TextView
+            android:id="@+id/tvTextoPrecoProduto"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_below="@id/tvTextoQuantidadeDisponivel"
+            android:layout_marginTop="@dimen/margin_top"
+            android:text="@string/zs_texto_preco_produto"
+            android:textColor="@color/white"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tvPrecoProduto"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/tvTextoPrecoProduto"
+            android:layout_toEndOf="@id/tvTextoPrecoProduto"
+            android:layout_alignTop="@+id/tvTextoPrecoProduto"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingStart="20dp"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <View
+            android:id="@+id/vwPrecoProduto"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_below="@id/tvPrecoProduto"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@color/cloudGrey" />
+
+        <TextView
+            android:id="@+id/tvTextoDescricaoProduto"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_below="@id/tvTextoPrecoProduto"
+            android:layout_marginTop="@dimen/margin_top"
+            android:text="@string/zs_texto_descricao_produto"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvDescricaoProduto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tvTextoDescricaoProduto"
+            android:layout_toEndOf="@id/tvTextoDescricaoProduto"
+            android:layout_alignTop="@+id/tvTextoDescricaoProduto"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingStart="20dp"
+            android:paddingBottom="20dp"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <View
+            android:id="@+id/vwDescricaoProduto"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_below="@id/tvDescricaoProduto"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@color/cloudGrey" />
+
+        <Button
+            android:id="@+id/btnNegociarProduto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvDescricaoProduto"
+            android:layout_marginTop="@dimen/margin_top"
+            android:layout_marginLeft="70dp"
+            android:layout_marginStart="70dp"
+            android:text="@string/zs_btn_negociar_produto"
+            android:background="@color/goiaba"/>
+
+        <Button
+            android:id="@+id/btnComprarProduto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvDescricaoProduto"
+            android:layout_toRightOf="@id/btnNegociarProduto"
+            android:layout_toEndOf="@id/btnNegociarProduto"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_alignTop="@+id/btnNegociarProduto"
+            android:text="@string/zs_btn_comprar_produto"
+            android:background="@color/goiaba"/>
+
+    </RelativeLayout>
+</ScrollView>

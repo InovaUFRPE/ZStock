@@ -1,4 +1,4 @@
-package com.zstok.infraestrutura.persistencia;
+package com.zstok.infraestrutura.utils;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;

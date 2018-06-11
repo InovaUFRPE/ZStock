@@ -9,6 +9,10 @@
             android:icon="@drawable/ic_perfil"
             android:title="@string/zs_menu_lateral_perfil" />
         <item
+            android:id="@+id/nav_produtos_fisico"
+            android:icon="@drawable/ic_produtos"
+            android:title="@string/zs_menu_lateral_produtos_pessoa_fisica" />
+        <item
             android:id="@+id/nav_negociacao_fisico"
             android:icon="@drawable/ic_negociacao"
             android:title="@string/zs_menu_lateral_negociacao" />

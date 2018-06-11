@@ -1,6 +1,7 @@
 package com.zstok.perfil.gui;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,12 +35,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
-import com.zstok.infraestrutura.persistencia.FirebaseController;
+import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.perfil.negocio.PerfilServices;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.pessoaJuridica.dominio.PessoaJuridica;
 import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
+import com.zstok.produto.gui.MeusProdutosActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -52,7 +54,6 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
 
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int GALERY_REQUEST_CODE = 71;
-    private Uri uriFoto;
 
     private AlertDialog alertaSair;
 
@@ -67,7 +68,12 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     private TextView tvCnpjPerfilJuridico;
     private TextView tvTelefonePerfilJuridico;
     private TextView tvEnderecoPerfilJuridico;
+
     private NavigationView navigationView;
+
+    private FirebaseUser user;
+
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,10 +88,16 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        //Resgatando usuário atual
+        user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+
+        //Instanciando progress dialog
+        progressDialog = new ProgressDialog(this);
+
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //InstanciandoAsViews
+        //Instanciando AsViews
         cvPerfilPessoaJuridica = findViewById(R.id.imgPerfilPessoaJuridica);
         tvNomeFantasiaPerfilJuridico = findViewById(R.id.tvNomeFantasiaPerfilJuridico);
         tvRazaoSocialPerfilJuridico = findViewById(R.id.tvRazaoSocialPerfilJuridico);
@@ -110,7 +122,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
         carregarFoto();
 
         //Máscaras cnpj e telfone
-        Helper.mascaraCpf(tvCnpjPerfilJuridico);
+        Helper.mascaraCnpj(tvCnpjPerfilJuridico);
         Helper.mascaraTelefone(tvTelefonePerfilJuridico);
 
         FloatingActionButton fabAbrirGaleriaPerfilPessoaJuridica = findViewById(R.id.fabAbrirGaleriaCameraPerfilPessoaJuridica);
@@ -182,8 +194,9 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
                         //Função abrir tela negociacao
                         abrirTelaMainPessoaJuridicaActivity();
                         return true;
-                    case R.id.nav_produtos:
+                    case R.id.nav_produtos_juridico:
                         //Função abrir tela produtos
+                        abrirTelaMeusProdutosActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -196,13 +209,9 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     }
     //Carregando foto de perfil
     private void carregarFoto(){
-        FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
         if (user != null) {
             if (user.getPhotoUrl() != null) {
                 Glide.with(this).load(user.getPhotoUrl()).into(cvPerfilPessoaJuridica);
-                Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
-            }else {
-                Helper.criarToast(getApplicationContext(), "ERROR");
             }
         }
     }
@@ -215,6 +224,8 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     }
     //Recuperando os dados do perfil
     private void recuperarDados(){
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
+        progressDialog.show();
         FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -240,12 +251,17 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
         tvEmailPerfilJuridico.setText(FirebaseController.getFirebaseAuthentication().getCurrentUser().getEmail());
         tvEnderecoPerfilJuridico.setText(pessoa.getEndereco());
         tvRazaoSocialPerfilJuridico.setText(pessoaJuridica.getRazaoSocial());
+        progressDialog.dismiss();
     }
-
+    //Carregando informações do menu lateral
     private void setDadosMenuLateral(){
-        PerfilServices.setDadosNavHeader(FirebaseController.getFirebaseAuthentication().getCurrentUser(),tvNomeUsuarioNavHeader,tvEmailUsuarioNavHeader);
+        if (user.getPhotoUrl() != null){
+            Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
+        }
+        tvNomeUsuarioNavHeader.setText(user.getDisplayName());
+        tvEmailUsuarioNavHeader.setText(user.getEmail());
     }
-
+    //Permissão para gravar e ler arquivos do celular
     private void permissaoGravarLerArquivos(){
         //Trecho adiciona permissão de ler arquivos
         int PERMISSION_REQUEST = 0;
@@ -305,11 +321,13 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case GALERY_REQUEST_CODE:{
+            case GALERY_REQUEST_CODE:
+                Uri uriFoto;
+            {
                 if (requestCode == GALERY_REQUEST_CODE && resultCode == RESULT_OK) {
                     uriFoto = data.getData();
                     try{
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),uriFoto);
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFoto);
                         cvPerfilPessoaJuridica.setImageBitmap(bitmap);
                         cvNavHeaderPessoa.setImageBitmap(bitmap);
                         inserirFoto(uriFoto);
@@ -466,6 +484,11 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     //Intent para a tela main
     private void abrirTelaMainPessoaJuridicaActivity(){
         Intent intent = new Intent(getApplicationContext(), MainPessoaJuridicaActivity.class);
+        startActivity(intent);
+    }
+    //Intent meus produtos
+    private void abrirTelaMeusProdutosActivity(){
+        Intent intent = new Intent(getApplicationContext(), MeusProdutosActivity.class);
         startActivity(intent);
     }
 }

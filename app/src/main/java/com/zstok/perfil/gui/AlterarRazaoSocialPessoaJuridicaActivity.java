@@ -11,6 +11,7 @@ import com.zstok.R;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.perfil.negocio.PerfilServices;
+import com.zstok.pessoaJuridica.dominio.PessoaJuridica;
 
 public class AlterarRazaoSocialPessoaJuridicaActivity extends AppCompatActivity {
 
@@ -31,7 +32,7 @@ public class AlterarRazaoSocialPessoaJuridicaActivity extends AppCompatActivity 
             public void onClick(View v) {
                 if(verificaConexao.isConected()){
                     if(validarCampo()){
-                        alterarRazaoSocial(edtAlterarRazaoSocial.getText().toString());
+                        alterarRazaoSocial(criarPessoaJuridica());
                     }
                 }
 
@@ -40,9 +41,17 @@ public class AlterarRazaoSocialPessoaJuridicaActivity extends AppCompatActivity 
 
 
     }
+    //Criando objeto pessoa
+    private PessoaJuridica criarPessoaJuridica(){
+        PessoaJuridica pessoaJuridica = new PessoaJuridica();
 
-    private void alterarRazaoSocial(String novaRazaoSocial) {
-        if (PerfilServices.alterarRazaoSocial(novaRazaoSocial)){
+        pessoaJuridica.setRazaoSocial(edtAlterarRazaoSocial.getText().toString());
+
+        return pessoaJuridica;
+    }
+    //Alterando razão social da empresa
+    private void alterarRazaoSocial(PessoaJuridica pessoaJuridica) {
+        if (PerfilServices.alterarRazaoSocial(pessoaJuridica)){
             Helper.criarToast(getApplicationContext(), "Razão Social alterada com Sucesso !");
             abrirTelaPerfilPessoaJuridica();
         } else {

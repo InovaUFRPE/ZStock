@@ -1,7 +1,6 @@
 package com.zstok.produto.gui;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -13,27 +12,33 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.zstok.R;
+import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
+import com.zstok.infraestrutura.utils.MoneyTextWatcher;
 import com.zstok.infraestrutura.utils.VerificaConexao;
-import com.zstok.perfil.negocio.PerfilServices;
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CadastrarProdutoActivity extends AppCompatActivity {
 
-    private static final int CAMERA_REQUEST_CODE = 0;
-    private static final int GALERY_REQUEST_CODE = 1;
+    private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int GALERY_REQUEST_CODE = 71;
 
     private EditText edtNomeProduto;
     private EditText edtPrecoProduto;
@@ -41,7 +46,6 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
     private EditText edtDescricaoProduto;
     private CircleImageView cvCadastrarProduto;
 
-    private Uri uriFoto;
     private Bitmap bitmapCadstrarProduto;
 
     private VerificaConexao verificaConexao;
@@ -63,7 +67,12 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         edtPrecoProduto = findViewById(R.id.edtPrecoProduto);
         edtQuantidadeEstoqueProduto = findViewById(R.id.edtQuantidadeEstoqueProduto);
         edtDescricaoProduto = findViewById(R.id.edtDescricaoProduto);
-        cvCadastrarProduto = findViewById(R.id.cvCadstrarProduto);
+        cvCadastrarProduto = findViewById(R.id.cvCadastrarProduto);
+
+        //Mascara Monetária
+        Locale mLocale = new Locale("pt", "BR");
+        edtPrecoProduto.addTextChangedListener(new MoneyTextWatcher(edtPrecoProduto,mLocale));
+
         Button btnCadastrarProduto = findViewById(R.id.btnCadastrarProduto);
 
         btnCadastrarProduto.setOnClickListener(new View.OnClickListener() {
@@ -71,7 +80,8 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (verificaConexao.isConected()){
                     if (validarCampos()){
-                        inserirProduto(uriFoto, criarProduto());
+                        inserirProduto(criarProduto());
+                        edtDescricaoProduto.setSelection(0);
                     }
                 }
             }
@@ -108,12 +118,20 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
             edtQuantidadeEstoqueProduto.setError(getString(R.string.zs_excecao_campo_vazio));
             verificador = false;
         }
+
         if (edtQuantidadeEstoqueProduto.getText().toString().isEmpty() || edtQuantidadeEstoqueProduto.getText().toString().trim().length() == 0){
             edtQuantidadeEstoqueProduto.setError(getString(R.string.zs_excecao_campo_vazio));
             verificador = false;
         }
         if (edtDescricaoProduto.getText().toString().isEmpty() || edtDescricaoProduto.getText().toString().trim().length() == 0){
             edtDescricaoProduto.setError(getString(R.string.zs_excecao_campo_vazio));
+            verificador = false;
+        }
+
+        BigDecimal precoProduto = MoneyTextWatcher.convertToBigDecimal(edtPrecoProduto.getText().toString());
+        BigDecimal bigDecimal1 = new BigDecimal(50000);
+        if ((precoProduto.compareTo(bigDecimal1)) == 1){
+            edtPrecoProduto.setError("Preco do produto excede o máximo: R$ 50.000,00");
             verificador = false;
         }
         return verificador;
@@ -180,11 +198,13 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
             case CAMERA_REQUEST_CODE:{
                 if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     tirarFoto();
+                    break;
                 }
             }
             case GALERY_REQUEST_CODE:{
                 if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     escolherFoto();
+                    break;
                 }
             }
         }
@@ -193,10 +213,9 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case GALERY_REQUEST_CODE:
-            {
+            case GALERY_REQUEST_CODE: {
                 if (requestCode == GALERY_REQUEST_CODE && resultCode == RESULT_OK) {
-                    uriFoto = data.getData();
+                    Uri uriFoto = data.getData();
                     try{
                         bitmapCadstrarProduto = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFoto);
                         cvCadastrarProduto.setImageBitmap(bitmapCadstrarProduto);
@@ -211,7 +230,6 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
                         Bundle extras = data.getExtras();
                         if (extras != null) {
                             bitmapCadstrarProduto = (Bitmap) extras.get("data");
-                            uriFoto = getImageUri(getApplicationContext(), bitmapCadstrarProduto);
                             cvCadastrarProduto.setImageBitmap(bitmapCadstrarProduto);
                         }
                     }
@@ -223,27 +241,23 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
     private Produto criarProduto(){
         Produto produto = new Produto();
 
+        produto.setIdEmpresa(FirebaseController.getUidUser());
         produto.setNomeProduto(edtNomeProduto.getText().toString());
-        produto.setPreco(Double.valueOf(edtPrecoProduto.getText().toString()));
+        produto.setPrecoSugerido(MoneyTextWatcher.convertToBigDecimal(edtPrecoProduto.getText().toString()).doubleValue());
         produto.setQuantidadeEstoque(Integer.valueOf(edtQuantidadeEstoqueProduto.getText().toString()));
         produto.setDescricao(edtDescricaoProduto.getText().toString());
-
+        if (bitmapCadstrarProduto != null) {
+            produto.setBitmapImagemProduto(Helper.bitMapToString(bitmapCadstrarProduto));
+        }
         return produto;
     }
     //Inserindo imagem no banco
-    private void inserirProduto(Uri uriFoto, Produto produto){
-        if (ProdutoServices.insereProduto(uriFoto, produto)){
+    private void inserirProduto(Produto produto){
+        if (ProdutoServices.insereProduto(produto)){
             abrirTelaMeusProdutosActivity();
         } else {
             Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
         }
-    }
-    //Obtendo URI da imagem
-    private Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
     }
     //Intent para a tela meus produtos
     private void abrirTelaMeusProdutosActivity(){

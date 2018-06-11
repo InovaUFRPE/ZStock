@@ -21,11 +21,10 @@
     <RelativeLayout
         android:id="@+id/produtoCard"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/fotoID"
+            android:id="@+id/imgCardViewProduto"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_alignParentLeft="true"
@@ -33,37 +32,85 @@
             android:layout_alignParentTop="true"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
+            android:layout_marginBottom="10dp"
             android:layout_marginTop="30dp"
             android:src="@drawable/ic_produtos" />
 
         <TextView
-            android:id="@+id/nomeID"
+            android:id="@+id/nomeCardViewProduto"
             android:layout_width="349dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:text="Nome do produto"
-            android:textSize="20sp"
+            android:gravity="center"
+            android:text="@string/zs_texto_preco_produto"
+            android:textSize="22sp"
             android:textStyle="bold"/>
+        <!--TAG PREÇO-->
+        <TextView
+            android:layout_width="45dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/quantidadeCardViewProduto"
+            android:layout_toEndOf="@+id/imgCardViewProduto"
+            android:layout_toRightOf="@+id/imgCardViewProduto"
+            android:text="Preço:"
+            android:textStyle="bold"
+            android:id="@+id/textView" />
 
         <TextView
-            android:id="@+id/precoID"
-            android:layout_width="match_parent"
+            android:id="@+id/precoCardViewProduto"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/nomeID"
-            android:layout_marginTop="15dp"
-            android:layout_toEndOf="@+id/fotoID"
-            android:text="Preço"
-            android:layout_toRightOf="@+id/fotoID" />
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/nomeCardViewProduto"
+            android:layout_marginTop="17dp"
+            android:layout_toEndOf="@+id/textView"
+            android:layout_toRightOf="@+id/textView"
+            android:text="Preço" />
+        <!-- TAG QUANTIDADE-->
+        <TextView
+            android:layout_width="78dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/quantidadeCardViewProduto"
+            android:layout_alignBottom="@+id/quantidadeCardViewProduto"
+            android:layout_toEndOf="@+id/imgCardViewProduto"
+            android:layout_toRightOf="@+id/imgCardViewProduto"
+            android:text="Quantidade:"
+            android:textStyle="bold"
+            android:id="@+id/textView2" />
 
         <TextView
-            android:id="@+id/quantidadeID"
-            android:layout_width="match_parent"
+            android:id="@+id/quantidadeCardViewProduto"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/precoID"
-            android:layout_marginTop="15dp"
-            android:layout_toEndOf="@+id/fotoID"
-            android:layout_toRightOf="@id/fotoID"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/precoCardViewProduto"
+            android:layout_marginTop="13dp"
+            android:layout_toEndOf="@+id/textView2"
+            android:layout_toRightOf="@+id/textView2"
             android:text="Quantidade" />
+        <!-- TAG EMPRESA-->
+        <TextView
+            android:layout_width="65dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/nomeEmpresaCardViewProduto"
+            android:layout_alignBottom="@+id/nomeEmpresaCardViewProduto"
+            android:layout_toEndOf="@+id/imgCardViewProduto"
+            android:layout_toRightOf="@+id/imgCardViewProduto"
+            android:text="Empresa:"
+            android:textStyle="bold"
+            android:id="@+id/textView3" />
+
+        <TextView
+            android:id="@+id/nomeEmpresaCardViewProduto"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@+id/quantidadeCardViewProduto"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/textView3"
+            android:layout_toRightOf="@+id/textView3"
+            android:text="Nome Empresa" />
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>

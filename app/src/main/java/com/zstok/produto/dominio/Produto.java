@@ -2,11 +2,12 @@ package com.zstok.produto.dominio;
 
 public class Produto {
     private String idProduto;
+    private String idEmpresa;
     private int quantidadeEstoque;
     private String nomeProduto;
     private String descricao;
-    private String urlImagemProduto;
-    private double preco;
+    private String bitmapImagemProduto;
+    private double precoSugerido;
 
     public String getNomeProduto() {
         return nomeProduto;
@@ -20,11 +21,11 @@ public class Produto {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
-    public double getPreco() {
-        return preco;
+    public double getPrecoSugerido() {
+        return precoSugerido;
     }
-    public void setPreco(double preco) {
-        this.preco = preco;
+    public void setPrecoSugerido(double precoSugerido) {
+        this.precoSugerido = precoSugerido;
     }
     public String getIdProduto(){
         return idProduto;
@@ -38,10 +39,16 @@ public class Produto {
     public void setQuantidadeEstoque(int quantidadeEstoque) {
         this.quantidadeEstoque = quantidadeEstoque;
     }
-    public String getUrlImagemProduto() {
-        return urlImagemProduto;
+    public String getBitmapImagemProduto() {
+        return bitmapImagemProduto;
     }
-    public void setUrlImagemProduto(String urlImagemProduto) {
-        this.urlImagemProduto = urlImagemProduto;
+    public void setBitmapImagemProduto(String bitmapImagemProduto) {
+        this.bitmapImagemProduto = bitmapImagemProduto;
+    }
+    public String getIdEmpresa() {
+        return idEmpresa;
+    }
+    public void setIdEmpresa(String idEmpresa) {
+        this.idEmpresa = idEmpresa;
     }
 }

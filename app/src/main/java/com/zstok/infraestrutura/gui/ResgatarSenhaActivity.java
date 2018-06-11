@@ -1,4 +1,4 @@
-package com.zstok;
+package com.zstok.infraestrutura.gui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.zstok.infraestrutura.gui.LoginActivity;
+import com.zstok.R;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 
@@ -51,7 +51,7 @@ public class ResgatarSenhaActivity extends AppCompatActivity {
         boolean verificador = true;
 
         if (edtEmailRecuperacaoSenha.getText().length() == 0){
-            edtEmailRecuperacaoSenha.setError(getString(R.string.zs_excecao_conexao_falha));
+            edtEmailRecuperacaoSenha.setError(getString(R.string.zs_excecao_campo_vazio));
             verificador = false;
         }
         return verificador;

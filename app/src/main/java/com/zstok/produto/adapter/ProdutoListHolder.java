@@ -1,6 +1,5 @@
 package com.zstok.produto.adapter;
 
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -8,7 +7,8 @@ import android.widget.TextView;
 
 import com.zstok.R;
 
-public class ProdutoListHolder extends RecyclerView.ViewHolder {
+
+public class ProdutoListHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     //public int currentItem;
     public ImageView imgCardViewProduto;
@@ -18,27 +18,35 @@ public class ProdutoListHolder extends RecyclerView.ViewHolder {
     public TextView tvCardViewNomeEmpresa;
     public View mainLayout;
     public View linearLayout;
+    private ProdutoListHolder.ClickListener itemClickListener;
 
 
-    public ProdutoListHolder (final View itemView){
+    public ProdutoListHolder(final View itemView) {
         super(itemView);
 
-        imgCardViewProduto = itemView.findViewById(R.id.fotoID);
-        tvCardViewNomeProduto = itemView.findViewById(R.id.nomeID);
-        tvCardViewPrecoProduto = itemView.findViewById(R.id.precoID);
-        tvCardViewQuantidadeEstoque = itemView.findViewById(R.id.quantidadeID);
+        imgCardViewProduto = itemView.findViewById(R.id.imgCardViewProduto);
+        tvCardViewNomeProduto = itemView.findViewById(R.id.nomeCardViewProduto);
+        tvCardViewPrecoProduto = itemView.findViewById(R.id.precoCardViewProduto);
+        tvCardViewQuantidadeEstoque = itemView.findViewById(R.id.quantidadeCardViewProduto);
+        tvCardViewNomeEmpresa = itemView.findViewById(R.id.nomeEmpresaCardViewProduto);
         mainLayout = itemView.findViewById(R.id.cardViewProduto);
         linearLayout = itemView.findViewById(R.id.produtoCard);
 
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = getAdapterPosition();
+        itemView.setOnClickListener(this);
 
-                Snackbar.make(v, "Click detected on item " + position, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+    }
 
-            }
-        });
+    @Override
+    public void onClick(View v) {
+        if (itemClickListener != null){
+            itemClickListener.onItemClick(v, getAdapterPosition());
+        }
+    }
+
+    public interface ClickListener {
+        void onItemClick(View view, int position);
+    }
+    public void setOnItemClickListener(ProdutoListHolder.ClickListener clickListener){
+        itemClickListener = clickListener;
     }
 }

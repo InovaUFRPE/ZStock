@@ -15,12 +15,6 @@ import com.zstok.pessoaJuridica.dominio.PessoaJuridica;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PerfilServices {
-    public static void setDadosNavHeader(FirebaseUser user, TextView tvNomeUsuarioNavHeader, TextView tvEmailUsuarioNavHeader){
-        PerfilDAO.setDadosNavHeader(user, tvNomeUsuarioNavHeader, tvEmailUsuarioNavHeader);
-    }
-    public static void resgatarFoto(CircleImageView circleImageView){
-        PerfilDAO.resgatarFoto(circleImageView);
-    }
     public static void insereFoto(Uri uriFoto){
         PerfilDAO.insereFoto(uriFoto);
     }
@@ -30,8 +24,8 @@ public class PerfilServices {
     public static boolean alterarEmail(String novoEmail){
         return PerfilDAO.insereEmail(novoEmail);
     }
-    public static boolean alterarTelefone(String novoTelefone){
-        return PerfilDAO.insereTelefone(novoTelefone);
+    public static boolean alterarTelefone(Pessoa pessoa){
+        return PerfilDAO.insereTelefone(pessoa);
     }
     public static boolean alterarEndereco(Pessoa pessoa){
         return PerfilDAO.insereEndereco(pessoa);
@@ -45,7 +39,7 @@ public class PerfilServices {
     public static boolean alterarDataNascimento(PessoaFisica pessoaFisica){
         return PerfilDAO.insereDataNascimento(pessoaFisica);
     }
-    public static boolean alterarRazaoSocial(String razaoSocial){
-        return PerfilDAO.insereRazaoSocial(razaoSocial);
+    public static boolean alterarRazaoSocial(PessoaJuridica pessoaJuridica){
+        return PerfilDAO.insereRazaoSocial(pessoaJuridica);
     }
 }

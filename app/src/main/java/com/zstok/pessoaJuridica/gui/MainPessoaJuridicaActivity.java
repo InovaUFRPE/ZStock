@@ -23,10 +23,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
-import com.zstok.infraestrutura.persistencia.FirebaseController;
-import com.zstok.infraestrutura.utils.Helper;
+import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
-import com.zstok.perfil.negocio.PerfilServices;
 import com.zstok.produto.gui.MeusProdutosActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -36,6 +34,8 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
 
     private NavigationView navigationView;
     private AlertDialog alertaSair;
+
+    private FirebaseUser user;
 
     private TextView tvNomeUsuarioNavHeader;
     private TextView tvEmailUsuarioNavHeader;
@@ -48,29 +48,20 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        //Resgatando usuário atual
+        user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         //Instanciando views do menu lateral
         instanciandoView();
-
-        //Carregando foto menu lateral
-        carregarFoto();
 
         //Carregando informações do menu lateral
         setDadosMenuLateral();
@@ -86,7 +77,7 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
                         //Função abrir tela negociacao
                         drawer.closeDrawers();
                         return true;
-                    case R.id.nav_produtos:
+                    case R.id.nav_produtos_juridico:
                         abrirTelaMeusProdutosActivity();
                         //Função abrir tela produtos
                         return true;
@@ -99,25 +90,20 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
             }
         });
     }
-    //Carregando foto do usuário
-    private void carregarFoto(){
-        FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
-        if (user != null) {
-            if (user.getPhotoUrl() != null) {
-                Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
-            }else {
-                Helper.criarToast(getApplicationContext(), "ERROR");
-            }
-        }
-    }
+    //Instanciando views do navigation header
     private void instanciandoView(){
         View headerView = navigationView.getHeaderView(0);
         tvNomeUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderNome);
         tvEmailUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderEmail);
         cvNavHeaderPessoa = headerView.findViewById(R.id.cvNavHeaderPessoa);
     }
+    //Método que carrega nome e email do usuário e seta nas views do menu lateral
     private void setDadosMenuLateral(){
-        PerfilServices.setDadosNavHeader(FirebaseController.getFirebaseAuthentication().getCurrentUser(),tvNomeUsuarioNavHeader,tvEmailUsuarioNavHeader);
+        if (user.getPhotoUrl() != null) {
+            Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
+        }
+        tvNomeUsuarioNavHeader.setText(user.getDisplayName());
+        tvEmailUsuarioNavHeader.setText(user.getEmail());
     }
     //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
     private void sair () {
