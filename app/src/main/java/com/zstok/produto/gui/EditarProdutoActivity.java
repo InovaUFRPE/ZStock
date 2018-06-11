@@ -26,6 +26,7 @@ import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -76,7 +77,7 @@ public class EditarProdutoActivity extends AppCompatActivity {
                         Glide.with(getApplicationContext()).load(Helper.stringToBitMap(produto.getBitmapImagemProduto())).into(cvImagemProduto);
                     }
                     edtNomeProduto.setText(produto.getNomeProduto());
-                    edtPrecoProduto.setText(String.valueOf(produto.getPrecoSugerido()));
+                    edtPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
                     edtQuantidadeEstoqueProduto.setText(String.valueOf(produto.getQuantidadeEstoque()));
                     edtDescricaoProduto.setText(produto.getDescricao());
                 }
