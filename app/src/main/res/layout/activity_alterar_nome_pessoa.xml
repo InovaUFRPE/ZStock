@@ -22,7 +22,9 @@
         android:backgroundTint="@color/cimento"
         android:textColor="@color/cloudGrey"
         android:drawablePadding="@dimen/drawable_padding"
-        android:paddingLeft="@dimen/drawable_padding" />
+        android:paddingLeft="@dimen/drawable_padding"
+        android:paddingStart="@dimen/drawable_padding"
+        android:paddingRight="@dimen/drawable_padding"/>
 
     <Button
         android:id="@+id/btnAlterarNomePessoa"
