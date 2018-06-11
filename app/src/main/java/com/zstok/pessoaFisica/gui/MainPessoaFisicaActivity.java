@@ -141,6 +141,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                         return true;
                     case R.id.nav_negociacao_fisico:
                         //Activity de turmas
+                        Helper.criarToast(getApplicationContext(), "Em construção...");
                         return true;
                     case R.id.nav_produtos_fisico:
                         drawer.closeDrawers();
