@@ -51,7 +51,7 @@ public class ResgatarSenhaActivity extends AppCompatActivity {
         boolean verificador = true;
 
         if (edtEmailRecuperacaoSenha.getText().length() == 0){
-            edtEmailRecuperacaoSenha.setError(getString(R.string.zs_excecao_conexao_falha));
+            edtEmailRecuperacaoSenha.setError(getString(R.string.zs_excecao_campo_vazio));
             verificador = false;
         }
         return verificador;

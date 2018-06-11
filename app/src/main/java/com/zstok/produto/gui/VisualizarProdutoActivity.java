@@ -58,7 +58,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_produto);
+        setContentView(R.layout.activity_visualizar_produto);
 
         //Resgatando elementos passados pela intent
         idEmpresa = getIntent().getStringExtra("idEmpresa");

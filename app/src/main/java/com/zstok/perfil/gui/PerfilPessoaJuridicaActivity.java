@@ -224,7 +224,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     }
     //Recuperando os dados do perfil
     private void recuperarDados(){
-        progressDialog.setTitle("Carregando informações...");
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
         progressDialog.show();
         FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
             @Override

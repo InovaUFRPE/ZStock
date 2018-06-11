@@ -1,5 +1,6 @@
 package com.zstok;
 
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.design.widget.FloatingActionButton;
@@ -40,6 +41,7 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
 
     private CircleImageView cvImagemPerfilEmpresa;
 
+    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +49,9 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
 
         //Resgatando id da empresa enviado pela intent
         idEmpresa = getIntent().getStringExtra("idEmpresa");
+
+        //Instanciando progress dialog
+        progressDialog = new ProgressDialog(this);
 
         //Instanciando views
         tvNomeFantasiaEmpresa = findViewById(R.id.tvNomeFantasiaEmpresa);
@@ -94,6 +99,8 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
         }
     }
     private void recuperarDados(){
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
+        progressDialog.show();
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -121,5 +128,6 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
         tvEnderecoEmpresa.setText(pessoa.getEndereco());
         tvRazaoSocialEmpresa.setText(pessoaJuridica.getRazaoSocial());
         tvCnpjEmpresa.setText(pessoaJuridica.getCnpj());
+        progressDialog.dismiss();
     }
 }

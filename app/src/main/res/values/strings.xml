@@ -125,5 +125,6 @@
 
     <string name="zs_titulo_progress_dialog_registro">Cadastrando usuário...</string>
     <string name="zs_titulo_progress_dialog_produto">Carregando produto...</string>
+    <string name="zs_titulo_progress_dialog_perfil">Carregando informações...</string>
 
 </resources>
