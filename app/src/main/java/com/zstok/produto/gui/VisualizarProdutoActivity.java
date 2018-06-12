@@ -80,6 +80,13 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         //Instanciando objeto para verificar conexão
         verificaConexao = new VerificaConexao(this);
 
+        btnNegociar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Helper.criarToast(getApplicationContext(), "Em construção...");
+            }
+        });
+
         btnComprar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

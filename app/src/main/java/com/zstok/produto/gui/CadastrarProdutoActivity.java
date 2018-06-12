@@ -12,15 +12,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.zstok.R;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
@@ -103,6 +99,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
             }
         });
     }
+    //Validando campos
     private boolean validarCampos(){
         boolean verificador = true;
 

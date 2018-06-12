@@ -3,6 +3,7 @@ package com.zstok;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,6 +44,7 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
     private CircleImageView cvImagemPerfilEmpresa;
 
     private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +86,8 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
     }
     //Resgatando foto do Storage
     private void downloadFoto(){
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
+        progressDialog.show();
         StorageReference ref = referenciaStorage.child("images/perfil/" + idEmpresa + ".bmp");
 
         try {
@@ -92,15 +97,20 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     Bitmap minhaFoto = BitmapFactory.decodeFile(localFile.getAbsolutePath());
                     cvImagemPerfilEmpresa.setImageBitmap(minhaFoto);
+                    progressDialog.dismiss();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    progressDialog.dismiss();
                 }
             });
         } catch (IOException e) {
+            progressDialog.dismiss();
             Log.d("IOException downlaod", e.getMessage());
         }
     }
     private void recuperarDados(){
-        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
-        progressDialog.show();
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -128,6 +138,5 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
         tvEnderecoEmpresa.setText(pessoa.getEndereco());
         tvRazaoSocialEmpresa.setText(pessoaJuridica.getRazaoSocial());
         tvCnpjEmpresa.setText(pessoaJuridica.getCnpj());
-        progressDialog.dismiss();
     }
 }
