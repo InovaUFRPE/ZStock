@@ -55,7 +55,7 @@ public class Helper {
         textView.addTextChangedListener(mtw);
     }
     public static void mascaraCnpj(TextView textView){
-        SimpleMaskFormatter smf = new SimpleMaskFormatter("NNN.NNN.NNN/NNNN-NN");
+        SimpleMaskFormatter smf = new SimpleMaskFormatter("NN.NNN.NNN/NNNN-NN");
         MaskTextWatcher mtw = new MaskTextWatcher(textView, smf);
 
         textView.addTextChangedListener(mtw);
