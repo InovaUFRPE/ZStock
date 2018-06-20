@@ -1,6 +1,5 @@
 package com.zstok.pessoaFisica.gui;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,7 +36,6 @@ import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
-import com.zstok.infraestrutura.utils.MoneyTextWatcher;
 import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
 import com.zstok.produto.adapter.ProdutoListHolder;
 import com.zstok.produto.dominio.Produto;
@@ -175,6 +173,9 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                     viewHolder.tvCardViewNomeProduto.setText(model.getNomeProduto());
                     viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
+                    if (model.getUrlImagem() != null) {
+                        Glide.with(getApplicationContext()).load(model.getUrlImagem()).into(viewHolder.imgCardViewProduto);
+                    }
                     FirebaseController.getFirebase().child("pessoa").child(model.getIdEmpresa()).child("nome").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -186,9 +187,6 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
 
                         }
                     });
-                    if (model.getBitmapImagemProduto() != null) {
-                        Glide.with(getApplicationContext()).load(Helper.stringToBitMap(model.getBitmapImagemProduto())).into(viewHolder.imgCardViewProduto);
-                    }
                 }
 
                 @NonNull
@@ -228,6 +226,9 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                     viewHolder.tvCardViewNomeProduto.setText(model.getNomeProduto());
                     viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
+                    if (model.getUrlImagem() != null) {
+                        Glide.with(getApplicationContext()).load(model.getUrlImagem()).into(viewHolder.imgCardViewProduto);
+                    }
                     FirebaseController.getFirebase().child("pessoa").child(model.getIdEmpresa()).child("nome").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -239,9 +240,6 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
 
                         }
                     });
-                    if (model.getBitmapImagemProduto() != null) {
-                        Glide.with(getApplicationContext()).load(Helper.stringToBitMap(model.getBitmapImagemProduto())).into(viewHolder.imgCardViewProduto);
-                    }
                 }
 
                 @NonNull

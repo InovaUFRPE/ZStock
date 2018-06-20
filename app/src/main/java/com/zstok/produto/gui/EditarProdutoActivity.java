@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
@@ -36,8 +35,6 @@ public class EditarProdutoActivity extends AppCompatActivity {
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int GALERY_REQUEST_CODE = 71;
 
-    private Bitmap bitmapCadastrarProduto;
-
     private String idProduto;
 
     private CircleImageView cvImagemProduto;
@@ -47,6 +44,8 @@ public class EditarProdutoActivity extends AppCompatActivity {
     private EditText edtDescricaoProduto;
 
     private VerificaConexao verificaConexao;
+
+    private Uri uriFoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +72,8 @@ public class EditarProdutoActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Produto produto = dataSnapshot.getValue(Produto.class);
                 if (produto != null) {
-                    if (produto.getBitmapImagemProduto() != null) {
-                        Glide.with(getApplicationContext()).load(Helper.stringToBitMap(produto.getBitmapImagemProduto())).into(cvImagemProduto);
+                    if (produto.getUrlImagem() != null) {
+                        Glide.with(getApplicationContext()).load(produto.getUrlImagem()).into(cvImagemProduto);
                     }
                     edtNomeProduto.setText(produto.getNomeProduto());
                     edtPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
@@ -151,8 +150,8 @@ public class EditarProdutoActivity extends AppCompatActivity {
         produto.setQuantidadeEstoque(Integer.valueOf(edtQuantidadeEstoqueProduto.getText().toString()));
         produto.setDescricao(edtDescricaoProduto.getText().toString());
         produto.setIdProduto(idProduto);
-        if (bitmapCadastrarProduto != null) {
-            produto.setBitmapImagemProduto(Helper.bitMapToString(bitmapCadastrarProduto));
+        if (uriFoto != null) {
+            produto.setUrlImagem(uriFoto.toString());
         }
         return produto;
     }
@@ -184,12 +183,11 @@ public class EditarProdutoActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case GALERY_REQUEST_CODE:
-                Uri uriFoto;
             {
                 if (requestCode == GALERY_REQUEST_CODE && resultCode == RESULT_OK) {
                     uriFoto = data.getData();
                     try{
-                        bitmapCadastrarProduto = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFoto);
+                        Bitmap bitmapCadastrarProduto = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFoto);
                         cvImagemProduto.setImageBitmap(bitmapCadastrarProduto);
                     }catch(IOException e ){
                         Log.d("IOException upload", e.getMessage());
@@ -201,7 +199,8 @@ public class EditarProdutoActivity extends AppCompatActivity {
                     if (data != null) {
                         Bundle extras = data.getExtras();
                         if (extras != null) {
-                            bitmapCadastrarProduto = (Bitmap) extras.get("data");
+                            Bitmap bitmapCadastrarProduto = (Bitmap) extras.get("data");
+                            uriFoto = Helper.getImageUri(getApplicationContext(), bitmapCadastrarProduto);
                             cvImagemProduto.setImageBitmap(bitmapCadastrarProduto);
                         }
                     }

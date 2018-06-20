@@ -6,7 +6,7 @@ public class Produto {
     private int quantidadeEstoque;
     private String nomeProduto;
     private String descricao;
-    private String bitmapImagemProduto;
+    private String urlImagem;
     private double precoSugerido;
 
     public String getNomeProduto() {
@@ -39,11 +39,11 @@ public class Produto {
     public void setQuantidadeEstoque(int quantidadeEstoque) {
         this.quantidadeEstoque = quantidadeEstoque;
     }
-    public String getBitmapImagemProduto() {
-        return bitmapImagemProduto;
+    public String getUrlImagem() {
+        return urlImagem;
     }
-    public void setBitmapImagemProduto(String bitmapImagemProduto) {
-        this.bitmapImagemProduto = bitmapImagemProduto;
+    public void setUrlImagem(String urlImagem) {
+        this.urlImagem = urlImagem;
     }
     public String getIdEmpresa() {
         return idEmpresa;

@@ -35,7 +35,6 @@ import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
-import com.zstok.infraestrutura.utils.MoneyTextWatcher;
 import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
 import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
 import com.zstok.produto.adapter.ProdutoListHolder;
@@ -43,7 +42,6 @@ import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
 
 import java.text.NumberFormat;
-import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -181,8 +179,8 @@ public class MeusProdutosActivity extends AppCompatActivity
                     viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
                     viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
-                    if (model.getBitmapImagemProduto() != null) {
-                        Glide.with(getApplicationContext()).load(Helper.stringToBitMap(model.getBitmapImagemProduto())).into(viewHolder.imgCardViewProduto);
+                    if (model.getUrlImagem() != null) {
+                        Glide.with(getApplicationContext()).load(model.getUrlImagem()).into(viewHolder.imgCardViewProduto);
                     }
                 }
                 @NonNull
@@ -223,8 +221,8 @@ public class MeusProdutosActivity extends AppCompatActivity
                     viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
                     viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
-                    if (model.getBitmapImagemProduto() != null) {
-                        Glide.with(getApplicationContext()).load(Helper.stringToBitMap(model.getBitmapImagemProduto())).into(viewHolder.imgCardViewProduto);
+                    if (model.getUrlImagem() != null) {
+                        Glide.with(getApplicationContext()).load(model.getUrlImagem()).into(viewHolder.imgCardViewProduto);
                     }
                 }
 

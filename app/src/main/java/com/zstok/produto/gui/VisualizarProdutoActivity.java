@@ -144,8 +144,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     }
     //Setando campo foto do produto
     private void setarFoto(Produto produto){
-        Bitmap bitmap = Helper.stringToBitMap(produto.getBitmapImagemProduto());
-        Glide.with(getApplicationContext()).load(bitmap).into(imgProduto);
+        Glide.with(getApplicationContext()).load(produto.getUrlImagem()).into(imgProduto);
         progressDialog.dismiss();
     }
     //Setando campos da activity

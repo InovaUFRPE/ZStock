@@ -359,7 +359,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                         Bundle extras = data.getExtras();
                         if (extras != null) {
                             Bitmap bitmap = (Bitmap) extras.get("data");
-                            uriFoto = getImageUri(getApplicationContext(), bitmap);
+                            uriFoto = Helper.getImageUri(getApplicationContext(), bitmap);
                             cvPerfilPessoaFisica.setImageBitmap(bitmap);
                             cvNavHeaderPessoa.setImageBitmap(bitmap);
                             inserirFoto(uriFoto);
@@ -380,13 +380,6 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                 Glide.with(this).load(user.getPhotoUrl()).into(cvPerfilPessoaFisica);
             }
         }
-    }
-    //Obtendo URI da imagem
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
     }
     //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
     private void sair () {

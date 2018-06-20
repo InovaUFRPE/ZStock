@@ -327,9 +327,9 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
                 if (requestCode == GALERY_REQUEST_CODE && resultCode == RESULT_OK) {
                     uriFoto = data.getData();
                     try{
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFoto);
-                        cvPerfilPessoaJuridica.setImageBitmap(bitmap);
-                        cvNavHeaderPessoa.setImageBitmap(bitmap);
+                        Bitmap bitmapFotoPerfil = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFoto);
+                        cvPerfilPessoaJuridica.setImageBitmap(bitmapFotoPerfil);
+                        cvNavHeaderPessoa.setImageBitmap(bitmapFotoPerfil);
                         inserirFoto(uriFoto);
                     }catch(IOException e ){
                         Log.d("IOException upload", e.getMessage());
@@ -341,10 +341,10 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
                     if (data != null) {
                         Bundle extras = data.getExtras();
                         if (extras != null) {
-                            Bitmap bitmap = (Bitmap) extras.get("data");
-                            uriFoto = getImageUri(getApplicationContext(), bitmap);
-                            cvPerfilPessoaJuridica.setImageBitmap(bitmap);
-                            cvNavHeaderPessoa.setImageBitmap(bitmap);
+                            Bitmap bitmapFotoPerfil = (Bitmap) extras.get("data");
+                            uriFoto = Helper.getImageUri(getApplicationContext(), bitmapFotoPerfil);
+                            cvPerfilPessoaJuridica.setImageBitmap(bitmapFotoPerfil);
+                            cvNavHeaderPessoa.setImageBitmap(bitmapFotoPerfil);
                             inserirFoto(uriFoto);
                         }
                     }
@@ -374,13 +374,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
             }
         }
     }
-    //Método que resgata o caminha da foto
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
+    //Método que abre a caixa de diálogo para realizar SignOut
     private void sair () {
         //Cria o gerador do AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

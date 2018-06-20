@@ -42,7 +42,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
     private EditText edtDescricaoProduto;
     private CircleImageView cvCadastrarProduto;
 
-    private Bitmap bitmapCadstrarProduto;
+    private Uri uriFoto;
 
     private VerificaConexao verificaConexao;
 
@@ -210,9 +210,11 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case GALERY_REQUEST_CODE: {
+            case GALERY_REQUEST_CODE:
+                Bitmap bitmapCadstrarProduto;
+            {
                 if (requestCode == GALERY_REQUEST_CODE && resultCode == RESULT_OK) {
-                    Uri uriFoto = data.getData();
+                    uriFoto = data.getData();
                     try{
                         bitmapCadstrarProduto = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFoto);
                         cvCadastrarProduto.setImageBitmap(bitmapCadstrarProduto);
@@ -227,6 +229,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
                         Bundle extras = data.getExtras();
                         if (extras != null) {
                             bitmapCadstrarProduto = (Bitmap) extras.get("data");
+                            uriFoto = Helper.getImageUri(getApplicationContext(), bitmapCadstrarProduto);
                             cvCadastrarProduto.setImageBitmap(bitmapCadstrarProduto);
                         }
                     }
@@ -243,8 +246,8 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         produto.setPrecoSugerido(MoneyTextWatcher.convertToBigDecimal(edtPrecoProduto.getText().toString()).doubleValue());
         produto.setQuantidadeEstoque(Integer.valueOf(edtQuantidadeEstoqueProduto.getText().toString()));
         produto.setDescricao(edtDescricaoProduto.getText().toString());
-        if (bitmapCadstrarProduto != null) {
-            produto.setBitmapImagemProduto(Helper.bitMapToString(bitmapCadstrarProduto));
+        if (uriFoto != null) {
+            produto.setUrlImagem(uriFoto.toString());
         }
         return produto;
     }
