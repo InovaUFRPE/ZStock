@@ -139,6 +139,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     }
     //Método que inicia o progress dialog
     private void iniciarProgressDialog() {
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_produto));
         progressDialog.show();
     }
@@ -153,12 +154,6 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         tvPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
         tvDescricaoProduto.setText(produto.getDescricao());
         tvEmpresaProduto.setText(pessoa.getNome());
-    }
-    //Intent para a tela de visualização da empresa
-    private void abrirTelaVisualizarEmpresaActivity(){
-        Intent intent = new Intent(getApplicationContext(), VisualizarEmpresaActivity.class);
-        intent.putExtra("idEmpresa", idEmpresa);
-        startActivity(intent);
     }
     //Método que abre a caixa de diálogo
     private void iniciarCompra () {
@@ -286,5 +281,11 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
             verificador = false;
         }
         return verificador;
+    }
+    //Intent para a tela de visualização da empresa
+    private void abrirTelaVisualizarEmpresaActivity(){
+        Intent intent = new Intent(getApplicationContext(), VisualizarEmpresaActivity.class);
+        intent.putExtra("idEmpresa", idEmpresa);
+        startActivity(intent);
     }
 }

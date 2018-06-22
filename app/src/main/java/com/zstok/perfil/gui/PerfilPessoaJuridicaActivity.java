@@ -224,8 +224,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     }
     //Recuperando os dados do perfil
     private void recuperarDados(){
-        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
-        progressDialog.show();
+        iniciarProgressDialog();
         FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -242,6 +241,12 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
 
             }
         });
+    }
+    //Método que inicia o progress dialog
+    private void iniciarProgressDialog() {
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
+        progressDialog.show();
     }
     //Carregando as informções do perfil
     private void setInformacoesPerfil(Pessoa pessoa, PessoaJuridica pessoaJuridica){

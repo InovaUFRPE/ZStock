@@ -86,8 +86,7 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
     }
     //Resgatando foto do Storage
     private void downloadFoto(){
-        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
-        progressDialog.show();
+        iniciarProgressDialog();
         StorageReference ref = referenciaStorage.child("images/perfil/" + idEmpresa + ".bmp");
 
         try {
@@ -127,6 +126,13 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
             }
         });
     }
+    //Método que inicia o progress dialog
+    private void iniciarProgressDialog() {
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
+        progressDialog.show();
+    }
+    //Aplicando máscaras nos campos cnpjs e telefone
     private void aplicarMascaras(){
         Helper.mascaraCnpj(tvCnpjEmpresa);
         Helper.mascaraTelefone(tvTelefoneEmpresa);

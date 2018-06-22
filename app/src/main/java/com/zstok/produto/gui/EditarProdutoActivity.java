@@ -1,9 +1,12 @@
 package com.zstok.produto.gui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,9 +16,14 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.zstok.R;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
@@ -24,6 +32,7 @@ import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -47,12 +56,23 @@ public class EditarProdutoActivity extends AppCompatActivity {
 
     private Uri uriFoto;
 
+    private ProgressDialog progressDialog;
+
+    private StorageReference referenciaStorage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editar_produto);
 
+        //Resgatando id do produto enviado pela intent
         idProduto = getIntent().getStringExtra("idProduto");
+
+        //Instanciando progress dialog
+        progressDialog = new ProgressDialog(this);
+
+        //Instancinado storage do firebase
+        referenciaStorage = FirebaseStorage.getInstance().getReference();
 
         cvImagemProduto = findViewById(R.id.cvEditarProduto);
         edtNomeProduto = findViewById(R.id.edtNomeProduto);
@@ -66,14 +86,14 @@ public class EditarProdutoActivity extends AppCompatActivity {
         Locale mLocale = new Locale("pt", "BR");
         edtPrecoProduto.addTextChangedListener(new MoneyTextWatcher(edtPrecoProduto,mLocale));
 
-        FirebaseController.getFirebase().child("produto") .child(idProduto)
+        FirebaseController.getFirebase().child("produto").child(idProduto)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Produto produto = dataSnapshot.getValue(Produto.class);
                 if (produto != null) {
                     if (produto.getUrlImagem() != null) {
-                        Glide.with(getApplicationContext()).load(produto.getUrlImagem()).into(cvImagemProduto);
+                        downloadFoto();
                     }
                     edtNomeProduto.setText(produto.getNomeProduto());
                     edtPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
@@ -114,6 +134,38 @@ public class EditarProdutoActivity extends AppCompatActivity {
                 tirarFoto();
             }
         });
+    }
+    //Resgatando foto do Storage
+    private void downloadFoto(){
+        iniciarProgressDialog();
+        StorageReference ref = referenciaStorage.child("images/produtos/" + FirebaseController.getUidUser() + "/" + idProduto + ".bmp");
+
+        try {
+            final File localFile = File.createTempFile("images", "bmp");
+            ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener< FileDownloadTask.TaskSnapshot >() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Bitmap minhaFoto = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                    cvImagemProduto.setImageBitmap(minhaFoto);
+                    progressDialog.dismiss();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Helper.criarToast(getApplicationContext(), "Erro ao carregar foto!");
+                    progressDialog.dismiss();
+                }
+            });
+        } catch (IOException e) {
+            progressDialog.dismiss();
+            Log.d("IOException downlaod", e.getMessage());
+        }
+    }
+    //Método que inicia o progress dialog
+    private void iniciarProgressDialog() {
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
+        progressDialog.show();
     }
     //Validar campos
     private boolean validarCampos(){
