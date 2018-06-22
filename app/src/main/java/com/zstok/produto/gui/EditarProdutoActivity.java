@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -93,7 +92,7 @@ public class EditarProdutoActivity extends AppCompatActivity {
                 Produto produto = dataSnapshot.getValue(Produto.class);
                 if (produto != null) {
                     if (produto.getUrlImagem() != null) {
-                        downloadFoto();
+                        recuperarFoto();
                     }
                     edtNomeProduto.setText(produto.getNomeProduto());
                     edtPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
@@ -136,7 +135,7 @@ public class EditarProdutoActivity extends AppCompatActivity {
         });
     }
     //Resgatando foto do Storage
-    private void downloadFoto(){
+    private void recuperarFoto(){
         iniciarProgressDialog();
         StorageReference ref = referenciaStorage.child("images/produtos/" + FirebaseController.getUidUser() + "/" + idProduto + ".bmp");
 

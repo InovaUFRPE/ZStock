@@ -76,7 +76,7 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
         });
 
         //Resgatando foto do perfil da empresa
-        downloadFoto();
+        recuperarFoto();
 
         //Aplicando máscaras aos campos de cnpj e telefone
         aplicarMascaras();
@@ -85,7 +85,7 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
         recuperarDados();
     }
     //Resgatando foto do Storage
-    private void downloadFoto(){
+    private void recuperarFoto(){
         iniciarProgressDialog();
         StorageReference ref = referenciaStorage.child("images/perfil/" + idEmpresa + ".bmp");
 
