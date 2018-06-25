@@ -59,6 +59,7 @@ public class ProdutoDAO {
 
         try {
             alterarProduto(produto);
+            insereFotoProduto(produto);
             verificador = true;
         }catch (DatabaseException e){
             verificador = false;
