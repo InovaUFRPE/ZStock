@@ -162,7 +162,7 @@ public class MeusProdutosActivity extends AppCompatActivity
     //Montando adapter e jogando no list holder
     private void criandoAdapterPesquisa(String pesquisa) {
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("produto");
-        Query query = databaseReference.orderByChild("nomeProduto").equalTo(pesquisa);
+        Query query = databaseReference.orderByChild("nomeProduto").startAt(pesquisa).endAt(pesquisa+"\uf8ff");
 
         if (query != null) {
             FirebaseRecyclerAdapter adapter1 = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
