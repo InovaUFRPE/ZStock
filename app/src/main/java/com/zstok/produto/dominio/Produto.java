@@ -4,16 +4,17 @@ public class Produto {
     private String idProduto;
     private String idEmpresa;
     private int quantidadeEstoque;
-    private String nomeProduto;
+    private String nome;
+    private String nomePesquisa;
     private String descricao;
     private String urlImagem;
     private double precoSugerido;
 
-    public String getNomeProduto() {
-        return nomeProduto;
+    public String getNome() {
+        return nome;
     }
-    public void setNomeProduto(String nomeProduto) {
-        this.nomeProduto = nomeProduto;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
     public String getDescricao() {
         return descricao;
@@ -35,6 +36,12 @@ public class Produto {
     }
     public int getQuantidadeEstoque() {
         return quantidadeEstoque;
+    }
+    public String getNomePesquisa() {
+        return nomePesquisa;
+    }
+    public void setNomePesquisa(String nomePesquisa) {
+        this.nomePesquisa = nomePesquisa;
     }
     public void setQuantidadeEstoque(int quantidadeEstoque) {
         this.quantidadeEstoque = quantidadeEstoque;

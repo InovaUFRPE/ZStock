@@ -242,7 +242,8 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         Produto produto = new Produto();
 
         produto.setIdEmpresa(FirebaseController.getUidUser());
-        produto.setNomeProduto(edtNomeProduto.getText().toString());
+        produto.setNome(edtNomeProduto.getText().toString());
+        produto.setNomePesquisa(Helper.removerAcentos(edtNomeProduto.getText().toString().toLowerCase()));
         produto.setPrecoSugerido(MoneyTextWatcher.convertToBigDecimal(edtPrecoProduto.getText().toString()).doubleValue());
         produto.setQuantidadeEstoque(Integer.valueOf(edtQuantidadeEstoqueProduto.getText().toString()));
         produto.setDescricao(edtDescricaoProduto.getText().toString());

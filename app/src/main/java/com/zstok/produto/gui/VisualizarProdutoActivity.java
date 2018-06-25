@@ -2,7 +2,6 @@ package com.zstok.produto.gui;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -150,7 +149,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     }
     //Setando campos da activity
     private void setarCampos(Pessoa pessoa, Produto produto) {
-        tvNomeProduto.setText(produto.getNomeProduto());
+        tvNomeProduto.setText(produto.getNome());
         tvPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
         tvDescricaoProduto.setText(produto.getDescricao());
         tvEmpresaProduto.setText(pessoa.getNome());

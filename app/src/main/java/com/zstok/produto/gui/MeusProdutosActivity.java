@@ -1,6 +1,5 @@
 package com.zstok.produto.gui;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -79,7 +78,7 @@ public class MeusProdutosActivity extends AppCompatActivity
         btnPesquisaProdutoPessoaJuridica.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                criandoAdapterPesquisa(edtPesquisaProdutoPessoaJuridica.getText().toString());
+                criandoAdapterPesquisa(Helper.removerAcentos(edtPesquisaProdutoPessoaJuridica.getText().toString().toLowerCase()));
             }
         });
         //Evento de pesquisa
@@ -90,7 +89,7 @@ public class MeusProdutosActivity extends AppCompatActivity
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                criandoAdapterPesquisa(edtPesquisaProdutoPessoaJuridica.getText().toString());
+                criandoAdapterPesquisa(Helper.removerAcentos(edtPesquisaProdutoPessoaJuridica.getText().toString().toLowerCase()));
             }
 
             @Override
@@ -99,7 +98,7 @@ public class MeusProdutosActivity extends AppCompatActivity
                         edtPesquisaProdutoPessoaJuridica.getText().toString().trim().length() == 0){
                     criandoAdapter();
                 }else {
-                    criandoAdapterPesquisa(edtPesquisaProdutoPessoaJuridica.getText().toString());
+                    criandoAdapterPesquisa(Helper.removerAcentos(edtPesquisaProdutoPessoaJuridica.getText().toString().toLowerCase()));
                 }
             }
         });
@@ -162,7 +161,7 @@ public class MeusProdutosActivity extends AppCompatActivity
     //Montando adapter e jogando no list holder
     private void criandoAdapterPesquisa(String pesquisa) {
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("produto");
-        Query query = databaseReference.orderByChild("nomeProduto").startAt(pesquisa).endAt(pesquisa+"\uf8ff");
+        Query query = databaseReference.orderByChild("nomePesquisa").startAt(pesquisa).endAt(pesquisa+"\uf8ff");
 
         if (query != null) {
             FirebaseRecyclerAdapter adapter1 = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
@@ -176,7 +175,7 @@ public class MeusProdutosActivity extends AppCompatActivity
                     getItemCount();
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                    viewHolder.tvCardViewNomeProduto.setText(model.getNomeProduto());
+                    viewHolder.tvCardViewNomeProduto.setText(model.getNome());
                     viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
                     viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
@@ -218,7 +217,7 @@ public class MeusProdutosActivity extends AppCompatActivity
                     getItemCount();
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                    viewHolder.tvCardViewNomeProduto.setText(model.getNomeProduto());
+                    viewHolder.tvCardViewNomeProduto.setText(model.getNome());
                     viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
                     viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());

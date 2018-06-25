@@ -94,7 +94,7 @@ public class EditarProdutoActivity extends AppCompatActivity {
                     if (produto.getUrlImagem() != null) {
                         recuperarFoto();
                     }
-                    edtNomeProduto.setText(produto.getNomeProduto());
+                    edtNomeProduto.setText(produto.getNome());
                     edtPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
                     edtQuantidadeEstoqueProduto.setText(String.valueOf(produto.getQuantidadeEstoque()));
                     edtDescricaoProduto.setText(produto.getDescricao());
@@ -196,7 +196,8 @@ public class EditarProdutoActivity extends AppCompatActivity {
     private Produto criarProduto(){
         Produto produto = new Produto();
 
-        produto.setNomeProduto(edtNomeProduto.getText().toString());
+        produto.setNome(edtNomeProduto.getText().toString());
+        produto.setNomePesquisa(Helper.removerAcentos(edtNomeProduto.getText().toString().toLowerCase()));
         produto.setPrecoSugerido(MoneyTextWatcher.convertToBigDecimal(edtPrecoProduto.getText().toString()).doubleValue());
         produto.setQuantidadeEstoque(Integer.valueOf(edtQuantidadeEstoqueProduto.getText().toString()));
         produto.setDescricao(edtDescricaoProduto.getText().toString());

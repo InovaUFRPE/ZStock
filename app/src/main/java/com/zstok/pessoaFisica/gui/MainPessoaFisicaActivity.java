@@ -80,7 +80,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
         btnPesquisaProdutoPessoaJuridica.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                criandoAdapterPesquisa(edtPesquisaProdutoPessoaFisica.getText().toString());
+                criandoAdapterPesquisa(Helper.removerAcentos(edtPesquisaProdutoPessoaFisica.getText().toString().toLowerCase()));
             }
         });
 
@@ -116,7 +116,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                criandoAdapterPesquisa(edtPesquisaProdutoPessoaFisica.getText().toString());
+                criandoAdapterPesquisa(Helper.removerAcentos(edtPesquisaProdutoPessoaFisica.getText().toString().toLowerCase()));
             }
 
             @Override
@@ -125,7 +125,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                         edtPesquisaProdutoPessoaFisica.getText().toString().trim().length() == 0){
                     criandoAdapter();
                 }else {
-                    criandoAdapterPesquisa(edtPesquisaProdutoPessoaFisica.getText().toString());
+                    criandoAdapterPesquisa(Helper.removerAcentos(edtPesquisaProdutoPessoaFisica.getText().toString().toLowerCase()));
                 }
             }
         });
@@ -156,7 +156,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
     //Montando adapter e jogando no list holder
     private void criandoAdapterPesquisa(String pesquisa) {
         final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
-        Query query = databaseReference.orderByChild("nomeProduto").equalTo(pesquisa);
+        Query query = databaseReference.orderByChild("nomePesquisa").startAt(pesquisa).endAt(pesquisa+"\uf8ff");
 
         if (query != null) {
             FirebaseRecyclerAdapter adapter1 = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
@@ -170,7 +170,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                     getItemCount();
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                    viewHolder.tvCardViewNomeProduto.setText(model.getNomeProduto());
+                    viewHolder.tvCardViewNomeProduto.setText(model.getNome());
                     viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
                     if (model.getUrlImagem() != null) {
@@ -224,7 +224,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                         getItemCount();
                         viewHolder.mainLayout.setVisibility(View.VISIBLE);
                         viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                        viewHolder.tvCardViewNomeProduto.setText(model.getNomeProduto());
+                        viewHolder.tvCardViewNomeProduto.setText(model.getNome());
                         viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
                         viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
                         if (model.getUrlImagem() != null) {

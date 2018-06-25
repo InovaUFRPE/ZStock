@@ -21,7 +21,7 @@
     <string name="zs_hint_endereco_usuario">Endereço</string>
     <string name="zs_hint_razao_social">Razão Social</string>
     <string name="zs_hint_nome_fantasia">Nome fantasia</string>
-    <string name="zs_hint_novo_nome">Digite novo nomeProduto</string>
+    <string name="zs_hint_novo_nome">Digite novo nome</string>
     <string name="zs_hint_novo_telefone">Digite novo telefone</string>
     <string name="zs_hint_novo_email">Digite novo email</string>
     <string name="zs_hint_digite_senha">Digite sua senha</string>
