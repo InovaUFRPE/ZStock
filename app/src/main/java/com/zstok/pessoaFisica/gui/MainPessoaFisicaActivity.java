@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.zstok.compra.gui.CarrinhoCompraActivity;
 import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
@@ -76,6 +78,15 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
         //Instanciando views
         edtPesquisaProdutoPessoaFisica = findViewById(R.id.edtPesquisaProdutoPessoaFisica);
         Button btnPesquisaProdutoPessoaJuridica = findViewById(R.id.btnPesquisaProdutoPessoaFisica);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabCarrinhoCompra);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                abrirTelaCarrinhoCompraActivity();
+            }
+        });
+
 
         btnPesquisaProdutoPessoaJuridica.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -360,6 +371,11 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
         Intent intent = new Intent(getApplicationContext(), VisualizarProdutoActivity.class);
         intent.putExtra("idEmpresa", idEmpresa);
         intent.putExtra("idProduto", idProduto);
+        startActivity(intent);
+    }
+    //Intent para a tela de carrinho de compra
+    private void abrirTelaCarrinhoCompraActivity() {
+        Intent intent = new Intent(getApplicationContext(), CarrinhoCompraActivity.class);
         startActivity(intent);
     }
 }

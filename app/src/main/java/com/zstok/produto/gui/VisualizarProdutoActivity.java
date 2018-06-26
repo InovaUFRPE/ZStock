@@ -23,7 +23,9 @@ import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.MoneyTextWatcher;
 import com.zstok.infraestrutura.utils.VerificaConexao;
+import com.zstok.itemcompra.dominio.ItemCompra;
 import com.zstok.pessoa.dominio.Pessoa;
+import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
 
@@ -174,9 +176,34 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         clickVoltar();
 
         //Chamando método para tratar o clique no botão comprar
-        clickComprar();
+        clickAdicionarAoCarrinho();
 
 
+    }
+    //Método que implementa o evento de click do botão voltar
+    private void clickVoltar(){
+        btnVoltarDialogoCompra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertaCompra.dismiss();
+            }
+        });
+    }
+    //Método que implementa o evento de click do botão comprar
+    //Value listener of quantidade
+    private void clickAdicionarAoCarrinho(){
+        btnComprarDialogoCompra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (verificaConexao.isConected()){
+                    if (validarCampos()){
+                        if(validarClickCompra()){
+                            adicionarProdutoCarrinho();
+                        }
+                    }
+                }
+            }
+        });
     }
     //Validando edit text da quantidade digitavda pelo usuário na caixa de diálogo
     private boolean validarCampos(){
@@ -194,7 +221,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         tvNomeProdutoDialogoCompra = mView.findViewById(R.id.tvNomeProdutoDialogoCompra);
         tvTotalDialogoCompra = mView.findViewById(R.id.tvTotalDialogoCompra);
         btnVoltarDialogoCompra = mView.findViewById(R.id.btnVoltarDialogoCompra);
-        btnComprarDialogoCompra = mView.findViewById(R.id.btnComprarDialogoCompra);
+        btnComprarDialogoCompra = mView.findViewById(R.id.btnAdicionarItemDialogoCarrinho);
     }
     //Método que seta as informações para as views da caixa de diálogo
     private void setarInformacoesViews(){
@@ -226,41 +253,22 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
             }
         });
     }
-    //Método que implementa o evento de click do botão voltar
-    private void clickVoltar(){
-        btnVoltarDialogoCompra.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertaCompra.dismiss();
-            }
-        });
-    }
-    //Método que implementa o evento de click do botão comprar
-    //Value listener of quantidade
-    private void clickComprar(){
-        btnComprarDialogoCompra.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (verificaConexao.isConected()){
-                    if (validarCampos()){
-                        if(validarClickCompra()){
-                            comprarProduto();
-                        }
-                    }
-                }
-            }
-        });
+    //Método que cria um objeto ItemCompra
+    private ItemCompra criarItemCompra(){
+        ItemCompra itemCompra = new ItemCompra();
+
+        itemCompra.setIdProduto(idProduto);
+        itemCompra.setQuantidade(Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString()));
+
+        return itemCompra;
     }
     //Chamando camada de negócio para fazer a redução da quantidade
-    private void comprarProduto(){
-        if (ProdutoServices.comprarProduto(idProduto, calcularNovaQuantidade())){
+    private void adicionarProdutoCarrinho(){
+        if (ProdutoServices.adicionarProdutoCarrinho(criarItemCompra())){
             alertaCompra.dismiss();
-            Helper.criarToast(getApplicationContext(), getString(R.string.zs_compra_realizada_sucesso));
+            abrirTelaMainPessoaFisicaActivity();
+            Helper.criarToast(getApplicationContext(), getString(R.string.zs_adicionar_carrinho_compra_sucesso));
         }
-    }
-    //Calculando nova quantidade
-    private int calcularNovaQuantidade() {
-        return Integer.valueOf(tvQuantidadeDisponivelProduto.getText().toString()) - Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString());
     }
     //Validando compra
     private boolean validarClickCompra(){
@@ -285,6 +293,11 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     private void abrirTelaVisualizarEmpresaActivity(){
         Intent intent = new Intent(getApplicationContext(), VisualizarEmpresaActivity.class);
         intent.putExtra("idEmpresa", idEmpresa);
+        startActivity(intent);
+    }
+    //Intent para a tela de visualização da empresa
+    private void abrirTelaMainPessoaFisicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainPessoaFisicaActivity.class);
         startActivity(intent);
     }
 }

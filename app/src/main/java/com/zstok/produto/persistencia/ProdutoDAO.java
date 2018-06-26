@@ -8,6 +8,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.zstok.infraestrutura.utils.FirebaseController;
+import com.zstok.itemcompra.dominio.ItemCompra;
 import com.zstok.produto.dominio.Produto;
 
 public class ProdutoDAO {
@@ -46,7 +47,7 @@ public class ProdutoDAO {
         boolean verificador;
 
         try {
-            FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).setValue(null);
+            FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("status").setValue(false);
             verificador = true;
         }catch (DatabaseException e){
             verificador = false;
@@ -78,11 +79,12 @@ public class ProdutoDAO {
         FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("descricao").setValue(produto.getDescricao());
     }
     //Método provisório
-    public static boolean comprarProduto(String idProduto, int novaQuantidade){
+    public static boolean adicionarProdutoCarrinho(ItemCompra itemCompra){
         boolean verificador;
 
         try {
-            FirebaseController.getFirebase().child("produto").child(idProduto).child("quantidadeEstoque").setValue(novaQuantidade);
+            itemCompra.setIdItemCompra( FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).push().getKey());
+            FirebaseController.getFirebase().child("carrinhoCompra").child(itemCompra.getIdItemCompra()).setValue(itemCompra);
             verificador = true;
         }catch (DatabaseException e){
             verificador = false;

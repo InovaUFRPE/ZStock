@@ -3,12 +3,13 @@ package com.zstok.produto.dominio;
 public class Produto {
     private String idProduto;
     private String idEmpresa;
-    private int quantidadeEstoque;
     private String nome;
     private String nomePesquisa;
     private String descricao;
     private String urlImagem;
+    private int quantidadeEstoque;
     private double precoSugerido;
+    private boolean status;
 
     public String getNome() {
         return nome;
@@ -57,5 +58,11 @@ public class Produto {
     }
     public void setIdEmpresa(String idEmpresa) {
         this.idEmpresa = idEmpresa;
+    }
+    public boolean isStatus() {
+        return status;
+    }
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 }

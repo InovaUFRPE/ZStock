@@ -172,15 +172,19 @@ public class MeusProdutosActivity extends AppCompatActivity
 
                 @Override
                 protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
-                    getItemCount();
-                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
-                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                    viewHolder.tvCardViewNomeProduto.setText(model.getNome());
-                    viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
-                    viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
-                    viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
-                    if (model.getUrlImagem() != null) {
-                        Glide.with(getApplicationContext()).load(model.getUrlImagem()).into(viewHolder.imgCardViewProduto);
+                    if (model.isStatus()) {
+                        getItemCount();
+                        viewHolder.mainLayout.setVisibility(View.VISIBLE);
+                        viewHolder.linearLayout.setVisibility(View.VISIBLE);
+                        viewHolder.tvCardViewNomeProduto.setText(model.getNome());
+                        viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
+                        viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
+                        viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
+                        if (model.getUrlImagem() != null) {
+                            Glide.with(getApplicationContext()).load(model.getUrlImagem()).into(viewHolder.imgCardViewProduto);
+                        }
+                    }else {
+                        viewHolder.setVisibility(false);
                     }
                 }
                 @NonNull
@@ -214,15 +218,19 @@ public class MeusProdutosActivity extends AppCompatActivity
 
                 @Override
                 protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
-                    getItemCount();
-                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
-                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                    viewHolder.tvCardViewNomeProduto.setText(model.getNome());
-                    viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
-                    viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
-                    viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
-                    if (model.getUrlImagem() != null) {
-                        Glide.with(getApplicationContext()).load(model.getUrlImagem()).into(viewHolder.imgCardViewProduto);
+                    if (model.isStatus()) {
+                        getItemCount();
+                        viewHolder.mainLayout.setVisibility(View.VISIBLE);
+                        viewHolder.linearLayout.setVisibility(View.VISIBLE);
+                        viewHolder.tvCardViewNomeProduto.setText(model.getNome());
+                        viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
+                        viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
+                        viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
+                        if (model.getUrlImagem() != null) {
+                            Glide.with(getApplicationContext()).load(model.getUrlImagem()).into(viewHolder.imgCardViewProduto);
+                        }
+                    }else {
+                        viewHolder.setVisibility(false);
                     }
                 }
 

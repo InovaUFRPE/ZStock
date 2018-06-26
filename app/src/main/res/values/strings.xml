@@ -35,6 +35,7 @@
     <string name="zs_texto_quantidade_disponivel_produto">Quantidade disponível:</string>
     <string name="zs_texto_empresa_produto">Empresa:</string>
     <string name="zs_texto_descricao_produto">Descrição:</string>
+    <string name="zs_texto_nome_produto">Nome do produto</string>
 
     <string name="zs_dialogo_sim">Sim</string>
     <string name="zs_dialogo_nao">Não</string>
@@ -46,7 +47,7 @@
     <string name="zs_dialogo_titulo_produto">Produto</string>
 
     <string name="zs_btn_voltar_dialogo_compra">Voltar</string>
-    <string name="zs_btn_comprar_dialogo_compra">Comprar</string>
+    <string name="zs_btn_comprar_dialogo_compra">Adicionar ao carrinho</string>
     <string name="zs_texto_total_dialogo_compra">TOTAL:</string>
     <string name="zs_hint_quantidade_dialogo_compra">Digite a quantidade desejada</string>
 
@@ -77,6 +78,7 @@
     <string name="zs_data_nascimento_alterado_sucesso">Data de nascimento alterada com sucesso!</string>
     <string name="zs_produto_excluido_sucesso">Produto excluído com sucesso!</string>
     <string name="zs_produto_alterado_sucesso">Produto alterado com sucesso!</string>
+    <string name="zs_adicionar_carrinho_compra_sucesso">Produto adicionado ao carrinho de compra!</string>
     <string name="zs_compra_realizada_sucesso">Compra realizada com sucesso!</string>
 
     <string name="zs_excecao_campo_vazio">Preencha o campo vazio</string>
@@ -109,7 +111,6 @@
     <string name="zs_menu_lateral_compras">Compras</string>
     <string name="zs_menu_lateral_sair">Sair</string>
 
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_desc">Navigation header</string>
@@ -122,6 +123,7 @@
     <string name="title_activity_perfil_pessoa_juridica">Meu perfil</string>
     <string name="title_activity_main_pessoa_juridica">Negociações</string>
     <string name="title_activity_meus_produtos">Meus produtos</string>
+    <string name="title_activity_carrinho_compra">Carrinho de compra</string>
 
     <string name="zs_titulo_progress_dialog_registro">Cadastrando usuário...</string>
     <string name="zs_titulo_progress_dialog_produto">Carregando produto...</string>

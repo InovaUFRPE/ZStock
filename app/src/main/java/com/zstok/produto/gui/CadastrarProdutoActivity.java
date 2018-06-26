@@ -247,6 +247,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         produto.setPrecoSugerido(MoneyTextWatcher.convertToBigDecimal(edtPrecoProduto.getText().toString()).doubleValue());
         produto.setQuantidadeEstoque(Integer.valueOf(edtQuantidadeEstoqueProduto.getText().toString()));
         produto.setDescricao(edtDescricaoProduto.getText().toString());
+        produto.setStatus(true);
         if (uriFoto != null) {
             produto.setUrlImagem(uriFoto.toString());
         }

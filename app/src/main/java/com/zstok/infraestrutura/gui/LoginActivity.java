@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.zstok.Compra.dominio.Compra;
 import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
 import com.zstok.R;
 import com.zstok.infraestrutura.utils.FirebaseController;
@@ -85,10 +84,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-
-        // TESTE
-        Compra compra = new Compra();
-        FirebaseController.getFirebase().child("TESTE").setValue(compra);
     }
     //Validando views
     private boolean validarCampos(){
