@@ -1,4 +1,4 @@
-package com.zstok.compra.adapter;
+package com.zstok.carrinhoCompra.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

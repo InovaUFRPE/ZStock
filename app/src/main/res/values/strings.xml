@@ -66,7 +66,7 @@
     <string name="zs_btn_alterar_cpf">Alterar cpf</string>
     <string name="zs_btn_alterar_data_nascimento">Alterar data de nascimento</string>
     <string name="zs_btn_negociar_produto">Negociar</string>
-    <string name="zs_btn_comprar_produto">Comprar</string>
+    <string name="zs_btn_adicionar_carrinho">Adicionar ao carrinho</string>
     <string name="zs_btn_finalizar_compra">Finalizar compra</string>
 
     <string name="zs_sucesso_usuario_cadastrado">Usuário cadastrado com sucesso!</string>
@@ -129,5 +129,6 @@
     <string name="zs_titulo_progress_dialog_registro">Cadastrando usuário...</string>
     <string name="zs_titulo_progress_dialog_produto">Carregando produto...</string>
     <string name="zs_titulo_progress_dialog_perfil">Carregando informações...</string>
+    <string name="title_activity_main_historico">MainHistoricoActivity</string>
 
 </resources>

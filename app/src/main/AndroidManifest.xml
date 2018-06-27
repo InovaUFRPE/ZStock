@@ -60,8 +60,12 @@
         <activity android:name=".produto.gui.VisualizarProdutoActivity" />
         <activity android:name=".VisualizarEmpresaActivity" />
         <activity
-            android:name=".compra.gui.CarrinhoCompraActivity"
+            android:name=".carrinhoCompra.gui.CarrinhoCompraActivity"
             android:label="@string/title_activity_carrinho_compra"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".historico.gui.MainHistoricoActivity"
+            android:label="@string/title_activity_main_historico"
             android:theme="@style/AppTheme"></activity>
     </application>
 

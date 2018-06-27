@@ -1,4 +1,4 @@
-package com.zstok.compra.dominio;
+package com.zstok.carrinhoCompra.dominio;
 
 import com.zstok.itemcompra.dominio.ItemCompra;
 

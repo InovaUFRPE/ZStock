@@ -72,8 +72,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         tvDescricaoProduto = findViewById(R.id.tvDescricaoProduto);
         tvEmpresaProduto = findViewById(R.id.tvEmpresaProduto);
         imgProduto = findViewById(R.id.imgProduto);
-        Button btnComprar = findViewById(R.id.btnComprarProduto);
-        Button btnNegociar = findViewById(R.id.btnNegociarProduto);
+        Button btnAdicionarAoCarrinho = findViewById(R.id.btnAdicionarAoCarrinho);
 
         //Instanciando progress dialog
         progressDialog = new ProgressDialog(this);
@@ -81,14 +80,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         //Instanciando objeto para verificar conexão
         verificaConexao = new VerificaConexao(this);
 
-        btnNegociar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Helper.criarToast(getApplicationContext(), "Em construção...");
-            }
-        });
-
-        btnComprar.setOnClickListener(new View.OnClickListener() {
+        btnAdicionarAoCarrinho.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 iniciarCompra();

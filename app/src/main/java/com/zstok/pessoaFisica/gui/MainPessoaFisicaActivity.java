@@ -33,7 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.zstok.compra.gui.CarrinhoCompraActivity;
+import com.zstok.carrinhoCompra.gui.CarrinhoCompraActivity;
 import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;

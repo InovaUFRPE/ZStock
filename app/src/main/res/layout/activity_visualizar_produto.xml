@@ -6,14 +6,13 @@
     android:orientation="vertical"
     android:layout_height="match_parent"
     android:background="@color/jabuticaba">
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="wrap_content"
@@ -32,16 +31,16 @@
                 android:paddingRight="@dimen/drawable_padding"
                 android:paddingStart="@dimen/drawable_padding"
                 android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/imgProduto"
                 android:layout_width="250dp"
                 android:layout_height="250dp"
                 android:layout_below="@+id/tvNomeProduto"
-                android:layout_marginTop="@dimen/margin_top"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/margin_top"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_camera2" />
 
@@ -60,14 +59,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_alignTop="@+id/tvTextoEmpresaProduto"
-                android:layout_toRightOf="@id/tvTextoEmpresaProduto"
                 android:layout_toEndOf="@id/tvTextoEmpresaProduto"
+                android:layout_toRightOf="@id/tvTextoEmpresaProduto"
                 android:autoLink="web"
-                android:textColor="@color/white"
-                android:textSize="18sp"
                 android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 android:paddingStart="20dp"
-                android:paddingRight="20dp"/>
+                android:textColor="@color/white"
+                android:textSize="18sp" />
 
             <View
                 android:id="@+id/vwNomeEmpresaProduto"
@@ -86,7 +85,7 @@
                 android:layout_marginTop="@dimen/margin_top"
                 android:text="@string/zs_texto_quantidade_disponivel_produto"
                 android:textColor="@color/white"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/tvQuantidadeDisponivelProduto"
@@ -94,9 +93,9 @@
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_toRightOf="@id/tvTextoQuantidadeDisponivel"
-                android:layout_toEndOf="@id/tvTextoQuantidadeDisponivel"
                 android:layout_alignTop="@+id/tvTextoQuantidadeDisponivel"
+                android:layout_toEndOf="@id/tvTextoQuantidadeDisponivel"
+                android:layout_toRightOf="@id/tvTextoQuantidadeDisponivel"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingStart="20dp"
@@ -120,7 +119,7 @@
                 android:layout_marginTop="@dimen/margin_top"
                 android:text="@string/zs_texto_preco_produto"
                 android:textColor="@color/white"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/tvPrecoProduto"
@@ -128,9 +127,9 @@
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_toRightOf="@id/tvTextoPrecoProduto"
-                android:layout_toEndOf="@id/tvTextoPrecoProduto"
                 android:layout_alignTop="@+id/tvTextoPrecoProduto"
+                android:layout_toEndOf="@id/tvTextoPrecoProduto"
+                android:layout_toRightOf="@id/tvTextoPrecoProduto"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingStart="20dp"
@@ -160,13 +159,13 @@
                 android:id="@+id/tvDescricaoProduto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/tvTextoDescricaoProduto"
-                android:layout_toEndOf="@id/tvTextoDescricaoProduto"
                 android:layout_alignTop="@+id/tvTextoDescricaoProduto"
+                android:layout_toEndOf="@id/tvTextoDescricaoProduto"
+                android:layout_toRightOf="@id/tvTextoDescricaoProduto"
+                android:paddingBottom="20dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingStart="20dp"
-                android:paddingBottom="20dp"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
 
@@ -180,28 +179,15 @@
                 android:background="@color/cloudGrey" />
 
             <Button
-                android:id="@+id/btnNegociarProduto"
+                android:id="@+id/btnAdicionarAoCarrinho"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvDescricaoProduto"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/vwDescricaoProduto"
                 android:layout_marginTop="@dimen/margin_top"
-                android:layout_marginLeft="70dp"
-                android:layout_marginStart="70dp"
-                android:text="@string/zs_btn_negociar_produto"
-                android:background="@color/goiaba"/>
-
-            <Button
-                android:id="@+id/btnComprarProduto"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvDescricaoProduto"
-                android:layout_toRightOf="@id/btnNegociarProduto"
-                android:layout_toEndOf="@id/btnNegociarProduto"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"
-                android:layout_alignTop="@+id/btnNegociarProduto"
-                android:text="@string/zs_btn_comprar_produto"
-                android:background="@color/goiaba"/>
+                android:background="@color/goiaba"
+                android:padding="5dp"
+                android:text="@string/zs_btn_adicionar_carrinho" />
 
         </RelativeLayout>
     </ScrollView>

@@ -1,4 +1,4 @@
-package com.zstok.compra.gui;
+package com.zstok.carrinhoCompra.gui;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -23,8 +23,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
-import com.zstok.compra.adapter.ItemCompraListHolder;
+import com.zstok.carrinhoCompra.adapter.ItemCompraListHolder;
 import com.zstok.infraestrutura.utils.FirebaseController;
+import com.zstok.infraestrutura.utils.Helper;
+import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.itemcompra.dominio.ItemCompra;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.produto.dominio.Produto;
@@ -37,6 +39,8 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     private FirebaseRecyclerAdapter adapter;
     private RecyclerView recyclerViewItens;
     private TextView tvTotalCardViewItemCompra;
+
+    private VerificaConexao verificaConexao;
 
     private double total;
 
@@ -66,12 +70,56 @@ public class CarrinhoCompraActivity extends AppCompatActivity
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(CarrinhoCompraActivity.this);
         recyclerViewItens.setLayoutManager(layoutManager);
 
+        //Inicializando o objeto da classe VerificaConexao
+        verificaConexao = new VerificaConexao(this);
+
         //Preenchendo recyclerView
         criandoAdapter();
+
+        //Evento finalizar compra
+        btnFinalizarCompra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (verificaConexao.isConected()){
+                    //1 - Verificar se produto esta disponível 2- Diminuir quantidade firebase
+
+                    FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            Iterable<DataSnapshot> produtosCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).getChildren();
+                            //Validando quantidade
+                            for(DataSnapshot child: produtosCarrinho){
+                                ItemCompra itemCompra = child.getValue(ItemCompra.class);
+                                Produto produtoCompra = dataSnapshot.child("produto").child(itemCompra.getIdProduto()).getValue(Produto.class);
+                                if (itemCompra.getQuantidade() > produtoCompra.getQuantidadeEstoque() ){
+                                    Helper.criarToast(getApplicationContext(), "Quantidade de "+produtoCompra.getNome()+" indisponível!");
+                                    break;
+                                }else {
+
+                                }
+
+
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+                //Setar maximo total para 50.000 - ANTES DE ADD AO CARRINHO TEM QUE VER QUANTO ELE TEM DE TOTAL
+            }
+        });
+
+        //total
     }
     //Montando adapter e jogando no list holder
     private void criandoAdapter() {
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("carrinhoCompra");
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("carrinhoCompra").child(FirebaseController.getUidUser());
 
         if (databaseReference != null) {
 
@@ -162,4 +210,5 @@ public class CarrinhoCompraActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }

@@ -83,8 +83,8 @@ public class ProdutoDAO {
         boolean verificador;
 
         try {
-            itemCompra.setIdItemCompra( FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).push().getKey());
-            FirebaseController.getFirebase().child("carrinhoCompra").child(itemCompra.getIdItemCompra()).setValue(itemCompra);
+            itemCompra.setIdItemCompra(FirebaseController.getFirebase().child("carrinhoCompra").push().getKey());
+            FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child(itemCompra.getIdItemCompra()).setValue(itemCompra);
             verificador = true;
         }catch (DatabaseException e){
             verificador = false;
