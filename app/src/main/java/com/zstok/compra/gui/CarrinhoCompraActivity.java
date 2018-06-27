@@ -25,13 +25,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
 import com.zstok.compra.adapter.ItemCompraListHolder;
 import com.zstok.infraestrutura.utils.FirebaseController;
-import com.zstok.infraestrutura.utils.Helper;
-import com.zstok.infraestrutura.utils.MoneyTextWatcher;
 import com.zstok.itemcompra.dominio.ItemCompra;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.produto.dominio.Produto;
 
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 
 public class CarrinhoCompraActivity extends AppCompatActivity
