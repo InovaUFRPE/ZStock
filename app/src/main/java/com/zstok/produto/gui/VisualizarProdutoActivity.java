@@ -241,6 +241,8 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
                     int quantidadeItens = Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString());
                     BigDecimal precoItem = MoneyTextWatcher.convertToBigDecimal(tvPrecoProduto.getText().toString());
                     tvTotalDialogoCompra.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(precoItem.multiply(new BigDecimal(quantidadeItens)))));
+                }else {
+                    tvTotalDialogoCompra.setText("");
                 }
             }
         });

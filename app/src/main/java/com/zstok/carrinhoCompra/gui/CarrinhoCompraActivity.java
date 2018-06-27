@@ -82,7 +82,6 @@ public class CarrinhoCompraActivity extends AppCompatActivity
             public void onClick(View v) {
                 if (verificaConexao.isConected()){
                     //1 - Verificar se produto esta disponível 2- Diminuir quantidade firebase
-
                     FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -92,18 +91,12 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                             for(DataSnapshot child: produtosCarrinho){
                                 ItemCompra itemCompra = child.getValue(ItemCompra.class);
                                 Produto produtoCompra = dataSnapshot.child("produto").child(itemCompra.getIdProduto()).getValue(Produto.class);
-                                if (itemCompra.getQuantidade() > produtoCompra.getQuantidadeEstoque() ){
-                                    Helper.criarToast(getApplicationContext(), "Quantidade de "+produtoCompra.getNome()+" indisponível!");
+                                if (itemCompra.getQuantidade() > produtoCompra.getQuantidadeEstoque() ) {
+                                    Helper.criarToast(getApplicationContext(), "Quantidade de " + produtoCompra.getNome() + " indisponível!");
                                     break;
-                                }else {
-
                                 }
-
-
-
                             }
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
 

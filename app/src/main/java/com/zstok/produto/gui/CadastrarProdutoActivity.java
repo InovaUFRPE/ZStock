@@ -110,6 +110,12 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         if (edtPrecoProduto.getText().toString().isEmpty() || edtPrecoProduto.getText().toString().trim().length() == 0){
             edtPrecoProduto.setError(getString(R.string.zs_excecao_campo_vazio));
             verificador = false;
+        }else {
+            BigDecimal precoProduto = MoneyTextWatcher.convertToBigDecimal(edtPrecoProduto.getText().toString());
+            if ((precoProduto.compareTo(new BigDecimal(50000))) == 1){
+                edtPrecoProduto.setError("Preco do produto excede o máximo: R$ 50.000,00");
+                verificador = false;
+            }
         }
         if (edtQuantidadeEstoqueProduto.getText().toString().isEmpty() || edtQuantidadeEstoqueProduto.getText().toString().trim().length() == 0){
             edtQuantidadeEstoqueProduto.setError(getString(R.string.zs_excecao_campo_vazio));
@@ -125,12 +131,6 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
             verificador = false;
         }
 
-        BigDecimal precoProduto = MoneyTextWatcher.convertToBigDecimal(edtPrecoProduto.getText().toString());
-        BigDecimal bigDecimal1 = new BigDecimal(50000);
-        if ((precoProduto.compareTo(bigDecimal1)) == 1){
-            edtPrecoProduto.setError("Preco do produto excede o máximo: R$ 50.000,00");
-            verificador = false;
-        }
         return verificador;
     }
     //Permissão para ler e gravar arquivos do celular

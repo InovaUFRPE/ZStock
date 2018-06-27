@@ -81,6 +81,7 @@ public class MeusProdutosActivity extends AppCompatActivity
                 criandoAdapterPesquisa(Helper.removerAcentos(edtPesquisaProdutoPessoaJuridica.getText().toString().toLowerCase()));
             }
         });
+
         //Evento de pesquisa
         edtPesquisaProdutoPessoaJuridica.addTextChangedListener(new TextWatcher() {
             @Override
