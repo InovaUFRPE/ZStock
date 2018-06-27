@@ -54,7 +54,7 @@
             android:layout_toRightOf="@+id/imgCardViewProduto"
             android:text="Preço:"
             android:textStyle="bold"
-            android:id="@+id/textView" />
+            android:id="@+id/tvTotal" />
 
         <TextView
             android:id="@+id/precoCardViewProduto"
@@ -64,8 +64,8 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/nomeCardViewProduto"
             android:layout_marginTop="17dp"
-            android:layout_toEndOf="@+id/textView"
-            android:layout_toRightOf="@+id/textView"
+            android:layout_toEndOf="@+id/tvTotal"
+            android:layout_toRightOf="@+id/tvTotal"
             android:text="Preço" />
         <!-- TAG QUANTIDADE-->
         <TextView

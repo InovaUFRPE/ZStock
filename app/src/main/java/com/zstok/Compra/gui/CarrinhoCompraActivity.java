@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -51,6 +52,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
         //Instanciando view
         tvTotalCardViewItemCompra = findViewById(R.id.tvTotalCardViewItemCompra);
+        Button btnFinalizarCompra = findViewById(R.id.btnFinalizarCompra);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

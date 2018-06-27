@@ -35,7 +35,11 @@
     <string name="zs_texto_quantidade_disponivel_produto">Quantidade disponível:</string>
     <string name="zs_texto_empresa_produto">Empresa:</string>
     <string name="zs_texto_descricao_produto">Descrição:</string>
+    <string name="zs_texto_total_compra">TOTAL</string>
     <string name="zs_texto_nome_produto">Nome do produto</string>
+    <string name="zs_texto_registro">Não é registrado?</string>
+    <string name="zs_texto_registre_se"><b><u>Registre-se</u></b></string>
+    <string name="zs_texto_esqueceu_senha"><u>Não sei minha senha!</u></string>
 
     <string name="zs_dialogo_sim">Sim</string>
     <string name="zs_dialogo_nao">Não</string>
@@ -51,10 +55,6 @@
     <string name="zs_texto_total_dialogo_compra">TOTAL:</string>
     <string name="zs_hint_quantidade_dialogo_compra">Digite a quantidade desejada</string>
 
-    <string name="zs_txt_registro">Não é registrado?</string>
-    <string name="zs_txt_registre_se"><b><u>Registre-se</u></b></string>
-    <string name="zs_txt_esqueceu_senha"><u>Não sei minha senha!</u></string>
-
     <string name="zs_btn_entrar">Entrar</string>
     <string name="zs_btn_cadastrar">Cadastrar</string>
     <string name="zs_btn_alterar">Alterar</string>
@@ -67,6 +67,7 @@
     <string name="zs_btn_alterar_data_nascimento">Alterar data de nascimento</string>
     <string name="zs_btn_negociar_produto">Negociar</string>
     <string name="zs_btn_comprar_produto">Comprar</string>
+    <string name="zs_btn_finalizar_compra">Finalizar compra</string>
 
     <string name="zs_sucesso_usuario_cadastrado">Usuário cadastrado com sucesso!</string>
     <string name="zs_email_enviado_sucesso">Email enviado com sucesso!</string>

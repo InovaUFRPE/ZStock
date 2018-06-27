@@ -5,8 +5,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         tools:context="com.zstok.compra.gui.CarrinhoCompraActivity"
         android:background="@color/jabuticaba"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:showIn="@layout/app_bar_carrinho_compra">
 
@@ -14,34 +14,60 @@
         android:id="@+id/recyclerItensCarrinho"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="35dp"
+        android:layout_marginBottom="130dp"
         android:padding="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/padding_left"
-        android:paddingRight="@dimen/padding_left"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:text="TOTAL:"
-        android:textSize="25sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/tvTotalCardViewItemCompra"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/padding_left"
-        android:paddingRight="@dimen/padding_left"
+        android:layout_height="130dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/textView"
-        android:layout_toEndOf="@id/textView"
-        android:textSize="25sp" />
+        android:background="@color/cimento">
 
+        <TextView
+            android:id="@+id/tvTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btnFinalizarCompra"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="start"
+            android:paddingLeft="@dimen/padding_left"
+            android:paddingRight="@dimen/padding_left"
+            android:text="@string/zs_texto_total_compra"
+            android:textColor="@color/preto"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvTotalCardViewItemCompra"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/padding_left"
+            android:paddingRight="@dimen/padding_left"
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:layout_toRightOf="@id/tvTotal"
+            android:layout_toEndOf="@id/tvTotal"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="@color/preto"/>
+
+        <Button
+            android:id="@+id/btnFinalizarCompra"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/tvTotalCardViewItemCompra"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="13dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/borda_goiaba"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="@string/zs_btn_finalizar_compra"/>
+    </RelativeLayout>
 </RelativeLayout>
