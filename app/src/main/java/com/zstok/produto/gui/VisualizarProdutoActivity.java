@@ -252,6 +252,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         ItemCompra itemCompra = new ItemCompra();
 
         itemCompra.setIdProduto(idProduto);
+        itemCompra.setValor(MoneyTextWatcher.convertToBigDecimal(tvPrecoProduto.getText().toString()).doubleValue());
         itemCompra.setQuantidade(Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString()));
 
         return itemCompra;
@@ -261,10 +262,10 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").exists()){
+                if(dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).exists()){
                     Double totalCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").getValue(Double.class);
                     Double precoProduto = dataSnapshot.child("produto").child(idProduto).child("precoSugerido").getValue(Double.class);
-                    if(totalCarrinho+(precoProduto*Double.valueOf(edtQuantidadeDialogoCompra.getText().toString())) <= 50000.0){
+                    if((totalCarrinho+(precoProduto*Double.valueOf(edtQuantidadeDialogoCompra.getText().toString()))) <= 50000.0){
                         if (ProdutoServices.adicionarProdutoCarrinho(criarItemCompra(),dataSnapshot)){
                             alertaCompra.dismiss();
                             abrirTelaMainPessoaFisicaActivity();

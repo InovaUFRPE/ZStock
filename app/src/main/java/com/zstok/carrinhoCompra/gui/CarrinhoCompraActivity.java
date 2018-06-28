@@ -85,7 +85,6 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                     FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-
                             Iterable<DataSnapshot> produtosCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).getChildren();
                             //Validando quantidade
                             for(DataSnapshot child: produtosCarrinho){
@@ -102,17 +101,14 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
                         }
                     });
-
                 }
                 //Setar maximo total para 50.000 - ANTES DE ADD AO CARRINHO TEM QUE VER QUANTO ELE TEM DE TOTAL
             }
         });
-
-        //total
     }
     //Montando adapter e jogando no list holder
     private void criandoAdapter() {
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("carrinhoCompra").child(FirebaseController.getUidUser());
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra");
 
         if (databaseReference != null) {
 
@@ -203,5 +199,4 @@ public class CarrinhoCompraActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 }

@@ -4,7 +4,7 @@ public class ItemCompra {
 
     private String idItemCompra;
     private String idProduto;
-    private Double valor;
+    private double valor;
     private int quantidade;
 
     public String getIdItemCompra() {
@@ -13,10 +13,10 @@ public class ItemCompra {
     public void setIdItemCompra(String idItemCompra) {
         this.idItemCompra = idItemCompra;
     }
-    public Double getValor() {
+    public double getValor() {
         return valor;
     }
-    public void setValor(Double valor) {
+    public void setValor(double valor) {
         this.valor = valor;
     }
     public Integer getQuantidade() {
