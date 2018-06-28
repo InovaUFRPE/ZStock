@@ -258,11 +258,42 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     }
     //Chamando camada de negócio para fazer a redução da quantidade
     private void adicionarProdutoCarrinho(){
-        if (ProdutoServices.adicionarProdutoCarrinho(criarItemCompra())){
-            alertaCompra.dismiss();
-            abrirTelaMainPessoaFisicaActivity();
-            Helper.criarToast(getApplicationContext(), getString(R.string.zs_adicionar_carrinho_compra_sucesso));
-        }
+        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").exists()){
+                    Double totalCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").getValue(Double.class);
+                    Double precoProduto = dataSnapshot.child("produto").child(idProduto).child("precoSugerido").getValue(Double.class);
+                    if(totalCarrinho+(precoProduto*Double.valueOf(edtQuantidadeDialogoCompra.getText().toString())) <= 50000.0){
+                        if (ProdutoServices.adicionarProdutoCarrinho(criarItemCompra(),dataSnapshot)){
+                            alertaCompra.dismiss();
+                            abrirTelaMainPessoaFisicaActivity();
+                            Helper.criarToast(getApplicationContext(), getString(R.string.zs_adicionar_carrinho_compra_sucesso));
+                        }else{
+                            Helper.criarToast(getApplicationContext(),"Erro ao adicionar o produto, boy!");
+                        }
+                    }else{
+                        Helper.criarToast(getApplicationContext(),"Valor do carrinho acima de 50k papai");
+                    }
+
+                }else{
+                    if (ProdutoServices.adicionarProdutoCarrinho(criarItemCompra(),dataSnapshot)){
+                        alertaCompra.dismiss();
+                        abrirTelaMainPessoaFisicaActivity();
+                        Helper.criarToast(getApplicationContext(), getString(R.string.zs_adicionar_carrinho_compra_sucesso));
+                    }else{
+                        Helper.criarToast(getApplicationContext(),"Erro ao adicionar o produto, boy!");
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
     //Validando compra
     private boolean validarClickCompra(){

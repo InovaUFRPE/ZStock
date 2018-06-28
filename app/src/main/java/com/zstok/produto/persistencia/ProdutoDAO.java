@@ -3,6 +3,7 @@ package com.zstok.produto.persistencia;
 import android.net.Uri;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -79,9 +80,19 @@ public class ProdutoDAO {
         FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("descricao").setValue(produto.getDescricao());
     }
     //Método provisório
-    public static boolean adicionarProdutoCarrinho(ItemCompra itemCompra){
+    public static boolean adicionarProdutoCarrinho(ItemCompra itemCompra, DataSnapshot dataSnapshot){
         boolean verificador;
 
+        //Verificando a existencia do TOTAL
+        if(dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").exists()){
+            Double totalCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").getValue(Double.class);
+            FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").setValue(totalCarrinho+(itemCompra.getValor()*itemCompra.getQuantidade()));
+
+        }else{
+            FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").setValue(itemCompra.getValor()*itemCompra.getQuantidade());
+        }
+
+        //Adicionando o item ao carrinho de compra
         try {
             itemCompra.setIdItemCompra(FirebaseController.getFirebase().child("carrinhoCompra").push().getKey());
             FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child(itemCompra.getIdItemCompra()).setValue(itemCompra);
