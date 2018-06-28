@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
 import com.zstok.carrinhoCompra.adapter.ItemCompraListHolder;
+import com.zstok.carrinhoCompra.negocio.CarrinhoCompraServices;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.VerificaConexao;
@@ -73,6 +74,8 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
         //Inicializando o objeto da classe VerificaConexao
         verificaConexao = new VerificaConexao(this);
+
+        //Preenchendo recyclerView
         criarAdapter();
 
         FirebaseController.getFirebase().child("produto").addChildEventListener(new ChildEventListener() {
@@ -83,11 +86,9 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                atualizarCarrinhoCompra();
+                atualizarCarrinhoCompra(dataSnapshot.getKey());
                 //Preenchendo recyclerView
                 criarAdapter();
-
-
             }
 
             @Override
@@ -105,7 +106,6 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
             }
         });
-
         //Evento finalizar compra
         btnFinalizarCompra.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,16 +115,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                     FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            Iterable<DataSnapshot> produtosCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).getChildren();
-                            //Validando quantidade
-                            for(DataSnapshot child: produtosCarrinho){
-                                ItemCompra itemCompra = child.getValue(ItemCompra.class);
-                                Produto produtoCompra = dataSnapshot.child("produto").child(itemCompra.getIdProduto()).getValue(Produto.class);
-                                if (itemCompra.getQuantidade() > produtoCompra.getQuantidadeEstoque() ) {
-                                    Helper.criarToast(getApplicationContext(), "Quantidade de " + produtoCompra.getNome() + " indisponível!");
-                                    break;
-                                }
-                            }
+                            verificaQuantidade(dataSnapshot);
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
@@ -132,29 +123,54 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                         }
                     });
                 }
-                //Setar maximo total para 50.000 - ANTES DE ADD AO CARRINHO TEM QUE VER QUANTO ELE TEM DE TOTAL
             }
         });
     }
-    private void atualizarCarrinhoCompra(){
+    //Verificando quantidade da compra
+    private void verificaQuantidade(DataSnapshot dataSnapshot) {
+        Iterable<DataSnapshot> produtosCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
+        //Validando quantidade
+        for(DataSnapshot itemSnapshot: produtosCarrinho){
+            ItemCompra itemCompra = itemSnapshot.getValue(ItemCompra.class);
+            Produto produtoCompra = dataSnapshot.child("produto").child(itemCompra.getIdProduto()).getValue(Produto.class);
+            if (itemCompra.getQuantidade() > produtoCompra.getQuantidadeEstoque() ) {
+                Helper.criarToast(getApplicationContext(), "Quantidade de " + produtoCompra.getNome() + " indisponível!");
+                break;
+            }else {
+                reduzirQuantidade(produtoCompra, itemCompra);
+            }
+        }
+    }
+    private void reduzirQuantidade(Produto produto, ItemCompra itemCompra){
+        int quantidadeNova = produto.getQuantidadeEstoque() - itemCompra.getQuantidade();
+        produto.setQuantidadeEstoque(quantidadeNova);
+        //Chamando camada de negócio para inserir nova quantidade
+        CarrinhoCompraServices.reduzirQuantidade(produto);
+    }
+    //Método que atualiza carrinho compra
+    private void atualizarCarrinhoCompra(final String idAlterado){
         FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).exists()) {
-                    Iterable<DataSnapshot> itemCompraCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
-                    //Validando quantidade
-                    double total = 0.0;
-                    for (DataSnapshot itemCompra : itemCompraCarrinho) {
-                        //Pegando o ID e QUANTIDADE do produto
-                        String idProduto = itemCompra.child("idProduto").getValue(String.class);
-                        Integer quantidade = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(itemCompra.getKey()).child("quantidade").getValue(Integer.class);
-
-                        Double precoProduto = dataSnapshot.child("produto").child(idProduto).child("precoSugerido").getValue(Double.class);
-                        FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(itemCompra.getKey()).child("valor").setValue(precoProduto);
-                        //Recalculando o total
-                        total += precoProduto * quantidade;
+                if ((dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).exists())) {
+                    Produto produto = dataSnapshot.child("produto").child(idAlterado).getValue(Produto.class);
+                    Double total = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").getValue(Double.class);
+                    if (produto != null) {
+                        Iterable<DataSnapshot> itensCompra = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
+                        for (DataSnapshot dataSnapshotChild: itensCompra){
+                            ItemCompra itemCompra = dataSnapshotChild.getValue(ItemCompra.class);
+                            String idProduto = dataSnapshotChild.child("idProduto").getValue(String.class);
+                            if ((idProduto.equals(idAlterado))) {
+                                if (alterarValorItemCompra(itemCompra, produto)){
+                                    inserirTotal(produto, total, itemCompra);
+                                }else {
+                                    Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
+                                }
+                            }else {
+                                Helper.criarToast(getApplicationContext(), idAlterado);
+                            }
+                        }
                     }
-                    FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child("total").setValue(total);
                 }else{
                     Helper.criarToast(getApplicationContext(), "Carrinho vazio");
                 }
@@ -164,6 +180,19 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
             }
         });
+    }
+
+    private void inserirTotal(Produto produto, Double total, ItemCompra itemCompra) {
+        itemCompra.setValor(produto.getPrecoSugerido());
+        double difPrecoTotal = Math.abs((itemCompra.getValor() * itemCompra.getQuantidade()) - total);
+        double novoTotal = Math.abs(total - difPrecoTotal);
+        
+        CarrinhoCompraServices.inserirTotal(novoTotal);
+    }
+
+    //Método que calcula o novo total
+    private boolean alterarValorItemCompra(ItemCompra itemCompra, Produto produto) {
+        return CarrinhoCompraServices.alterarValorItemCompra(itemCompra, produto);
     }
     //Montando adapter e jogando no list holder
     private void criarAdapter() {
@@ -179,7 +208,6 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
                 @Override
                 protected void populateViewHolder(final ItemCompraListHolder viewHolder, final ItemCompra model, int position) {
-                    getItemCount();
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
 
@@ -197,7 +225,12 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                                     if (produto.getUrlImagem() != null) {
                                         Glide.with(getApplicationContext()).load(produto.getUrlImagem()).into(viewHolder.imgCardViewItemCompra);
                                     }
-                                    calcularTotal(produto.getPrecoSugerido(), model.getQuantidade());
+                                    if (getItemCount() == 0){
+                                        calcularTotal(produto.getPrecoSugerido(), model.getQuantidade());
+                                    }else {
+                                        tvTotalCardViewItemCompra.setText(NumberFormat.getCurrencyInstance().format(dataSnapshot.child("carrinhoCompra")
+                                                .child(FirebaseController.getUidUser()).child("total").getValue(Double.class)));
+                                    }
                                 }
                             }
                         }

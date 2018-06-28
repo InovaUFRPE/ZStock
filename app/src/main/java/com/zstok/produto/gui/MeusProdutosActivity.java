@@ -161,7 +161,7 @@ public class MeusProdutosActivity extends AppCompatActivity
     }
     //Montando adapter e jogando no list holder
     private void criandoAdapterPesquisa(String pesquisa) {
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("produto");
+        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
         Query query = databaseReference.orderByChild("nomePesquisa").startAt(pesquisa).endAt(pesquisa+"\uf8ff");
 
         if (query != null) {
@@ -207,7 +207,7 @@ public class MeusProdutosActivity extends AppCompatActivity
     }
     //Montando adapter e jogando no list holder
     private void criandoAdapter() {
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("produto");
+        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
         Query queryAdapter = databaseReference.orderByChild("idEmpresa").equalTo(FirebaseController.getUidUser());
         if (queryAdapter != null) {
 
