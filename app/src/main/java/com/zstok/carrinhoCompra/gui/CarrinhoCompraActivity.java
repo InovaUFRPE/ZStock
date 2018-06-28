@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -72,9 +73,38 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
         //Inicializando o objeto da classe VerificaConexao
         verificaConexao = new VerificaConexao(this);
+        criarAdapter();
 
-        //Preenchendo recyclerView
-        criandoAdapter();
+        FirebaseController.getFirebase().child("produto").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                atualizarCarrinhoCompra();
+                //Preenchendo recyclerView
+                criarAdapter();
+
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         //Evento finalizar compra
         btnFinalizarCompra.setOnClickListener(new View.OnClickListener() {
@@ -106,8 +136,37 @@ public class CarrinhoCompraActivity extends AppCompatActivity
             }
         });
     }
+    private void atualizarCarrinhoCompra(){
+        FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).exists()) {
+                    Iterable<DataSnapshot> itemCompraCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
+                    //Validando quantidade
+                    double total = 0.0;
+                    for (DataSnapshot itemCompra : itemCompraCarrinho) {
+                        //Pegando o ID e QUANTIDADE do produto
+                        String idProduto = itemCompra.child("idProduto").getValue(String.class);
+                        Integer quantidade = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(itemCompra.getKey()).child("quantidade").getValue(Integer.class);
+
+                        Double precoProduto = dataSnapshot.child("produto").child(idProduto).child("precoSugerido").getValue(Double.class);
+                        FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(itemCompra.getKey()).child("valor").setValue(precoProduto);
+                        //Recalculando o total
+                        total += precoProduto * quantidade;
+                    }
+                    FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child("total").setValue(total);
+                }else{
+                    Helper.criarToast(getApplicationContext(), "Carrinho vazio");
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
     //Montando adapter e jogando no list holder
-    private void criandoAdapter() {
+    private void criarAdapter() {
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra");
 
         if (databaseReference != null) {
