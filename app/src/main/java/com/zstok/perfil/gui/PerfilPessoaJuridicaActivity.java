@@ -2,7 +2,6 @@ package com.zstok.perfil.gui;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -43,15 +42,13 @@ import com.zstok.pessoaJuridica.dominio.PessoaJuridica;
 import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
 import com.zstok.produto.gui.MeusProdutosActivity;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PerfilPessoaJuridicaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-
+    
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int GALERY_REQUEST_CODE = 71;
 
@@ -333,8 +330,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
                     uriFoto = data.getData();
                     try{
                         Bitmap bitmapFotoPerfil = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFoto);
-                        cvPerfilPessoaJuridica.setImageBitmap(bitmapFotoPerfil);
-                        cvNavHeaderPessoa.setImageBitmap(bitmapFotoPerfil);
+                        setFotoCircleView(bitmapFotoPerfil);
                         inserirFoto(uriFoto);
                     }catch(IOException e ){
                         Log.d("IOException upload", e.getMessage());
@@ -347,15 +343,19 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
                         Bundle extras = data.getExtras();
                         if (extras != null) {
                             Bitmap bitmapFotoPerfil = (Bitmap) extras.get("data");
+                            setFotoCircleView(bitmapFotoPerfil);
                             uriFoto = Helper.getImageUri(getApplicationContext(), bitmapFotoPerfil);
-                            cvPerfilPessoaJuridica.setImageBitmap(bitmapFotoPerfil);
-                            cvNavHeaderPessoa.setImageBitmap(bitmapFotoPerfil);
                             inserirFoto(uriFoto);
                         }
                     }
                 }
             }
         }
+    }
+    //Método para setar foto de perfil e menu lateral
+    private void setFotoCircleView(Bitmap bitmapFotoPerfil) {
+        cvPerfilPessoaJuridica.setImageBitmap(bitmapFotoPerfil);
+        cvNavHeaderPessoa.setImageBitmap(bitmapFotoPerfil);
     }
     //Inserindo imagem no banco
     private void inserirFoto(Uri uriFoto){

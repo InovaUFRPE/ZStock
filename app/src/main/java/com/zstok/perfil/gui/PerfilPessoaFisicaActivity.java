@@ -203,7 +203,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     }
     private void recuperarDados(){
         iniciarProgressDialog();
-        FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
+        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Pessoa pessoa = dataSnapshot.child("pessoa").child(FirebaseController.getUidUser()).getValue(Pessoa.class);
@@ -348,8 +348,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                     uriFoto = data.getData();
                     try{
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFoto);
-                        cvNavHeaderPessoa.setImageBitmap(bitmap);
-                        cvPerfilPessoaFisica.setImageBitmap(bitmap);
+                        setFotoCircleView(bitmap);
                         inserirFoto(uriFoto);
                     }catch(IOException e ){
                         Log.d("IOException upload", e.getMessage());
@@ -362,15 +361,19 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                         Bundle extras = data.getExtras();
                         if (extras != null) {
                             Bitmap bitmap = (Bitmap) extras.get("data");
+                            setFotoCircleView(bitmap);
                             uriFoto = Helper.getImageUri(getApplicationContext(), bitmap);
-                            cvPerfilPessoaFisica.setImageBitmap(bitmap);
-                            cvNavHeaderPessoa.setImageBitmap(bitmap);
                             inserirFoto(uriFoto);
                         }
                     }
                 }
             }
         }
+    }
+    //Método que seta foto do perfil e menu lateral
+    private void setFotoCircleView(Bitmap bitmap) {
+        cvPerfilPessoaFisica.setImageBitmap(bitmap);
+        cvNavHeaderPessoa.setImageBitmap(bitmap);
     }
     //Inserindo imagem no banco
     private void inserirFoto(Uri uriFoto){
