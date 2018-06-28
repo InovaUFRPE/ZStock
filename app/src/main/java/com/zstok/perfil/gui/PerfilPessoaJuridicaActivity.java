@@ -48,7 +48,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PerfilPessoaJuridicaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    
+
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int GALERY_REQUEST_CODE = 71;
 
@@ -114,9 +114,6 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
 
         //Solicitando permissão ao usuário
         permissaoGravarLerArquivos();
-
-        //Carregando foto do perfil
-        carregarFoto();
 
         //Máscaras cnpj e telfone
         Helper.mascaraCnpj(tvCnpjPerfilJuridico);
@@ -209,7 +206,9 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
         if (user != null) {
             if (user.getPhotoUrl() != null) {
                 Glide.with(this).load(user.getPhotoUrl()).into(cvPerfilPessoaJuridica);
+                progressDialog.dismiss();
             }
+            progressDialog.dismiss();
         }
     }
     //Método que inicializa as instâncias dos itens do menu lateral
@@ -230,6 +229,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
 
                 if (pessoa != null && pessoaJuridica != null){
                     setInformacoesPerfil(pessoa, pessoaJuridica);
+                    carregarFoto();
                 }
             }
 

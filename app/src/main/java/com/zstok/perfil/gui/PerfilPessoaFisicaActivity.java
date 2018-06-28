@@ -102,17 +102,14 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         tvDataNascimentoPerfilFisico = findViewById(R.id.tvDataNascimentoPerfilFisico);
         TextView tvEnderecoPerfilFisico = findViewById(R.id.tvEnderecoPerfilFisico);
 
-        //Solicitando permissão ao usuário, caso o mesmo ainda não tenha permitido a solicitação
-        permissaoGravarLerArquivos();
-
         //Instanciando views do menu lateral
         instanciandoView();
 
         //Carregar dados do menu lateral
         setDadosMenuLateral();
 
-        //Carregando foto do banco de dados e setando para o ImageView
-        carregarFoto();
+        //Solicitando permissão ao usuário, caso o mesmo ainda não tenha permitido a solicitação
+        permissaoGravarLerArquivos();
 
         //Recuperando dados do usuário do banco
         recuperarDados();
@@ -211,6 +208,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
 
                 if (pessoa != null && pessoaFisica != null){
                     setInformacoesPerfil(pessoa, pessoaFisica);
+                    carregarFoto();
                 }
             }
 
@@ -239,7 +237,6 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         tvTelefonePerfilFisico.setText(pessoa.getTelefone());
         tvEnderecoPerfilFisico.setText(pessoa.getEndereco());
         tvDataNascimentoPerfilFisico.setText(pessoaFisica.getDataNascimento());
-        progressDialog.dismiss();
     }
     //Carregando informações do menu lateral
     private void setDadosMenuLateral(){
@@ -384,7 +381,9 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         if (user != null) {
             if (user.getPhotoUrl() != null) {
                 Glide.with(this).load(user.getPhotoUrl()).into(cvPerfilPessoaFisica);
+                progressDialog.dismiss();
             }
+            progressDialog.dismiss();
         }
     }
     //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
