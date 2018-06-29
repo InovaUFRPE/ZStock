@@ -249,14 +249,12 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         produto.setQuantidadeEstoque(Integer.valueOf(edtQuantidadeEstoqueProduto.getText().toString()));
         produto.setDescricao(edtDescricaoProduto.getText().toString());
         produto.setStatus(true);
-        if (uriFoto != null) {
-            produto.setUrlImagem(String.valueOf(uriFoto));
-        }
+
         return produto;
     }
     //Inserindo imagem no banco
     private void inserirProduto(Produto produto){
-        if (ProdutoServices.insereProduto(produto)){
+        if (ProdutoServices.insereProduto(produto, uriFoto)){
             abrirTelaMeusProdutosActivity();
         } else {
             Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));

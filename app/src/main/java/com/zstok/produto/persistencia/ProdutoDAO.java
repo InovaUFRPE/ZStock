@@ -23,26 +23,27 @@ public class ProdutoDAO {
     private static StorageReference storageReference = FirebaseStorage.getInstance().getReference();
 
     //Inserindo foto do produto no banco de dados
-    private static void insereFotoProduto(final Produto produto){
+    private static void insereFotoProduto(final Produto produto, Uri uriFoto){
         StorageReference reference = storageReference.child("images/produtos/" + FirebaseController.getUidUser() + "/" + produto.getIdProduto() + ".bmp");
-        reference.putFile(Uri.parse(produto.getUrlImagem())).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        reference.putFile(uriFoto).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                if (taskSnapshot.getUploadSessionUri() != null) {
-                    produto.setUrlImagem(taskSnapshot.getDownloadUrl().toString());
+                final Uri donwloadUri = taskSnapshot.getDownloadUrl();
+                if (donwloadUri != null) {
+                    FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("urlImagem").setValue(donwloadUri.toString());
                 }
             }
         });
     }
     //Inserindo produto no banco de dados
-    public static boolean insereProduto(Produto produto){
+    public static boolean insereProduto(Produto produto, Uri uriFoto){
         boolean verificador;
 
         try {
             //Setando o idProduto
             produto.setIdProduto(FirebaseController.getFirebase().child("produto").push().getKey());
-            if (produto.getUrlImagem() != null) {
-                insereFotoProduto(produto);
+            if (uriFoto != null) {
+                insereFotoProduto(produto, uriFoto);
             }
             FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).setValue(produto);
             verificador = true;
@@ -79,7 +80,6 @@ public class ProdutoDAO {
     private static void alterarProduto(Produto produto) {
         if (produto.getUrlImagem() != null){
             FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("urlImagem").setValue(produto.getUrlImagem());
-            insereFotoProduto(produto);
         }
         FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("nome").setValue(produto.getNome());
         FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("nomePesquisa").setValue(produto.getNomePesquisa());
