@@ -13,6 +13,11 @@ import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.itemcompra.dominio.ItemCompra;
 import com.zstok.produto.dominio.Produto;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 public class ProdutoDAO {
 
     private static StorageReference storageReference = FirebaseStorage.getInstance().getReference();
@@ -23,7 +28,9 @@ public class ProdutoDAO {
         reference.putFile(Uri.parse(produto.getUrlImagem())).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                produto.setUrlImagem(taskSnapshot.getDownloadUrl().toString());
+                if (taskSnapshot.getUploadSessionUri() != null) {
+                    produto.setUrlImagem(taskSnapshot.getDownloadUrl().toString());
+                }
             }
         });
     }
@@ -62,7 +69,6 @@ public class ProdutoDAO {
 
         try {
             alterarProduto(produto);
-            insereFotoProduto(produto);
             verificador = true;
         }catch (DatabaseException e){
             verificador = false;
@@ -73,6 +79,7 @@ public class ProdutoDAO {
     private static void alterarProduto(Produto produto) {
         if (produto.getUrlImagem() != null){
             FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("urlImagem").setValue(produto.getUrlImagem());
+            insereFotoProduto(produto);
         }
         FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("nome").setValue(produto.getNome());
         FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("nomePesquisa").setValue(produto.getNomePesquisa());

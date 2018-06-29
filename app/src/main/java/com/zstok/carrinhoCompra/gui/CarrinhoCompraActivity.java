@@ -156,20 +156,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                     Produto produto = dataSnapshot.child("produto").child(idAlterado).getValue(Produto.class);
                     Double total = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").getValue(Double.class);
                     if (produto != null) {
-                        Iterable<DataSnapshot> itensCompra = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
-                        for (DataSnapshot dataSnapshotChild: itensCompra){
-                            ItemCompra itemCompra = dataSnapshotChild.getValue(ItemCompra.class);
-                            String idProduto = dataSnapshotChild.child("idProduto").getValue(String.class);
-                            if ((idProduto.equals(idAlterado))) {
-                                if (alterarValorItemCompra(itemCompra, produto)){
-                                    inserirTotal(produto, total, itemCompra);
-                                }else {
-                                    Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
-                                }
-                            }else {
-                                Helper.criarToast(getApplicationContext(), idAlterado);
-                            }
-                        }
+                        resgatarItensComprasCarrinho(dataSnapshot, produto, total, idAlterado);
                     }
                 }else{
                     Helper.criarToast(getApplicationContext(), "Carrinho vazio");
@@ -181,15 +168,31 @@ public class CarrinhoCompraActivity extends AppCompatActivity
             }
         });
     }
-
+    //Método que resgata todos os itens do carrinho de compra
+    private void resgatarItensComprasCarrinho(DataSnapshot dataSnapshot, Produto produto, Double total, String idAlterado) {
+        Iterable<DataSnapshot> itensCompra = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
+        for (DataSnapshot dataSnapshotChild: itensCompra){
+            ItemCompra itemCompra = dataSnapshotChild.getValue(ItemCompra.class);
+            String idProduto = dataSnapshotChild.child("idProduto").getValue(String.class);
+            if ((idProduto.equals(idAlterado))) {
+                if (alterarValorItemCompra(itemCompra, produto)){
+                    inserirTotal(produto, total, itemCompra);
+                }else {
+                    Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
+                }
+            }else {
+                Helper.criarToast(getApplicationContext(), idAlterado);
+            }
+        }
+    }
+    //Inserindo novo total no banco para servir de referência ao método "criarAdapter()"
     private void inserirTotal(Produto produto, Double total, ItemCompra itemCompra) {
         itemCompra.setValor(produto.getPrecoSugerido());
         double difPrecoTotal = Math.abs((itemCompra.getValor() * itemCompra.getQuantidade()) - total);
         double novoTotal = Math.abs(total - difPrecoTotal);
-        
+
         CarrinhoCompraServices.inserirTotal(novoTotal);
     }
-
     //Método que calcula o novo total
     private boolean alterarValorItemCompra(ItemCompra itemCompra, Produto produto) {
         return CarrinhoCompraServices.alterarValorItemCompra(itemCompra, produto);

@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -92,7 +93,7 @@ public class EditarProdutoActivity extends AppCompatActivity {
                 Produto produto = dataSnapshot.getValue(Produto.class);
                 if (produto != null) {
                     if (produto.getUrlImagem() != null) {
-                        recuperarFoto();
+                        recuperarFoto(produto);
                     }
                     edtNomeProduto.setText(produto.getNome());
                     edtPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
@@ -135,30 +136,10 @@ public class EditarProdutoActivity extends AppCompatActivity {
         });
     }
     //Resgatando foto do Storage
-    private void recuperarFoto(){
+    private void recuperarFoto(Produto produto){
         iniciarProgressDialog();
-        StorageReference ref = referenciaStorage.child("images/produtos/" + FirebaseController.getUidUser() + "/" + idProduto + ".bmp");
-
-        try {
-            final File localFile = File.createTempFile("images", "bmp");
-            ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener< FileDownloadTask.TaskSnapshot >() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    Bitmap minhaFoto = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                    cvImagemProduto.setImageBitmap(minhaFoto);
-                    progressDialog.dismiss();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Helper.criarToast(getApplicationContext(), "Erro ao carregar foto!");
-                    progressDialog.dismiss();
-                }
-            });
-        } catch (IOException e) {
-            progressDialog.dismiss();
-            Log.d("IOException downlaod", e.getMessage());
-        }
+        Glide.with(EditarProdutoActivity.this).load(Uri.parse(produto.getUrlImagem())).into(cvImagemProduto);
+        progressDialog.dismiss();
     }
     //Método que inicia o progress dialog
     private void iniciarProgressDialog() {
@@ -235,15 +216,11 @@ public class EditarProdutoActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case GALERY_REQUEST_CODE:
+                Bitmap bitmapCadstrarProduto;
             {
                 if (requestCode == GALERY_REQUEST_CODE && resultCode == RESULT_OK) {
                     uriFoto = data.getData();
-                    try{
-                        Bitmap bitmapCadastrarProduto = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFoto);
-                        cvImagemProduto.setImageBitmap(bitmapCadastrarProduto);
-                    }catch(IOException e ){
-                        Log.d("IOException upload", e.getMessage());
-                    }
+                    Glide.with(EditarProdutoActivity.this).load(uriFoto).into(cvImagemProduto);
                 }
             }
             case CAMERA_REQUEST_CODE: {
@@ -251,9 +228,9 @@ public class EditarProdutoActivity extends AppCompatActivity {
                     if (data != null) {
                         Bundle extras = data.getExtras();
                         if (extras != null) {
-                            Bitmap bitmapCadastrarProduto = (Bitmap) extras.get("data");
-                            uriFoto = Helper.getImageUri(getApplicationContext(), bitmapCadastrarProduto);
-                            cvImagemProduto.setImageBitmap(bitmapCadastrarProduto);
+                            bitmapCadstrarProduto = (Bitmap) extras.get("data");
+                            uriFoto = Helper.getImageUri(getApplicationContext(), bitmapCadstrarProduto);
+                            cvImagemProduto.setImageBitmap(bitmapCadstrarProduto);
                         }
                     }
                 }

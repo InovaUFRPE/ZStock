@@ -2,6 +2,7 @@ package com.zstok.produto.gui;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -138,7 +139,8 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     }
     //Setando campo foto do produto
     private void setarFoto(Produto produto){
-        Glide.with(getApplicationContext()).load(produto.getUrlImagem()).into(imgProduto);
+        Helper.criarToast(getApplicationContext(), produto.getNome());
+        Glide.with(VisualizarProdutoActivity.this).load(Uri.parse(produto.getUrlImagem())).into(imgProduto);
         progressDialog.dismiss();
     }
     //Setando campos da activity

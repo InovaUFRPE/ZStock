@@ -2,6 +2,9 @@ package com.zstok.produto.gui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -10,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -26,11 +30,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
@@ -41,6 +48,8 @@ import com.zstok.produto.adapter.ProdutoListHolder;
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.NumberFormat;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -60,6 +69,7 @@ public class MeusProdutosActivity extends AppCompatActivity
     private FirebaseRecyclerAdapter adapter;
 
     private FirebaseUser user;
+    private StorageReference referenciaStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +80,8 @@ public class MeusProdutosActivity extends AppCompatActivity
 
         //Resgantado usuário atual
         user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+
+        referenciaStorage = FirebaseStorage.getInstance().getReference();
 
         //Instanciando views
         edtPesquisaProdutoPessoaJuridica = findViewById(R.id.edtPesquisaProdutoPessoaJuridica);
@@ -173,19 +185,15 @@ public class MeusProdutosActivity extends AppCompatActivity
 
                 @Override
                 protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
-                    if (model.isStatus()) {
-                        getItemCount();
-                        viewHolder.mainLayout.setVisibility(View.VISIBLE);
-                        viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                        viewHolder.tvCardViewNomeProduto.setText(model.getNome());
-                        viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
-                        viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
-                        viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
-                        if (model.getUrlImagem() != null) {
-                            Glide.with(getApplicationContext()).load(model.getUrlImagem()).into(viewHolder.imgCardViewProduto);
-                        }
-                    }else {
-                        viewHolder.setVisibility(false);
+                    getItemCount();
+                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
+                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
+                    viewHolder.tvCardViewNomeProduto.setText(model.getNome());
+                    viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
+                    viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
+                    viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
+                    if (model.getUrlImagem() != null) {
+                        Glide.with(getApplicationContext()).load(model.getUrlImagem()).into(viewHolder.imgCardViewProduto);
                     }
                 }
                 @NonNull
@@ -219,19 +227,16 @@ public class MeusProdutosActivity extends AppCompatActivity
 
                 @Override
                 protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
-                    if (model.isStatus()) {
-                        getItemCount();
-                        viewHolder.mainLayout.setVisibility(View.VISIBLE);
-                        viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                        viewHolder.tvCardViewNomeProduto.setText(model.getNome());
-                        viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
-                        viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
-                        viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
-                        if (model.getUrlImagem() != null) {
-                            Glide.with(getApplicationContext()).load(model.getUrlImagem()).into(viewHolder.imgCardViewProduto);
-                        }
-                    }else {
-                        viewHolder.setVisibility(false);
+                    getItemCount();
+                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
+                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
+                    viewHolder.tvCardViewNomeProduto.setText(model.getNome());
+                    viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
+                    viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
+                    viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
+                    if (model.getUrlImagem() != null) {
+                        //downloadFoto(viewHolder, model);
+                        Glide.with(MeusProdutosActivity.this).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
                     }
                 }
 

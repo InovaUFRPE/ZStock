@@ -17,6 +17,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.zstok.R;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
@@ -24,6 +29,7 @@ import com.zstok.infraestrutura.utils.MoneyTextWatcher;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
+import com.zstok.produto.persistencia.ProdutoDAO;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -43,7 +49,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
     private CircleImageView cvCadastrarProduto;
 
     private Uri uriFoto;
-
+    private static StorageReference storageReference = FirebaseStorage.getInstance().getReference();
     private VerificaConexao verificaConexao;
 
     @Override
@@ -215,12 +221,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
             {
                 if (requestCode == GALERY_REQUEST_CODE && resultCode == RESULT_OK) {
                     uriFoto = data.getData();
-                    try{
-                        bitmapCadstrarProduto = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFoto);
-                        cvCadastrarProduto.setImageBitmap(bitmapCadstrarProduto);
-                    }catch(IOException e ){
-                        Log.d("IOException upload", e.getMessage());
-                    }
+                    Glide.with(CadastrarProdutoActivity.this).load(uriFoto).into(cvCadastrarProduto);
                 }
             }
             case CAMERA_REQUEST_CODE: {
@@ -249,7 +250,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         produto.setDescricao(edtDescricaoProduto.getText().toString());
         produto.setStatus(true);
         if (uriFoto != null) {
-            produto.setUrlImagem(uriFoto.toString());
+            produto.setUrlImagem(String.valueOf(uriFoto));
         }
         return produto;
     }
