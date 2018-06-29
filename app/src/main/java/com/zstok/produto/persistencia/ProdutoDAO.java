@@ -65,11 +65,11 @@ public class ProdutoDAO {
         return verificador;
     }
     //Retorno alterar produto para GUI
-    public static boolean alterarProdutoVerificador(Produto produto){
+    public static boolean alterarProdutoVerificador(Produto produto, Uri uriFoto){
         boolean verificador;
 
         try {
-            alterarProduto(produto);
+            alterarProduto(produto, uriFoto);
             verificador = true;
         }catch (DatabaseException e){
             verificador = false;
@@ -77,9 +77,9 @@ public class ProdutoDAO {
         return verificador;
     }
     //Alterando produto da árvore de visão do cliente
-    private static void alterarProduto(Produto produto) {
+    private static void alterarProduto(Produto produto, Uri uriFoto) {
         if (produto.getUrlImagem() != null){
-            FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("urlImagem").setValue(produto.getUrlImagem());
+            insereFotoProduto(produto, uriFoto);
         }
         FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("nome").setValue(produto.getNome());
         FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("nomePesquisa").setValue(produto.getNomePesquisa());

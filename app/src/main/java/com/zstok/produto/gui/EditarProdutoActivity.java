@@ -58,8 +58,6 @@ public class EditarProdutoActivity extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
 
-    private StorageReference referenciaStorage;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,9 +68,6 @@ public class EditarProdutoActivity extends AppCompatActivity {
 
         //Instanciando progress dialog
         progressDialog = new ProgressDialog(this);
-
-        //Instancinado storage do firebase
-        referenciaStorage = FirebaseStorage.getInstance().getReference();
 
         cvImagemProduto = findViewById(R.id.cvEditarProduto);
         edtNomeProduto = findViewById(R.id.edtNomeProduto);
@@ -86,25 +81,8 @@ public class EditarProdutoActivity extends AppCompatActivity {
         Locale mLocale = new Locale("pt", "BR");
         edtPrecoProduto.addTextChangedListener(new MoneyTextWatcher(edtPrecoProduto,mLocale));
 
-        FirebaseController.getFirebase().child("produto").child(idProduto)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Produto produto = dataSnapshot.getValue(Produto.class);
-                if (produto != null) {
-                    if (produto.getUrlImagem() != null) {
-                        recuperarFoto(produto);
-                    }
-                    edtNomeProduto.setText(produto.getNome());
-                    edtPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
-                    edtQuantidadeEstoqueProduto.setText(String.valueOf(produto.getQuantidadeEstoque()));
-                    edtDescricaoProduto.setText(produto.getDescricao());
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+        //Recuperando informações do produto
+        recuperarProduto();
 
         Button btnAlterarProduto = findViewById(R.id.btnAlterarProduto);
 
@@ -135,10 +113,33 @@ public class EditarProdutoActivity extends AppCompatActivity {
             }
         });
     }
-    //Resgatando foto do Storage
-    private void recuperarFoto(Produto produto){
+
+    private void recuperarProduto() {
         iniciarProgressDialog();
-        Glide.with(EditarProdutoActivity.this).load(Uri.parse(produto.getUrlImagem())).into(cvImagemProduto);
+        FirebaseController.getFirebase().child("produto").child(idProduto)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Produto produto = dataSnapshot.getValue(Produto.class);
+                if (produto != null) {
+                    if (produto.getUrlImagem() != null) {
+                        recuperarFoto(produto.getUrlImagem());
+                    }
+                    edtNomeProduto.setText(produto.getNome());
+                    edtPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
+                    edtQuantidadeEstoqueProduto.setText(String.valueOf(produto.getQuantidadeEstoque()));
+                    edtDescricaoProduto.setText(produto.getDescricao());
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    //Resgatando foto do Storage
+    private void recuperarFoto(String urlImagemProduto){
+        Glide.with(EditarProdutoActivity.this).load(Uri.parse(urlImagemProduto)).into(cvImagemProduto);
         progressDialog.dismiss();
     }
     //Método que inicia o progress dialog
@@ -183,14 +184,12 @@ public class EditarProdutoActivity extends AppCompatActivity {
         produto.setQuantidadeEstoque(Integer.valueOf(edtQuantidadeEstoqueProduto.getText().toString()));
         produto.setDescricao(edtDescricaoProduto.getText().toString());
         produto.setIdProduto(idProduto);
-        if (uriFoto != null) {
-            produto.setUrlImagem(uriFoto.toString());
-        }
+
         return produto;
     }
     //Inserindo imagem no banco
     private void alterarProduto(Produto produto){
-        if (ProdutoServices.alterarProduto(produto)){
+        if (ProdutoServices.alterarProduto(produto, uriFoto)){
             Helper.criarToast(getApplicationContext(), getString(R.string.zs_produto_alterado_sucesso));
             abrirTelaMeusProdutosActivity();
         } else {

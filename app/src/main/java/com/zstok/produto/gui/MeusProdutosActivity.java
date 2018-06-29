@@ -235,7 +235,6 @@ public class MeusProdutosActivity extends AppCompatActivity
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
                     viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
                     if (model.getUrlImagem() != null) {
-                        //downloadFoto(viewHolder, model);
                         Glide.with(MeusProdutosActivity.this).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
                     }
                 }

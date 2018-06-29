@@ -139,7 +139,6 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     }
     //Setando campo foto do produto
     private void setarFoto(Produto produto){
-        Helper.criarToast(getApplicationContext(), produto.getNome());
         Glide.with(VisualizarProdutoActivity.this).load(Uri.parse(produto.getUrlImagem())).into(imgProduto);
         progressDialog.dismiss();
     }
@@ -273,10 +272,10 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
                             abrirTelaMainPessoaFisicaActivity();
                             Helper.criarToast(getApplicationContext(), getString(R.string.zs_adicionar_carrinho_compra_sucesso));
                         }else{
-                            Helper.criarToast(getApplicationContext(),"Erro ao adicionar o produto, boy!");
+                            Helper.criarToast(getApplicationContext(),getString(R.string.zs_excecao_database));
                         }
                     }else{
-                        Helper.criarToast(getApplicationContext(),"Valor do carrinho acima de 50k papai");
+                        Helper.criarToast(getApplicationContext(),getString(R.string.zs_excecao_quantidade_excedida));
                     }
 
                 }else{
@@ -285,10 +284,9 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
                         abrirTelaMainPessoaFisicaActivity();
                         Helper.criarToast(getApplicationContext(), getString(R.string.zs_adicionar_carrinho_compra_sucesso));
                     }else{
-                        Helper.criarToast(getApplicationContext(),"Erro ao adicionar o produto, boy!");
+                        Helper.criarToast(getApplicationContext(),getString(R.string.zs_excecao_database));
                     }
                 }
-
             }
 
             @Override
@@ -296,7 +294,6 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
 
             }
         });
-
     }
     //Validando compra
     private boolean validarClickCompra(){

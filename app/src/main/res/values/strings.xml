@@ -104,6 +104,7 @@
     <string name="zs_excecao_quantidade_maxima">Quantidade não disponível em estoque!</string>
     <string name="zs_excecao_quantidade_excedida">Valor de compra excedido! Tente comprar uma quantidade menor.</string>
     <string name="zs_excecao_quantidade_invalida">Quantidade inválida!</string>
+    <string name="zs_excecao_carrinho_vazio">Carrinho vazio!</string>
 
     <string name="zs_menu_lateral_perfil">Meu perfil</string>
     <string name="zs_menu_lateral_negociacao">Negociação</string>

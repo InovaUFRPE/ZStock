@@ -198,7 +198,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                     viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
                     if (model.getUrlImagem() != null) {
-                        Glide.with(getApplicationContext()).load(model.getUrlImagem()).into(viewHolder.imgCardViewProduto);
+                        Glide.with(getApplicationContext()).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
                     }
                     FirebaseController.getFirebase().child("pessoa").child(model.getIdEmpresa()).child("nome").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -235,7 +235,6 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
         final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
 
         if (databaseReference != null) {
-
             adapter = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
                     Produto.class,
                     R.layout.card_produto,

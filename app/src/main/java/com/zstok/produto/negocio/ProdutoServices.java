@@ -14,8 +14,8 @@ public class ProdutoServices {
     public static boolean excluirProduto(Produto produto){
         return ProdutoDAO.excluirProduto(produto);
     }
-    public static boolean alterarProduto(Produto produto){
-        return ProdutoDAO.alterarProdutoVerificador(produto);
+    public static boolean alterarProduto(Produto produto, Uri uriFoto){
+        return ProdutoDAO.alterarProdutoVerificador(produto, uriFoto);
     }
     //Método provisório
     public static boolean adicionarProdutoCarrinho(ItemCompra itemCompra, DataSnapshot dataSnapshot){

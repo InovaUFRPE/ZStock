@@ -72,6 +72,9 @@ public class CarrinhoCompraActivity extends AppCompatActivity
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(CarrinhoCompraActivity.this);
         recyclerViewItens.setLayoutManager(layoutManager);
 
+        //Resgatando total do carrinho
+        resgatarTotal();
+
         //Inicializando o objeto da classe VerificaConexao
         verificaConexao = new VerificaConexao(this);
 
@@ -110,18 +113,21 @@ public class CarrinhoCompraActivity extends AppCompatActivity
         btnFinalizarCompra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (verificaConexao.isConected()){
-                    //1 - Verificar se produto esta disponível 2- Diminuir quantidade firebase
-                    FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            verificaQuantidade(dataSnapshot);
-                        }
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                if (verificaConexao.isConected()) {
+                    if (adapter.getItemCount() > 0) {
+                        //1 - Verificar se produto esta disponível 2- Diminuir quantidade firebase
+                        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                verificaQuantidade(dataSnapshot);
+                            }
 
-                        }
-                    });
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -148,18 +154,16 @@ public class CarrinhoCompraActivity extends AppCompatActivity
         CarrinhoCompraServices.reduzirQuantidade(produto);
     }
     //Método que atualiza carrinho compra
-    private void atualizarCarrinhoCompra(final String idAlterado){
+    private void atualizarCarrinhoCompra(final String idProdutoAlterado){
         FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if ((dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).exists())) {
-                    Produto produto = dataSnapshot.child("produto").child(idAlterado).getValue(Produto.class);
+                    Produto produto = dataSnapshot.child("produto").child(idProdutoAlterado).getValue(Produto.class);
                     Double total = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").getValue(Double.class);
                     if (produto != null) {
-                        resgatarItensComprasCarrinho(dataSnapshot, produto, total, idAlterado);
+                        resgatarItensComprasCarrinho(dataSnapshot, produto, total, idProdutoAlterado);
                     }
-                }else{
-                    Helper.criarToast(getApplicationContext(), "Carrinho vazio");
                 }
             }
             @Override
@@ -169,29 +173,36 @@ public class CarrinhoCompraActivity extends AppCompatActivity
         });
     }
     //Método que resgata todos os itens do carrinho de compra
-    private void resgatarItensComprasCarrinho(DataSnapshot dataSnapshot, Produto produto, Double total, String idAlterado) {
+    private void resgatarItensComprasCarrinho(DataSnapshot dataSnapshot, Produto produto, Double total, String idProdutoAlterado) {
         Iterable<DataSnapshot> itensCompra = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
         for (DataSnapshot dataSnapshotChild: itensCompra){
             ItemCompra itemCompra = dataSnapshotChild.getValue(ItemCompra.class);
             String idProduto = dataSnapshotChild.child("idProduto").getValue(String.class);
-            if ((idProduto.equals(idAlterado))) {
+            if ((idProduto.equals(idProdutoAlterado))) {
                 if (alterarValorItemCompra(itemCompra, produto)){
-                    inserirTotal(produto, total, itemCompra);
+                    inserirTotal(produto, itemCompra, total);
+                    resgatarTotal();
                 }else {
                     Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
                 }
-            }else {
-                Helper.criarToast(getApplicationContext(), idAlterado);
             }
         }
     }
     //Inserindo novo total no banco para servir de referência ao método "criarAdapter()"
-    private void inserirTotal(Produto produto, Double total, ItemCompra itemCompra) {
-        itemCompra.setValor(produto.getPrecoSugerido());
-        double difPrecoTotal = Math.abs((itemCompra.getValor() * itemCompra.getQuantidade()) - total);
-        double novoTotal = Math.abs(total - difPrecoTotal);
+    private void inserirTotal(Produto produto, ItemCompra itemCompra, Double total) {
+        if (itemCompra.getValor() > produto.getPrecoSugerido()) {
+            itemCompra.setValor(produto.getPrecoSugerido());
+            double difPrecoTotal = Math.abs((itemCompra.getValor() * itemCompra.getQuantidade()) - total);
+            double novoTotal = Math.abs(total - difPrecoTotal);
 
-        CarrinhoCompraServices.inserirTotal(novoTotal);
+            CarrinhoCompraServices.inserirTotal(novoTotal);
+        }else {
+            itemCompra.setValor(produto.getPrecoSugerido());
+            double difPrecoTotal = Math.abs((itemCompra.getValor() * itemCompra.getQuantidade()) - total);
+            double novoTotal = total + difPrecoTotal;
+
+            CarrinhoCompraServices.inserirTotal(novoTotal);
+        }
     }
     //Método que calcula o novo total
     private boolean alterarValorItemCompra(ItemCompra itemCompra, Produto produto) {
@@ -217,24 +228,28 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                     FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            Produto produto = dataSnapshot.child("produto").child(model.getIdProduto()).getValue(Produto.class);
-                            if (produto != null) {
-                                Pessoa pessoa = dataSnapshot.child("pessoa").child(produto.getIdEmpresa()).getValue(Pessoa.class);
-                                if (pessoa != null){
-                                    viewHolder.tvCardViewNomeItemCompra.setText(produto.getNome());
-                                    viewHolder.tvCardViewPrecoItemCompra.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
-                                    viewHolder.tvCardViewQuantidadeItemCompra.setText(String.valueOf(model.getQuantidade()));
-                                    viewHolder.tvCardViewNomeEmpresa.setText(pessoa.getNome());
-                                    if (produto.getUrlImagem() != null) {
-                                        Glide.with(getApplicationContext()).load(produto.getUrlImagem()).into(viewHolder.imgCardViewItemCompra);
-                                    }
-                                    if (getItemCount() == 0){
-                                        calcularTotal(produto.getPrecoSugerido(), model.getQuantidade());
-                                    }else {
-                                        tvTotalCardViewItemCompra.setText(NumberFormat.getCurrencyInstance().format(dataSnapshot.child("carrinhoCompra")
-                                                .child(FirebaseController.getUidUser()).child("total").getValue(Double.class)));
+                            if (getItemCount() > 0) {
+                                Produto produto = dataSnapshot.child("produto").child(model.getIdProduto()).getValue(Produto.class);
+                                if (produto != null) {
+                                    Pessoa pessoa = dataSnapshot.child("pessoa").child(produto.getIdEmpresa()).getValue(Pessoa.class);
+                                    if (pessoa != null) {
+                                        viewHolder.tvCardViewNomeItemCompra.setText(produto.getNome());
+                                        viewHolder.tvCardViewPrecoItemCompra.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
+                                        viewHolder.tvCardViewQuantidadeItemCompra.setText(String.valueOf(model.getQuantidade()));
+                                        viewHolder.tvCardViewNomeEmpresa.setText(pessoa.getNome());
+                                        if (produto.getUrlImagem() != null) {
+                                            Glide.with(getApplicationContext()).load(produto.getUrlImagem()).into(viewHolder.imgCardViewItemCompra);
+                                        }
+                                        if (getItemCount() == 0) {
+                                            calcularTotal(produto.getPrecoSugerido(), model.getQuantidade());
+                                        } else {
+                                            tvTotalCardViewItemCompra.setText(NumberFormat.getCurrencyInstance().format(dataSnapshot.child("carrinhoCompra")
+                                                    .child(FirebaseController.getUidUser()).child("total").getValue(Double.class)));
+                                        }
                                     }
                                 }
+                            }else{
+                                Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_carrinho_vazio));
                             }
                         }
 
@@ -247,6 +262,21 @@ public class CarrinhoCompraActivity extends AppCompatActivity
             };
             recyclerViewItens.setAdapter(adapter);
         }
+    }
+    //Resgatando total do carrinho
+    private void resgatarTotal(){
+        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                tvTotalCardViewItemCompra.setText(NumberFormat.getCurrencyInstance().format(dataSnapshot.child("carrinhoCompra")
+                        .child(FirebaseController.getUidUser()).child("total").getValue(Double.class)));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
     //Calculando total
     private void calcularTotal(double preco, int quantidade) {

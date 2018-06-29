@@ -49,7 +49,6 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
     private CircleImageView cvCadastrarProduto;
 
     private Uri uriFoto;
-    private static StorageReference storageReference = FirebaseStorage.getInstance().getReference();
     private VerificaConexao verificaConexao;
 
     @Override
