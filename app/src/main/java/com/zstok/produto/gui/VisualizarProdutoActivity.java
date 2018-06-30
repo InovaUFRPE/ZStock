@@ -263,6 +263,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //Verifica se carrinho já existe carrinho.
                 if(dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).exists()){
                     Double totalCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").getValue(Double.class);
                     Double precoProduto = dataSnapshot.child("produto").child(idProduto).child("precoSugerido").getValue(Double.class);

@@ -1,6 +1,7 @@
 package com.zstok.carrinhoCompra.gui;
 
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -119,7 +120,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                verificaQuantidade(dataSnapshot);
+                                verificaCompra(dataSnapshot);
                             }
 
                             @Override
@@ -133,7 +134,17 @@ public class CarrinhoCompraActivity extends AppCompatActivity
         });
     }
     //Verificando quantidade da compra
-    private void verificaQuantidade(DataSnapshot dataSnapshot) {
+
+    private void verificaCompra(DataSnapshot dataSnapshot){
+       if (verificaQuantidade(dataSnapshot)){
+           reduzirQuantidade(dataSnapshot);
+           //GerarHistorico() Vai pra tela historico
+           Helper.criarToast(getApplicationContext(),"Compra efetuada com sucesso!");
+           CarrinhoCompraServices.limparCarrinho();
+
+       }
+    }
+    private boolean verificaQuantidade(DataSnapshot dataSnapshot) {
         Iterable<DataSnapshot> produtosCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
         //Validando quantidade
         for(DataSnapshot itemSnapshot: produtosCarrinho){
@@ -141,17 +152,20 @@ public class CarrinhoCompraActivity extends AppCompatActivity
             Produto produtoCompra = dataSnapshot.child("produto").child(itemCompra.getIdProduto()).getValue(Produto.class);
             if (itemCompra.getQuantidade() > produtoCompra.getQuantidadeEstoque() ) {
                 Helper.criarToast(getApplicationContext(), "Quantidade de " + produtoCompra.getNome() + " indisponível!");
-                break;
-            }else {
-                reduzirQuantidade(produtoCompra, itemCompra);
+                return false;
             }
         }
+        return true;
     }
-    private void reduzirQuantidade(Produto produto, ItemCompra itemCompra){
-        int quantidadeNova = produto.getQuantidadeEstoque() - itemCompra.getQuantidade();
-        produto.setQuantidadeEstoque(quantidadeNova);
-        //Chamando camada de negócio para inserir nova quantidade
-        CarrinhoCompraServices.reduzirQuantidade(produto);
+    private void reduzirQuantidade(DataSnapshot dataSnapshot){
+        Iterable<DataSnapshot> produtosCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
+        for(DataSnapshot itemSnapshot: produtosCarrinho){
+            ItemCompra itemCompra = itemSnapshot.getValue(ItemCompra.class);
+            Produto produto = dataSnapshot.child("produto").child(itemCompra.getIdProduto()).getValue(Produto.class);
+            int quantidadeNova = produto.getQuantidadeEstoque() - itemCompra.getQuantidade();
+            produto.setQuantidadeEstoque(quantidadeNova);
+            CarrinhoCompraServices.reduzirQuantidade(produto);
+        }
     }
     //Método que atualiza carrinho compra
     private void atualizarCarrinhoCompra(final String idProdutoAlterado){

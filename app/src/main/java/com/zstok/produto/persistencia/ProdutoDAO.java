@@ -103,6 +103,17 @@ public class ProdutoDAO {
         }
         //Adicionando o item ao carrinho de compra
         try {
+            //Pesquisa procurando se já existe o item adicionado ao carrinho
+            Iterable<DataSnapshot> produtosCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
+            for(DataSnapshot itemSnapshot: produtosCarrinho) {
+                ItemCompra itemCompraPesquisa = itemSnapshot.getValue(ItemCompra.class);
+                if (itemCompraPesquisa.getIdItemCompra().equals(itemCompra.getIdItemCompra())){
+                    FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(itemCompraPesquisa.getIdItemCompra()).child("quantidade").setValue(itemCompraPesquisa.getQuantidade()+itemCompra.getQuantidade());
+                    verificador = true;
+                    return verificador;
+                }
+            }
+            //Caso não tenha adicionado
             itemCompra.setIdItemCompra(FirebaseController.getFirebase().child("carrinhoCompra").push().getKey());
             FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(itemCompra.getIdItemCompra()).setValue(itemCompra);
             verificador = true;

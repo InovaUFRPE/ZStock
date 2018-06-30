@@ -17,4 +17,8 @@ public class CarrinhoCompraServices {
     public static void inserirTotal(double total){
         CarrinhoCompraDAO.inserirToral(total);
     }
+
+    public static void limparCarrinho(){
+        CarrinhoCompraDAO.limparCarrinho();
+    }
 }
