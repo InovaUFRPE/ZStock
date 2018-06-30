@@ -27,6 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
 import com.zstok.carrinhoCompra.adapter.ItemCompraListHolder;
 import com.zstok.carrinhoCompra.negocio.CarrinhoCompraServices;
+import com.zstok.historico.dominio.Historico;
+import com.zstok.historico.negocio.HistoricoServices;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.VerificaConexao;
@@ -116,7 +118,6 @@ public class CarrinhoCompraActivity extends AppCompatActivity
             public void onClick(View v) {
                 if (verificaConexao.isConected()) {
                     if (adapter.getItemCount() > 0) {
-                        //1 - Verificar se produto esta disponível 2- Diminuir quantidade firebase
                         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -138,7 +139,8 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     private void verificaCompra(DataSnapshot dataSnapshot){
        if (verificaQuantidade(dataSnapshot)){
            reduzirQuantidade(dataSnapshot);
-           //GerarHistorico() Vai pra tela historico
+           HistoricoServices.gerarHistorico(dataSnapshot);
+           //GerarHistorico() Vai pra tela Historico
            Helper.criarToast(getApplicationContext(),"Compra efetuada com sucesso!");
            CarrinhoCompraServices.limparCarrinho();
 
@@ -185,6 +187,27 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
             }
         });
+    }
+    //Gera historico - Cada empresa do produto tem seu próprio histórico
+    private void geraHistorico(DataSnapshot dataSnapshot){
+    //1 - Percorrer carrinho de compra associando os produtos as suas respectivas empresas
+        //Gerar histórico para cada empresa - o histórico é único a empresa
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
     //Método que resgata todos os itens do carrinho de compra
     private void resgatarItensComprasCarrinho(DataSnapshot dataSnapshot, Produto produto, Double total, String idProdutoAlterado) {
