@@ -166,6 +166,7 @@
             android:layout_height="46dp"
             android:layout_below="@id/vwTelefoneEmpresa"
             android:layout_margin="5dp"
+            android:scrollbars="vertical"
             android:backgroundTint="@color/cimento"
             android:drawableLeft="@drawable/ic_endereco"
             android:drawableStart="@drawable/ic_endereco"

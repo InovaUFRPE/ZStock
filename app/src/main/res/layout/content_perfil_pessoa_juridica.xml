@@ -217,9 +217,11 @@
             <TextView
                 android:id="@+id/tvEnderecoPerfilJuridico"
                 android:layout_width="match_parent"
-                android:layout_height="46dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
                 android:layout_below="@id/vwTelefonePerfilJuridico"
                 android:backgroundTint="@color/cimento"
+                android:drawablePadding="@dimen/drawable_padding"
                 android:drawableEnd="@drawable/ic_setinha"
                 android:drawableLeft="@drawable/ic_endereco"
                 android:drawableRight="@drawable/ic_setinha"
@@ -227,10 +229,12 @@
                 android:gravity="center_vertical"
                 android:hint="@string/zs_hint_endereco_usuario"
                 android:paddingLeft="@dimen/padding_left"
+                android:paddingStart="@dimen/padding_left"
                 android:paddingRight="@dimen/padding_left"
                 android:textColor="@color/cloudGrey"
                 android:textColorHint="@color/cimento"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:scrollbars="vertical"/>
 
         </RelativeLayout>
     </LinearLayout>

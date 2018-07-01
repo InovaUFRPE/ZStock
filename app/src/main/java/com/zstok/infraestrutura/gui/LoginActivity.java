@@ -155,6 +155,11 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+    }
+
     //Transição para a tela de registro
     private void abrirTelaRegistro(){
         Intent intent = new Intent(getApplicationContext(), RegistroActivity.class);

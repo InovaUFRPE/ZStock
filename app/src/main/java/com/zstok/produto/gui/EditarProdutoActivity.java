@@ -124,6 +124,9 @@ public class EditarProdutoActivity extends AppCompatActivity {
                 if (produto != null) {
                     if (produto.getUrlImagem() != null) {
                         recuperarFoto(produto.getUrlImagem());
+                    }else {
+                        cvImagemProduto.setImageResource(R.drawable.ic_produtos);
+                        progressDialog.dismiss();
                     }
                     edtNomeProduto.setText(produto.getNome());
                     edtPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
@@ -139,7 +142,9 @@ public class EditarProdutoActivity extends AppCompatActivity {
 
     //Resgatando foto do Storage
     private void recuperarFoto(String urlImagemProduto){
-        Glide.with(EditarProdutoActivity.this).load(Uri.parse(urlImagemProduto)).into(cvImagemProduto);
+        if (urlImagemProduto != null) {
+            Glide.with(EditarProdutoActivity.this).load(Uri.parse(urlImagemProduto)).into(cvImagemProduto);
+        }
         progressDialog.dismiss();
     }
     //Método que inicia o progress dialog

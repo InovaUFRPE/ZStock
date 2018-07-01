@@ -20,23 +20,27 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
-import com.zstok.perfil.negocio.PerfilServices;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.pessoaJuridica.dominio.PessoaJuridica;
 import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
@@ -72,6 +76,8 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
 
     private ProgressDialog progressDialog;
 
+    private StorageReference storageReference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +90,9 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        //Instanciando storage
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         //Resgatando usuário atual
         user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
@@ -102,6 +111,9 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
         tvCnpjPerfilJuridico = findViewById(R.id.tvCnpjPerfilJuridico);
         tvTelefonePerfilJuridico = findViewById(R.id.tvTelefonePerfilJuridico);
         tvEnderecoPerfilJuridico = findViewById(R.id.tvEnderecoPerfilJuridico);
+
+        //Habilitando o scrollbars do TextView (quando necessário o scroll irá aparecer)
+        habilitarScrollBars();
 
         //Instanciando as views
         instanciandoView();
@@ -201,15 +213,22 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
             }
         });
     }
+    //Método que habilita o scrollbars do TextView endereço
+    private void habilitarScrollBars() {
+        tvEnderecoPerfilJuridico.setMaxLines(Integer.MAX_VALUE);
+        tvEnderecoPerfilJuridico.setMovementMethod(new ScrollingMovementMethod());
+    }
     //Carregando foto de perfil
     private void carregarFoto(){
         if (user != null) {
             if (user.getPhotoUrl() != null) {
                 Glide.with(this).load(user.getPhotoUrl()).into(cvPerfilPessoaJuridica);
                 progressDialog.dismiss();
+            }else {
+                cvNavHeaderPessoa.setImageResource(R.drawable.ic_sem_foto);
             }
-            progressDialog.dismiss();
         }
+        progressDialog.dismiss();
     }
     //Método que inicializa as instâncias dos itens do menu lateral
     private void instanciandoView(){
@@ -259,6 +278,8 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     private void setDadosMenuLateral(){
         if (user.getPhotoUrl() != null){
             Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
+        }else {
+            cvNavHeaderPessoa.setImageResource(R.drawable.ic_sem_foto);
         }
         tvNomeUsuarioNavHeader.setText(user.getDisplayName());
         tvEmailUsuarioNavHeader.setText(user.getEmail());
@@ -359,7 +380,22 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     }
     //Inserindo imagem no banco
     private void inserirFoto(Uri uriFoto){
-        PerfilServices.insereFoto(uriFoto);
+        iniciarProgressDialog();
+        StorageReference ref = storageReference.child("images/perfil/" + FirebaseController.getUidUser() + ".bmp");
+        ref.putFile(uriFoto).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                String urlImagem = taskSnapshot.getDownloadUrl().toString();
+                FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+                if (user != null && urlImagem != null) {
+                    UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
+                            .setPhotoUri(Uri.parse(urlImagem))
+                            .build();
+                    user.updateProfile(profileChangeRequest);
+                }
+                progressDialog.dismiss();
+            }
+        });
     }
     //Esse método trata as permissões do usuário
     @Override
@@ -414,28 +450,6 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.perfil_pessoa_juridica, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

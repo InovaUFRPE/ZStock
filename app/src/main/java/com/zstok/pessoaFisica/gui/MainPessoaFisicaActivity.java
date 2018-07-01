@@ -248,7 +248,11 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
                     viewHolder.tvCardViewNomeProduto.setText(model.getNome());
                     viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
-                    viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
+                    if (model.getQuantidadeEstoque() != 0) {
+                        viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
+                    }else {
+                        viewHolder.tvCardViewQuantidadeEstoque.setText("Produto esgotado!");
+                    }
                     resgatarNomeEmpresa(viewHolder, model);
                     if (model.getUrlImagem() != null) {
                         Glide.with(MainPessoaFisicaActivity.this).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
@@ -272,24 +276,6 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
             recylerViewMeusprodutos.setAdapter(adapter);
         }
     }
-    /*
-    //Resgatando foto do storage
-    private void downloadFoto(final ProdutoListHolder viewHolder, Produto model) {
-        StorageReference reference = referenciaStorage.child("images/produtos/" + model.getIdEmpresa() + "/" + model.getIdProduto() + ".bmp");
-        try{
-            final File file = File.createTempFile("images","bmp");
-            reference.getFile(file).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    Bitmap minhaFoto = BitmapFactory.decodeFile(file.getAbsolutePath());
-                    viewHolder.imgCardViewProduto.setImageBitmap(minhaFoto);
-                }
-            });
-        }catch (IOException e){
-            Log.d("IOException downlaod", e.getMessage());
-        }
-    }
-    */
     //Método que resgata nome da empresa do banco
     private void resgatarNomeEmpresa(final ProdutoListHolder viewHolder, Produto model) {
         FirebaseController.getFirebase().child("pessoa").child(model.getIdEmpresa()).child("nome").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -341,6 +327,8 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
     private void setDadosMenuLateral(){
         if (user.getPhotoUrl() != null) {
             Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
+        }else {
+            cvNavHeaderPessoa.setImageResource(R.drawable.ic_sem_foto);
         }
         tvNomeUsuarioNavHeader.setText(user.getDisplayName());
         tvEmailUsuarioNavHeader.setText(user.getEmail());
@@ -351,28 +339,6 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_pessoa_fisica, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // com.zstok.perfil.persistencia.PerfilDAO you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

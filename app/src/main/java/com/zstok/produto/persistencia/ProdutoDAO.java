@@ -91,35 +91,43 @@ public class ProdutoDAO {
     public static boolean adicionarProdutoCarrinho(ItemCompra itemCompra, DataSnapshot dataSnapshot){
         boolean verificador;
 
-        //Verificando a existencia do TOTAL
-        if(dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).exists()){
-            Double totalCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").getValue(Double.class);
-            FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").setValue(totalCarrinho+(itemCompra.getValor()*itemCompra.getQuantidade()));
-
-        }else{
-            double x = itemCompra.getQuantidade() * itemCompra.getValor();
-            Log.d("AQUI", String.valueOf(x));
-            FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").setValue(x);
-        }
-        //Adicionando o item ao carrinho de compra
         try {
-            //Pesquisa procurando se já existe o item adicionado ao carrinho
-            Iterable<DataSnapshot> produtosCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
-            for(DataSnapshot itemSnapshot: produtosCarrinho) {
-                ItemCompra itemCompraPesquisa = itemSnapshot.getValue(ItemCompra.class);
-                if (itemCompraPesquisa.getIdItemCompra().equals(itemCompra.getIdItemCompra())){
-                    FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(itemCompraPesquisa.getIdItemCompra()).child("quantidade").setValue(itemCompraPesquisa.getQuantidade()+itemCompra.getQuantidade());
-                    verificador = true;
-                    return verificador;
+            //Verificando a existencia do TOTAL
+            if(dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).exists()){
+                Double totalCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").getValue(Double.class);
+                FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").setValue(totalCarrinho+(itemCompra.getValor()*itemCompra.getQuantidade()));
+                //Pesquisa procurando se já existe o item adicionado ao carrinho
+                if (!adicionarItemExistente(itemCompra, dataSnapshot)){
+                    adicionarNovoItem(itemCompra);
                 }
+                verificador = true;
+            }else{
+                FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").setValue(itemCompra.getQuantidade() * itemCompra.getValor());
+                //Caso não tenha adicionado
+                verificador = adicionarNovoItem(itemCompra);
             }
-            //Caso não tenha adicionado
-            itemCompra.setIdItemCompra(FirebaseController.getFirebase().child("carrinhoCompra").push().getKey());
-            FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(itemCompra.getIdItemCompra()).setValue(itemCompra);
-            verificador = true;
         }catch (DatabaseException e){
             verificador = false;
         }
         return verificador;
+    }
+    //Adicionando novo item ao carrinho
+    private static boolean adicionarNovoItem(ItemCompra itemCompra) {
+        itemCompra.setIdItemCompra(FirebaseController.getFirebase().child("carrinhoCompra").push().getKey());
+        FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(itemCompra.getIdItemCompra()).setValue(itemCompra);
+
+        return true;
+    }
+    //Adicionando item já existente no carrinho
+    private static boolean adicionarItemExistente(ItemCompra itemCompra, DataSnapshot dataSnapshot) {
+        Iterable<DataSnapshot> produtosCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
+        for(DataSnapshot itemSnapshot: produtosCarrinho) {
+            ItemCompra itemCompraPesquisa = itemSnapshot.getValue(ItemCompra.class);
+            if (itemCompraPesquisa.getIdProduto().equals(itemCompra.getIdProduto())){
+                FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(itemCompraPesquisa.getIdItemCompra()).child("quantidade").setValue(itemCompraPesquisa.getQuantidade()+itemCompra.getQuantidade());
+                return true;
+            }
+        }
+        return false;
     }
 }

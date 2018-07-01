@@ -6,6 +6,11 @@ import java.util.ArrayList;
 
 public class Historico {
 
+    private String cnpj;
+    private String cpf;
+    private String dataCompra;
+    private ArrayList<ItemCompra> carrinho;
+
     public String getCnpj() {
         return cnpj;
     }
@@ -37,12 +42,4 @@ public class Historico {
     public void setCarrinho(ArrayList<ItemCompra> carrinho) {
         this.carrinho = carrinho;
     }
-
-    private String cnpj;
-    private String cpf;
-    private String dataCompra;
-    private ArrayList<ItemCompra> carrinho;
-
-
-
 }

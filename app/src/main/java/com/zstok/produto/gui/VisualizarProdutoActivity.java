@@ -17,9 +17,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
 import com.zstok.VisualizarEmpresaActivity;
+import com.zstok.carrinhoCompra.negocio.CarrinhoCompraServices;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.MoneyTextWatcher;
@@ -139,7 +142,11 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     }
     //Setando campo foto do produto
     private void setarFoto(Produto produto){
-        Glide.with(VisualizarProdutoActivity.this).load(Uri.parse(produto.getUrlImagem())).into(imgProduto);
+        if (produto.getUrlImagem() != null) {
+            Glide.with(VisualizarProdutoActivity.this).load(Uri.parse(produto.getUrlImagem())).into(imgProduto);
+        }else {
+            imgProduto.setImageResource(R.drawable.ic_produtos);
+        }
         progressDialog.dismiss();
     }
     //Setando campos da activity
@@ -170,8 +177,6 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
 
         //Chamando método para tratar o clique no botão comprar
         clickAdicionarAoCarrinho();
-
-
     }
     //Método que implementa o evento de click do botão voltar
     private void clickVoltar(){
@@ -267,16 +272,17 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
                 if(dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).exists()){
                     Double totalCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").getValue(Double.class);
                     Double precoProduto = dataSnapshot.child("produto").child(idProduto).child("precoSugerido").getValue(Double.class);
-                    if((totalCarrinho+(precoProduto*Double.valueOf(edtQuantidadeDialogoCompra.getText().toString()))) <= 50000.0){
+                    double novoTotal = totalCarrinho+(precoProduto* Double.valueOf(edtQuantidadeDialogoCompra.getText().toString()));
+                    if(novoTotal <= 50000.0){
                         if (ProdutoServices.adicionarProdutoCarrinho(criarItemCompra(),dataSnapshot)){
                             alertaCompra.dismiss();
-                            abrirTelaMainPessoaFisicaActivity();
                             Helper.criarToast(getApplicationContext(), getString(R.string.zs_adicionar_carrinho_compra_sucesso));
+                            abrirTelaMainPessoaFisicaActivity();
                         }else{
                             Helper.criarToast(getApplicationContext(),getString(R.string.zs_excecao_database));
                         }
                     }else{
-                        Helper.criarToast(getApplicationContext(),getString(R.string.zs_excecao_quantidade_excedida));
+                        edtQuantidadeDialogoCompra.setError(getString(R.string.zs_excecao_quantidade_excedida));
                     }
 
                 }else{

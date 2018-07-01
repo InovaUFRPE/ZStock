@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -64,6 +65,9 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
         tvEnderecoEmpresa = findViewById(R.id.tvEnderecoEmpresa);
         cvImagemPerfilEmpresa = findViewById(R.id.cvEmpresa);
 
+        //Habilitando o scrollbars do TextView (quando necessário o scroll irá aparecer)
+        habilitarScrollBars();
+
         //Instanciando referência do storage
         referenciaStorage = FirebaseStorage.getInstance().getReference();
 
@@ -83,6 +87,11 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
 
         //Recuperando dados do firebase
         recuperarDados();
+    }
+    //Método que habilita o scrollbars do TextView endereço
+    private void habilitarScrollBars() {
+        tvEnderecoEmpresa.setMaxLines(Integer.MAX_VALUE);
+        tvEnderecoEmpresa.setMovementMethod(new ScrollingMovementMethod());
     }
     //Resgatando foto do Storage
     private void recuperarFoto(){

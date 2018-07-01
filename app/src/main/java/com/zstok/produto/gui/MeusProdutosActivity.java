@@ -67,9 +67,9 @@ public class MeusProdutosActivity extends AppCompatActivity
 
     private RecyclerView recylerViewMeusprodutos;
     private FirebaseRecyclerAdapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
 
     private FirebaseUser user;
-    private StorageReference referenciaStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +80,6 @@ public class MeusProdutosActivity extends AppCompatActivity
 
         //Resgantado usuário atual
         user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
-
-        referenciaStorage = FirebaseStorage.getInstance().getReference();
 
         //Instanciando views
         edtPesquisaProdutoPessoaJuridica = findViewById(R.id.edtPesquisaProdutoPessoaJuridica);
@@ -133,7 +131,7 @@ public class MeusProdutosActivity extends AppCompatActivity
         //Instanciando recyler view
         recylerViewMeusprodutos = findViewById(R.id.recyclerProdutosPessoaJuridica);
         recylerViewMeusprodutos.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MeusProdutosActivity.this);
+        layoutManager = new LinearLayoutManager(MeusProdutosActivity.this);
         recylerViewMeusprodutos.setLayoutManager(layoutManager);
 
         //Criando o adapter
@@ -152,13 +150,13 @@ public class MeusProdutosActivity extends AppCompatActivity
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.nav_meu_perfil_produtos:
+                    case R.id.nav_meu_perfil_juridico:
                         abrirTelaPerfilPessoaJuridicaActivity();
                         return true;
-                    case R.id.nav_negociacao_produtos:
+                    case R.id.nav_negociacao_juridico:
                         abrirTelaMainPessoaJuridicaActivity();
                         return true;
-                    case R.id.nav_meus_produtos:
+                    case R.id.nav_produtos_juridico:
                         drawer.closeDrawers();
                         //Função abrir tela produtos
                         return true;
@@ -236,6 +234,8 @@ public class MeusProdutosActivity extends AppCompatActivity
                     viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
                     if (model.getUrlImagem() != null) {
                         Glide.with(MeusProdutosActivity.this).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
+                    }else {
+                        viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
                     }
                 }
 
@@ -326,6 +326,8 @@ public class MeusProdutosActivity extends AppCompatActivity
     private void setDadosMenuLateral(){
         if (user.getPhotoUrl() != null){
             Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
+        }else {
+            cvNavHeaderPessoa.setImageResource(R.drawable.ic_sem_foto);
         }
         tvNomeUsuarioNavHeader.setText(user.getDisplayName());
         tvEmailUsuarioNavHeader.setText(user.getEmail());
@@ -339,26 +341,7 @@ public class MeusProdutosActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.meus_produtos, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {

@@ -19,6 +19,6 @@ public class ProdutoServices {
     }
     //Método provisório
     public static boolean adicionarProdutoCarrinho(ItemCompra itemCompra, DataSnapshot dataSnapshot){
-        return ProdutoDAO.adicionarProdutoCarrinho(itemCompra,dataSnapshot);
+        return ProdutoDAO.adicionarProdutoCarrinho(itemCompra, dataSnapshot);
     }
 }
