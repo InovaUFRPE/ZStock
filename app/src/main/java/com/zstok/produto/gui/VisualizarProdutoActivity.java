@@ -17,12 +17,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
 import com.zstok.VisualizarEmpresaActivity;
-import com.zstok.carrinhoCompra.negocio.CarrinhoCompraServices;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.MoneyTextWatcher;
@@ -137,7 +134,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     //Método que inicia o progress dialog
     private void iniciarProgressDialog() {
         progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_produto));
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_carregar_informacoes_produto));
         progressDialog.show();
     }
     //Setando campo foto do produto

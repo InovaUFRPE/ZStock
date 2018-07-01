@@ -1,6 +1,7 @@
 package com.zstok.produto.gui;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -12,7 +13,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,9 +29,7 @@ import com.zstok.infraestrutura.utils.MoneyTextWatcher;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
-import com.zstok.produto.persistencia.ProdutoDAO;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Locale;
 
@@ -51,6 +49,9 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
     private Uri uriFoto;
     private VerificaConexao verificaConexao;
 
+    private ProgressDialog progressDialog;
+    private StorageReference storageReference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +60,12 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
 
         //Solicitando permissão ao usuário para ler e gravar arquivos
         permissaoGravarLerArquivos();
+
+        //Instanciando progress dialog
+        progressDialog = new ProgressDialog(this);
+
+        //Instanciando storage
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         //Inicializando o objeto da classe VerificaConexao
         verificaConexao = new VerificaConexao(this);
@@ -81,6 +88,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (verificaConexao.isConected()){
                     if (validarCampos()){
+                        iniciarProgressDialog();
                         inserirProduto(criarProduto());
                         edtDescricaoProduto.setSelection(0);
                     }
@@ -251,11 +259,46 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
 
         return produto;
     }
-    //Inserindo imagem no banco
+    //Método que inicia o progress dialog
+    private void iniciarProgressDialog() {
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_cadastrando_produto));
+        progressDialog.show();
+    }
+    //Inserindo foto no banco
+    private void inserirFoto(final Produto produto){
+        StorageReference reference = storageReference.child("images/produtos/" + FirebaseController.getUidUser() + "/" + produto.getIdProduto() + ".bmp");
+        reference.putFile(uriFoto).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        final Uri donwloadUri = taskSnapshot.getDownloadUrl();
+                if (donwloadUri != null) {
+                    FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("urlImagem").setValue(donwloadUri.toString());
+                    finalizarCadastroProduto();
+                }else {
+                    progressDialog.dismiss();
+                    Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
+                }
+            }
+        });
+    }
+    //Finalizando o cadastro
+    private void finalizarCadastroProduto(){
+        progressDialog.dismiss();
+        Helper.criarToast(getApplicationContext(), getString(R.string.zs_produto_cadastrado_sucesso));
+        abrirTelaMeusProdutosActivity();
+    }
+    //Inserindo dados do produto no banco
     private void inserirProduto(Produto produto){
-        if (ProdutoServices.insereProduto(produto, uriFoto)){
-            abrirTelaMeusProdutosActivity();
+        if (ProdutoServices.insereProduto(produto)){
+            if (uriFoto != null) {
+                inserirFoto(produto);
+            }else {
+                finalizarCadastroProduto();
+                abrirTelaMeusProdutosActivity();
+            }
         } else {
+            progressDialog.dismiss();
             Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
         }
     }

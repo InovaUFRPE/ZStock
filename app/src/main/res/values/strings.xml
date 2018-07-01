@@ -79,6 +79,7 @@
     <string name="zs_data_nascimento_alterado_sucesso">Data de nascimento alterada com sucesso!</string>
     <string name="zs_produto_excluido_sucesso">Produto excluído com sucesso!</string>
     <string name="zs_produto_alterado_sucesso">Produto alterado com sucesso!</string>
+    <string name="zs_produto_cadastrado_sucesso">Produto cadastrado com sucesso!</string>
     <string name="zs_adicionar_carrinho_compra_sucesso">Produto adicionado ao carrinho de compra!</string>
     <string name="zs_compra_realizada_sucesso">Compra realizada com sucesso!</string>
 
@@ -129,7 +130,9 @@
     <string name="title_activity_carrinho_compra">Carrinho de compra</string>
 
     <string name="zs_titulo_progress_dialog_registro">Cadastrando usuário...</string>
-    <string name="zs_titulo_progress_dialog_produto">Carregando produto...</string>
+    <string name="zs_titulo_progress_dialog_carregar_informacoes_produto">Carregando produto...</string>
+    <string name="zs_titulo_progress_dialog_cadastrando_produto">Cadastrando produto...</string>
+    <string name="zs_titulo_progress_dialog_alterar_produto">Alterando produto...</string>
     <string name="zs_titulo_progress_dialog_perfil">Carregando informações...</string>
     <string name="title_activity_main_historico">MainHistoricoActivity</string>
 

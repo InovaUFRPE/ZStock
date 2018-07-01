@@ -217,6 +217,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
            CarrinhoCompraServices.limparCarrinho();
        }
     }
+    //Verificando se a quantidade solicitada pelo usuário está disponível em estoque
     private boolean verificaQuantidade(DataSnapshot dataSnapshot) {
         Iterable<DataSnapshot> produtosCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
         //Validando quantidade
@@ -230,7 +231,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
         }
         return true;
     }
-    //Método repetitivo
+    //Método que seleciona os itens do carrinho e decresce do estoque das respectivas empresas responsáveis pelos itens
     private void reduzirQuantidade(DataSnapshot dataSnapshot){
         Iterable<DataSnapshot> produtosCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
         for(DataSnapshot itemSnapshot: produtosCarrinho){

@@ -19,32 +19,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 public class ProdutoDAO {
-
-    private static StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-
-    //Inserindo foto do produto no banco de dados
-    private static void insereFotoProduto(final Produto produto, Uri uriFoto){
-        StorageReference reference = storageReference.child("images/produtos/" + FirebaseController.getUidUser() + "/" + produto.getIdProduto() + ".bmp");
-        reference.putFile(uriFoto).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                final Uri donwloadUri = taskSnapshot.getDownloadUrl();
-                if (donwloadUri != null) {
-                    FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("urlImagem").setValue(donwloadUri.toString());
-                }
-            }
-        });
-    }
     //Inserindo produto no banco de dados
-    public static boolean insereProduto(Produto produto, Uri uriFoto){
+    public static boolean insereProduto(Produto produto){
         boolean verificador;
 
         try {
             //Setando o idProduto
             produto.setIdProduto(FirebaseController.getFirebase().child("produto").push().getKey());
-            if (uriFoto != null) {
-                insereFotoProduto(produto, uriFoto);
-            }
             FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).setValue(produto);
             verificador = true;
         }catch (DatabaseException e){
@@ -65,11 +46,11 @@ public class ProdutoDAO {
         return verificador;
     }
     //Retorno alterar produto para GUI
-    public static boolean alterarProdutoVerificador(Produto produto, Uri uriFoto){
+    public static boolean alterarProdutoVerificador(Produto produto){
         boolean verificador;
 
         try {
-            alterarProduto(produto, uriFoto);
+            alterarProduto(produto);
             verificador = true;
         }catch (DatabaseException e){
             verificador = false;
@@ -77,10 +58,7 @@ public class ProdutoDAO {
         return verificador;
     }
     //Alterando produto da árvore de visão do cliente
-    private static void alterarProduto(Produto produto, Uri uriFoto) {
-        if (produto.getUrlImagem() != null){
-            insereFotoProduto(produto, uriFoto);
-        }
+    private static void alterarProduto(Produto produto) {
         FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("nome").setValue(produto.getNome());
         FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("nomePesquisa").setValue(produto.getNomePesquisa());
         FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("precoSugerido").setValue(produto.getPrecoSugerido());
