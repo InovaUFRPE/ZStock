@@ -284,17 +284,8 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     }
     //Inserindo novo total no banco para servir de referência ao método "criarAdapter()"
     private void inserirTotal(Produto produto, ItemCompra itemCompra, Double total) {
-        if (itemCompra.getValor() > produto.getPrecoSugerido()) {
-            double difPrecoTotal = Math.abs((produto.getPrecoSugerido() * itemCompra.getQuantidade()) - total);
-            double novoTotal = Math.abs(total - difPrecoTotal);
-
-            CarrinhoCompraServices.inserirTotal(novoTotal);
-        }else {
-            double totalAnterior = itemCompra.getValor() * itemCompra.getQuantidade();
-            double totalNovo = produto.getPrecoSugerido() * itemCompra.getQuantidade();
-            double difPrecoTotal = totalNovo - totalAnterior;
-            double novoTotal = total + difPrecoTotal;
-
+        if (itemCompra.getValor() != produto.getPrecoSugerido()) {
+            double novoTotal = total - (itemCompra.getValor()*itemCompra.getQuantidade()) + (produto.getPrecoSugerido()*itemCompra.getQuantidade());
             CarrinhoCompraServices.inserirTotal(novoTotal);
         }
     }
