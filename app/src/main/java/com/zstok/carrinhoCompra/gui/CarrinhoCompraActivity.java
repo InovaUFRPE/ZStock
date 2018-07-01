@@ -3,7 +3,6 @@ package com.zstok.carrinhoCompra.gui;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -46,6 +44,9 @@ import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
 import com.zstok.produto.dominio.Produto;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -210,8 +211,8 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     private void verificaCompra(DataSnapshot dataSnapshot){
        if (verificaQuantidade(dataSnapshot)){
            reduzirQuantidade(dataSnapshot);
-           HistoricoServices.gerarHistorico(dataSnapshot);
-           //GerarHistorico() Vai pra tela Historico
+           //HistoricoServices.adicionarHistorico(dataSnapshot);
+           geraHistorico(separadorCarrinhoCompra(dataSnapshot), dataSnapshot);
            Helper.criarToast(getApplicationContext(),getString(R.string.zs_compra_realizada_sucesso));
            tvTotalCardViewItemCompra.setText("");
            CarrinhoCompraServices.limparCarrinho();
@@ -234,8 +235,8 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     //Método que seleciona os itens do carrinho e decresce do estoque das respectivas empresas responsáveis pelos itens
     private void reduzirQuantidade(DataSnapshot dataSnapshot){
         Iterable<DataSnapshot> produtosCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
-        for(DataSnapshot itemSnapshot: produtosCarrinho){
-            ItemCompra itemCompra = itemSnapshot.getValue(ItemCompra.class);
+        for(DataSnapshot itensCompraCarrinhoUser: produtosCarrinho){
+            ItemCompra itemCompra = itensCompraCarrinhoUser.getValue(ItemCompra.class);
             Produto produto = dataSnapshot.child("produto").child(itemCompra.getIdProduto()).getValue(Produto.class);
             int quantidadeNova = produto.getQuantidadeEstoque() - itemCompra.getQuantidade();
             produto.setQuantidadeEstoque(quantidadeNova);
@@ -261,16 +262,45 @@ public class CarrinhoCompraActivity extends AppCompatActivity
             }
         });
     }
-    //Gera historico - Cada empresa do produto tem seu próprio histórico
-    private void geraHistorico(DataSnapshot dataSnapshot){
-    //1 - Percorrer carrinho de compra associando os produtos as suas respectivas empresas
-        //Gerar histórico para cada empresa - o histórico é único a empresa
+    //Gera Historico - Cada empresa do produto tem seu próprio histórico - Tem como entrada o dicionario gerador pelo separador carrinho compra
+    private void geraHistorico(HashMap<String, ArrayList<ItemCompra>> dic, DataSnapshot dataSnapshot){
+        Set<String> empresas = dic.keySet();
+        for (String empresa : empresas) {
+            Historico historico = new Historico();
+            historico.setCnpj(dataSnapshot.child("pessoaJuridica").child(empresa).child("cnpj").getValue(String.class));
+            historico.setCpf(dataSnapshot.child("pessoaFisica").child(FirebaseController.getUidUser()).child("cpf").getValue(String.class));
+            historico.setCarrinho(dic.get(empresa));
+            historico.setDataCompra(Helper.getData());
+            HistoricoServices.adicionarHistorico(historico);
+        }
+    }
+    //Separa carrinho de compra em um dicionário contendo Dic<Empresa, produtos comprados da empresa>
+    private HashMap separadorCarrinhoCompra(DataSnapshot dataSnapshot){
+        //Percorrendo carrinho para separar produtos por empresa
+        Iterable<DataSnapshot> produtosCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
+        HashMap<String,ArrayList<ItemCompra>> dicionarioHistorico = new HashMap<>();
+        //Separando produtos
+        for(DataSnapshot itensCompraCarrinhoUser : produtosCarrinho){
+            ItemCompra itemCompra = itensCompraCarrinhoUser.getValue(ItemCompra.class);
+            Produto produto = dataSnapshot.child("produto").child(itemCompra.getIdProduto()).getValue(Produto.class);
+            //Caso já esteja no dicionário, get na string idEmpresa do dicionario e adicionamos o produto da empresa
+            if (dicionarioHistorico.containsKey(produto.getIdEmpresa())){
+                dicionarioHistorico.get(produto.getIdEmpresa()).add(itemCompra);
+            }
+            //Caso contrário - adicionamos a String id empresa e a array com o itemcompra.
+            else {
+                ArrayList<ItemCompra> addDicionario = new ArrayList<>();
+                addDicionario.add(itemCompra);
+                dicionarioHistorico.put(produto.getIdEmpresa(), addDicionario);
+            }
+        }
+        return dicionarioHistorico;
     }
     //Método que resgata todos os itens do carrinho de compra
     private void resgatarItensComprasCarrinho(DataSnapshot dataSnapshot, Produto produto, Double total, String idProdutoAlterado) {
         Iterable<DataSnapshot> itensCompra = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
-        for (DataSnapshot dataSnapshotChild: itensCompra){
-            ItemCompra itemCompra = dataSnapshotChild.getValue(ItemCompra.class);
+        for (DataSnapshot itensCompraCarrinhoUser: itensCompra){
+            ItemCompra itemCompra = itensCompraCarrinhoUser.getValue(ItemCompra.class);
             if ((itemCompra.getIdProduto().equals(idProdutoAlterado))) {
                 if (alterarValorItemCompra(itemCompra, produto)){
                     inserirTotal(produto, itemCompra, total);

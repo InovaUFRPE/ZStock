@@ -15,6 +15,8 @@ import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 
 import java.io.ByteArrayOutputStream;
 import java.text.Normalizer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -91,5 +93,13 @@ public class Helper {
     //Método para remoção de acentos
     public static String removerAcentos(String str) {
         return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+    }
+
+    //getData
+    public static String getData(){
+        Date data = new Date();
+        SimpleDateFormat formatar = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        String dataFormatada = formatar.format(data);
+        return dataFormatada;
     }
 }
