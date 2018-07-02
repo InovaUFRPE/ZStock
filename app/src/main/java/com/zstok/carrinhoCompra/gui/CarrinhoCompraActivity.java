@@ -37,6 +37,8 @@ import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.itemcompra.dominio.ItemCompra;
+import com.zstok.negociacao.dominio.Negociacao;
+import com.zstok.negociacao.negocio.NegociacaoServices;
 import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
@@ -82,7 +84,8 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
         //Instanciando view
         tvTotalCardViewItemCompra = findViewById(R.id.tvTotalCardViewItemCompra);
-        Button btnFinalizarCompra = findViewById(R.id.btnNegociarCompra);
+        Button btnFinalizarCompra = findViewById(R.id.btnComprar);
+        Button btnNegociarCompra = findViewById(R.id.btnNegociarCompra);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -142,6 +145,25 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
             }
         });
+
+        btnNegociarCompra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(verificaConexao.isConected()){
+                    FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            geraNegociacao(dataSnapshot);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+        });
         //Evento finalizar compra
         btnFinalizarCompra.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,6 +215,21 @@ public class CarrinhoCompraActivity extends AppCompatActivity
             }
         });
     }
+
+    private void geraNegociacao(DataSnapshot dataSnapshot){
+        HashMap<String, ArrayList<ItemCompra>> dicionarioEmpresas = separadorCarrinhoCompra(dataSnapshot);
+        Set<String> empresas = dicionarioEmpresas.keySet();
+        for (String empresa: empresas) {
+            Negociacao negociacao = new Negociacao();
+            negociacao.setIdPessoaFisica(FirebaseController.getUidUser());
+            negociacao.setIdPessoaJuridica(dataSnapshot.child("produto").child(dicionarioEmpresas.get(empresa).get(0).getIdProduto()).child("idEmpresa").getValue(String.class));
+            negociacao.setDataInicio(Helper.getData());
+            negociacao.setCarrinhoAtual(dicionarioEmpresas.get(empresa));
+            //Setar negociacao.dao - lembrar de colocar ID da negociacao
+            NegociacaoServices.inserirNegociacao(negociacao);
+        }
+    }
+
     //Método que carrega nome e email do usuário e seta nas views do menu lateral
     private void setDadosMenuLateral(){
         if (user.getPhotoUrl() != null){
