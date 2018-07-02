@@ -5,22 +5,24 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_meu_perfil_juridico"
+            android:id="@+id/nav_meu_perfil_pessoa_juridica"
             android:icon="@drawable/ic_perfil"
             android:title="@string/zs_menu_lateral_perfil" />
         <item
-            android:id="@+id/nav_negociacao_juridico"
+            android:id="@+id/nav_negociacao_pessoa_juridica"
             android:icon="@drawable/ic_negociacao"
             android:title="@string/zs_menu_lateral_negociacao" />
         <item
-            android:id="@+id/nav_produtos_juridico"
+            android:id="@+id/nav_produtos_pessoa_juridica"
             android:icon="@drawable/ic_produtos"
             android:title="@string/zs_menu_lateral_produtos_pessoa_juridica" />
+        <item
+            android:id="@+id/nav_meu_historico_pessoa_juridica"
+            android:icon="@drawable/ic_historico"
+            android:title="@string/zs_menu_lateral_historico_pessoa_juridica" />
         <item
             android:id="@+id/nav_sair"
             android:icon="@drawable/ic_sair"
             android:title="@string/zs_menu_lateral_sair" />
     </group>
-
-
 </menu>

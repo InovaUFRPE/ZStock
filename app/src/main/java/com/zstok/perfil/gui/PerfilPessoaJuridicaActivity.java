@@ -38,6 +38,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.zstok.R;
+import com.zstok.historico.gui.MainHistoricoPessoaFisicaActivity;
+import com.zstok.historico.gui.MainHistoricoPessoaJuridicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
@@ -193,16 +195,20 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.nav_meu_perfil_juridico:
+                    case R.id.nav_meu_perfil_pessoa_juridica:
                         drawer.closeDrawers();
                         return true;
-                    case R.id.nav_negociacao_juridico:
+                    case R.id.nav_negociacao_pessoa_juridica:
                         //Função abrir tela negociacao
                         abrirTelaMainPessoaJuridicaActivity();
                         return true;
-                    case R.id.nav_produtos_juridico:
+                    case R.id.nav_produtos_pessoa_juridica:
                         //Função abrir tela produtos
                         abrirTelaMeusProdutosActivity();
+                        return true;
+                    case R.id.nav_meu_historico_pessoa_juridica:
+                        //Função abrir tela histórico
+                        abrirTelaMainHistoricoPessoaJuridicaActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -502,6 +508,11 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     //Intent meus produtos
     private void abrirTelaMeusProdutosActivity(){
         Intent intent = new Intent(getApplicationContext(), MeusProdutosActivity.class);
+        startActivity(intent);
+    }
+    //Intent para a tela de histórico pessoa jurídica, onde estão os produtos
+    private void abrirTelaMainHistoricoPessoaJuridicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoPessoaJuridicaActivity.class);
         startActivity(intent);
     }
 }

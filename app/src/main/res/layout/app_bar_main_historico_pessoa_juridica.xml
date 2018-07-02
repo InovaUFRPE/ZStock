@@ -4,15 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.zstok.perfil.gui.PerfilPessoaJuridicaActivity">
+    tools:context="com.zstok.historico.gui.MainHistoricoPessoaJuridicaActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_perfil_pessoa_juridica" />
+    <include layout="@layout/content_main_historico_pessoa_juridica" />
 
 </android.support.design.widget.CoordinatorLayout>

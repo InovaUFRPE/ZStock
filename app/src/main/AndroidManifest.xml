@@ -65,9 +65,12 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".historico.gui.MainHistoricoPessoaFisicaActivity"
-            android:label="@string/title_activity_main_historico_pessoa_fisica"
-            android:theme="@style/AppTheme">
-        </activity>
+            android:label="@string/zs_menu_lateral_historico_pessoa_fisica"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".historico.gui.MainHistoricoPessoaJuridicaActivity"
+            android:label="@string/zs_menu_lateral_historico_pessoa_juridica"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

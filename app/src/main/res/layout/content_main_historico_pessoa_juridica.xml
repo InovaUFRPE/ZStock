@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/jabuticaba"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity"
-    tools:showIn="@layout/app_bar_main_pessoa_juridica">
+    tools:context=".historico.gui.MainHistoricoPessoaJuridicaActivity"
+    tools:showIn="@layout/app_bar_main_historico_pessoa_juridica">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerHistoricoPessoaJuridica"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/edtPesquisaProdutoPessoaFisica"
         android:padding="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
