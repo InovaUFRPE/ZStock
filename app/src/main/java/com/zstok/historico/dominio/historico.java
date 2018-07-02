@@ -6,26 +6,26 @@ import java.util.ArrayList;
 
 public class Historico {
 
-    private String cnpj;
-    private String cpf;
+    private String idEmpresa;
+    private String idPessoaFisica;
     private String dataCompra;
     private double total;
     private ArrayList<ItemCompra> carrinho;
 
-    public String getCnpj() {
-        return cnpj;
+    public String getIdEmpresa() {
+        return idEmpresa;
     }
 
-    public void setCnpj(String cnpj) {
-        this.cnpj = cnpj;
+    public void setIdEmpresa(String cnpj) {
+        this.idEmpresa = cnpj;
     }
 
-    public String getCpf() {
-        return cpf;
+    public String getIdPessoaFisica() {
+        return idPessoaFisica;
     }
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
+    public void setIdPessoaFisica(String cpf) {
+        this.idPessoaFisica = cpf;
     }
 
     public String getDataCompra() {

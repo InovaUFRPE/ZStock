@@ -66,6 +66,7 @@
     <string name="zs_btn_alterar_cpf">Alterar cpf</string>
     <string name="zs_btn_alterar_data_nascimento">Alterar data de nascimento</string>
     <string name="zs_btn_negociar_produto">Negociar</string>
+    <string name="zs_btn_comprar_produto">Comprar</string>
     <string name="zs_btn_adicionar_carrinho">Adicionar ao carrinho</string>
     <string name="zs_btn_finalizar_compra">Finalizar compra</string>
 

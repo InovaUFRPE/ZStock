@@ -10,20 +10,38 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
+import com.zstok.historico.adapter.HistoricoListHolder;
+import com.zstok.historico.dominio.Historico;
 import com.zstok.infraestrutura.gui.LoginActivity;
+import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
 import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
+
+import java.text.NumberFormat;
 
 public class MainHistoricoPessoaFisicaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private AlertDialog alertaSair;
+
+    private FirebaseRecyclerAdapter adapterHistorico;
+    private RecyclerView recyclerViewHistorico;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +55,12 @@ public class MainHistoricoPessoaFisicaActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        //Instanciando recyler view
+        recyclerViewHistorico = findViewById(R.id.recyclerItensCarrinho);
+        recyclerViewHistorico.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainHistoricoPessoaFisicaActivity.this);
+        recyclerViewHistorico.setLayoutManager(layoutManager);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -66,7 +90,58 @@ public class MainHistoricoPessoaFisicaActivity extends AppCompatActivity
                 }
             }
         });
+        //Criando adapter
+        criarAdapterHistorico();
+    }
+    //Método que cria o adapter de histórico
+    private void criarAdapterHistorico(){
+        DatabaseReference referenciaHistorico = FirebaseController.getFirebase().child("historico");
+        Query queryHistoricoCompra = referenciaHistorico.orderByChild("idPessoaFisica").equalTo(FirebaseController.getUidUser());
 
+        if (queryHistoricoCompra != null) {
+            adapterHistorico = new FirebaseRecyclerAdapter<Historico, HistoricoListHolder>(
+                    Historico.class,
+                    R.layout.card_historico,
+                    HistoricoListHolder.class,
+                    queryHistoricoCompra) {
+
+                @Override
+                protected void populateViewHolder(final HistoricoListHolder viewHolder, final Historico model, int position) {
+                    getItemCount();
+                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
+                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
+                    FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String nomeEmpresa = dataSnapshot.child("pessoaJuridica").child(model.getIdEmpresa()).child("nome").getValue(String.class);
+                            viewHolder.tvCardViewNomeEmpresa.setText(nomeEmpresa);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    viewHolder.tvCardViewTotalCompra.setText(NumberFormat.getCurrencyInstance().format(model.getTotal()));
+                    viewHolder.tvCardViewDataCompra.setText(String.valueOf(model.getDataCompra()));
+                }
+
+                @NonNull
+                @Override
+                public HistoricoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+                    final HistoricoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                    viewHolder.setOnItemClickListener(new HistoricoListHolder.ClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            Historico historico =  (Historico) adapterHistorico.getItem(position);
+                            Helper.criarToast(getApplicationContext(), historico.getDataCompra()    );
+                        }
+                    });
+                    return viewHolder;
+                }
+            };
+            recyclerViewHistorico.setAdapter(adapterHistorico);
+        }
     }
     //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
     private void sair () {

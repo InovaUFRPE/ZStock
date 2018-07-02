@@ -25,59 +25,59 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/nomeEmpresaCardViewHistorico"
+            android:id="@+id/tvNomeEmpresaCardViewHistorico"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:gravity="center"
-            android:text="@string/zs_texto_nome_produto"
+            android:text="Nome empresa"
             android:textSize="22sp"
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/tvTextoTotal"
+            android:id="@+id/tvTextoTotalCardViewHistorico"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/dataCompraCardViewHistorico"
+            android:layout_above="@+id/tvDataCompraCardViewHistorico"
             android:text="TOTAL:"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/precoCardViewProduto"
+            android:id="@+id/tvTotalCardViewProduto"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/nomeEmpresaCardViewHistorico"
+            android:layout_below="@+id/tvNomeEmpresaCardViewHistorico"
             android:layout_marginTop="10dp"
-            android:layout_toEndOf="@+id/tvTextoTotal"
-            android:layout_toRightOf="@+id/tvTextoTotal"
+            android:layout_toEndOf="@+id/tvTextoTotalCardViewHistorico"
+            android:layout_toRightOf="@+id/tvTextoTotalCardViewHistorico"
             android:text="R$ XXX,XX" />
 
         <TextView
-            android:id="@+id/tvTextoData"
+            android:id="@+id/tvTextoDataCompraCardViewHistorico"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:layout_alignBaseline="@+id/dataCompraCardViewHistorico"
-            android:layout_alignBottom="@+id/dataCompraCardViewHistorico"
+            android:layout_alignBaseline="@+id/tvDataCompraCardViewHistorico"
+            android:layout_alignBottom="@+id/tvDataCompraCardViewHistorico"
             android:text="DATA:"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/dataCompraCardViewHistorico"
+            android:id="@+id/tvDataCompraCardViewHistorico"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/precoCardViewProduto"
+            android:layout_below="@+id/tvTotalCardViewProduto"
             android:layout_marginTop="13dp"
-            android:layout_toEndOf="@+id/tvTextoData"
-            android:layout_toRightOf="@+id/tvTextoData"
+            android:layout_toEndOf="@+id/tvTextoDataCompraCardViewHistorico"
+            android:layout_toRightOf="@+id/tvTextoDataCompraCardViewHistorico"
             android:text="XX/XX/XXXX" />
 
     </RelativeLayout>

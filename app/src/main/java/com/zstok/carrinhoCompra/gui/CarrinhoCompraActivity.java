@@ -26,7 +26,6 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
 import com.zstok.carrinhoCompra.negocio.CarrinhoCompraServices;
@@ -83,7 +82,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
         //Instanciando view
         tvTotalCardViewItemCompra = findViewById(R.id.tvTotalCardViewItemCompra);
-        Button btnFinalizarCompra = findViewById(R.id.btnFinalizarCompra);
+        Button btnFinalizarCompra = findViewById(R.id.btnNegociarCompra);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -216,7 +215,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
        if (verificaQuantidade(dataSnapshot)){
            reduzirQuantidade(dataSnapshot);
            //HistoricoServices.adicionarHistorico(dataSnapshot);
-           geraHistorico(separadorCarrinhoCompra(dataSnapshot), dataSnapshot);
+           geraHistorico(separadorCarrinhoCompra(dataSnapshot));
            Helper.criarToast(getApplicationContext(),getString(R.string.zs_compra_realizada_sucesso));
            tvTotalCardViewItemCompra.setText("");
            CarrinhoCompraServices.limparCarrinho();
@@ -267,7 +266,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
         });
     }
     //Gera Historico - Cada empresa do produto tem seu próprio histórico - Tem como entrada o dicionario gerador pelo separador carrinho compra
-    private void geraHistorico(HashMap<String, ArrayList<ItemCompra>> dic, DataSnapshot dataSnapshot){
+    private void geraHistorico(HashMap<String, ArrayList<ItemCompra>> dic){
         double total = 0.0;
         Set<String> empresas = dic.keySet();
         for (String empresa : empresas) {
@@ -275,8 +274,8 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                 total+=(itemCompra.getValor()*itemCompra.getQuantidade());
             }
             Historico historico = new Historico();
-            historico.setCnpj(dataSnapshot.child("pessoaJuridica").child(empresa).child("cnpj").getValue(String.class));
-            historico.setCpf(dataSnapshot.child("pessoaFisica").child(FirebaseController.getUidUser()).child("cpf").getValue(String.class));
+            historico.setIdEmpresa(empresa);
+            historico.setIdPessoaFisica(FirebaseController.getUidUser());
             historico.setCarrinho(dic.get(empresa));
             historico.setDataCompra(Helper.getData());
             historico.setTotal(total);
@@ -334,7 +333,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     }
     //Montando adapter e jogando no list holder
     private void criarAdapter() {
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra");
+        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra");
 
         if (databaseReference != null) {
 
