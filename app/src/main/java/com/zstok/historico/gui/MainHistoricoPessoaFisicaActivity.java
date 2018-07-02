@@ -4,17 +4,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,10 +18,7 @@ import com.zstok.R;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
-import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
 import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
-import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
-import com.zstok.produto.gui.MeusProdutosActivity;
 
 public class MainHistoricoPessoaFisicaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

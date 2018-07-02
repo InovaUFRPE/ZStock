@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:background="@color/jabuticaba"
     android:padding="16dp"
-    tools:context=".perfil.gui.AlterarNomePessoaActivity">
+    tools:context="com.zstok.perfil.gui.AlterarNomePessoaActivity">
 
     <EditText
         android:id="@+id/edtAlterarNomePessoa"

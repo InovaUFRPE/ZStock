@@ -74,5 +74,4 @@
         <activity android:name=".negociacao.gui.NegociacaoActivity" />
         <activity android:name=".historico.gui.VisualizarHistoricoActivity"></activity>
     </application>
-
 </manifest>
