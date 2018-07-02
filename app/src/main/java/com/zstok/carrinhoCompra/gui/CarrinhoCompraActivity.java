@@ -268,13 +268,18 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     }
     //Gera Historico - Cada empresa do produto tem seu próprio histórico - Tem como entrada o dicionario gerador pelo separador carrinho compra
     private void geraHistorico(HashMap<String, ArrayList<ItemCompra>> dic, DataSnapshot dataSnapshot){
+        double total = 0.0;
         Set<String> empresas = dic.keySet();
         for (String empresa : empresas) {
+            for (ItemCompra itemCompra: dic.get(empresa)){
+                total+=(itemCompra.getValor()*itemCompra.getQuantidade());
+            }
             Historico historico = new Historico();
             historico.setCnpj(dataSnapshot.child("pessoaJuridica").child(empresa).child("cnpj").getValue(String.class));
             historico.setCpf(dataSnapshot.child("pessoaFisica").child(FirebaseController.getUidUser()).child("cpf").getValue(String.class));
             historico.setCarrinho(dic.get(empresa));
             historico.setDataCompra(Helper.getData());
+            historico.setTotal(total);
             HistoricoServices.adicionarHistorico(historico);
         }
     }
