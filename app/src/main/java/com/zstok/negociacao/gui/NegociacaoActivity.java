@@ -32,7 +32,6 @@ public class NegociacaoActivity extends AppCompatActivity {
         tvNegociacaoNomeEmpresa = findViewById(R.id.tvNegociacaoNomeEmpresa);
         edtNegociacaoBarraMensagem = findViewById(R.id.edtNegociacaoBarraMensagem);
         lvMensagens = findViewById(R.id.lvMensagens);
-        
 
     }
 }
