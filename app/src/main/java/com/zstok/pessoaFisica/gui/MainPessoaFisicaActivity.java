@@ -252,6 +252,8 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                     resgatarNomeEmpresa(viewHolder, model);
                     if (model.getUrlImagem() != null) {
                         Glide.with(MainPessoaFisicaActivity.this).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
+                    }else {
+                        viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
                     }
                 }
 
