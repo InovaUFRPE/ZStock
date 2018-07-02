@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:focusableInTouchMode="true"
+    tools:context=".negociacao.gui.NegociacaoActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tvNegociacaoNomeEmpresa"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:layout_marginTop="10dp"
+            android:singleLine="true"
+            android:layout_marginStart="25dp"
+            android:text="Nome da empresa"
+            android:textSize="25sp"
+            android:textAllCaps="true"
+            android:layout_marginLeft="25dp" />
+
+        <View
+            android:id="@+id/vwNegociacaoNomeEmpresa"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="25dp"
+            android:background="@color/goiaba"
+            android:layout_below="@id/tvNegociacaoNomeEmpresa"
+            android:layout_marginLeft="25dp" />
+
+        <LinearLayout
+            android:id="@+id/rltBotoesNegociacao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_below="@id/vwNegociacaoNomeEmpresa"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnNegociacaoCarrinho"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_marginRight="5dp"
+                android:background="@color/goiaba"
+                android:text="Carrinho" />
+
+            <Button
+                android:id="@+id/btnNegociacaoOferta"
+                android:layout_width="wrap_content"
+                android:background="@color/goiaba"
+                android:layout_height="45dp"
+                android:text="Oferta"
+                />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/goiaba" />
+
+    <RelativeLayout
+        android:id="@+id/rltMensagensDaNegociacao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ListView
+            android:id="@+id/lvMensagens"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="62dp"
+            android:dividerHeight="1dp"
+            android:divider="@color/jabuticaba"
+            android:foregroundTint="@color/goiaba"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <EditText
+                android:id="@+id/edtNegociacaoBarraMensagem"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginEnd="60dp"
+                android:layout_marginRight="60dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="15dp"
+                android:hint="Digite sua mensagem"
+                android:inputType="text"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:paddingStart="30dp" />
+
+            <Button
+                android:id="@+id/btnNegociacaoEnviarMensagem"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/borda_goiaba"
+                android:drawableLeft="@drawable/ic_setinha"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:gravity="center_vertical|center_horizontal"/>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>
