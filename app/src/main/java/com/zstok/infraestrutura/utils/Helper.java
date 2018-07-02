@@ -99,7 +99,6 @@ public class Helper {
     public static String getData(){
         Date data = new Date();
         SimpleDateFormat formatar = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        String dataFormatada = formatar.format(data);
-        return dataFormatada;
+        return formatar.format(data);
     }
 }

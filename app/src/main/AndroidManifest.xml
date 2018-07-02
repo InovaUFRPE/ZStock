@@ -64,9 +64,10 @@
             android:label="@string/title_activity_carrinho_compra"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".historico.gui.MainHistoricoActivity"
-            android:label="@string/title_activity_main_historico"
-            android:theme="@style/AppTheme"></activity>
+            android:name=".historico.gui.MainHistoricoPessoaFisicaActivity"
+            android:label="@string/title_activity_main_historico_pessoa_fisica"
+            android:theme="@style/AppTheme">
+        </activity>
     </application>
 
 </manifest>

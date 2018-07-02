@@ -113,6 +113,7 @@
     <string name="zs_menu_lateral_produtos_pessoa_fisica">Produtos</string>
     <string name="zs_menu_lateral_produtos_pessoa_juridica">Meus produtos</string>
     <string name="zs_menu_lateral_compras">Compras</string>
+    <string name="zs_menu_lateral_historico">Meu histórico</string>
     <string name="zs_menu_lateral_sair">Sair</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -134,6 +135,6 @@
     <string name="zs_titulo_progress_dialog_cadastrando_produto">Cadastrando produto...</string>
     <string name="zs_titulo_progress_dialog_alterar_produto">Alterando produto...</string>
     <string name="zs_titulo_progress_dialog_perfil">Carregando informações...</string>
-    <string name="title_activity_main_historico">MainHistoricoActivity</string>
+    <string name="title_activity_main_historico_pessoa_fisica">Meu histórico</string>
 
 </resources>

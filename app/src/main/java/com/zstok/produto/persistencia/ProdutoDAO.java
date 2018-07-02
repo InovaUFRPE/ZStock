@@ -38,7 +38,8 @@ public class ProdutoDAO {
         boolean verificador;
 
         try {
-            FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("status").setValue(false);
+            FirebaseController.getFirebase().child("produtoExcluido").child(produto.getIdProduto()).setValue(produto);
+            FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).setValue(null);
             verificador = true;
         }catch (DatabaseException e){
             verificador = false;

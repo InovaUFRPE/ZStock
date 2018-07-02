@@ -22,7 +22,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -39,10 +38,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.zstok.R;
+import com.zstok.historico.gui.MainHistoricoPessoaFisicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
-import com.zstok.perfil.negocio.PerfilServices;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.pessoaFisica.dominio.PessoaFisica;
 import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
@@ -136,15 +135,18 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.nav_meu_perfil_fisico:
+                    case R.id.nav_meu_perfil_pessoa_fisica:
                         drawer.closeDrawers();
                         return true;
-                    case R.id.nav_negociacao_fisico:
+                    case R.id.nav_negociacao_pessoa_fisica:
                         //Intent para tela de negocicao
                         Helper.criarToast(getApplicationContext(), "Em construção...");
                         return true;
-                    case R.id.nav_produtos_fisico:
+                    case R.id.nav_produtos_pessoa_fisica:
                         abrirTelaMainPessoaFisicaActivity();
+                        return true;
+                    case R.id.nav_meu_historico_pessoa_fisica:
+                        abrirTelaMainHistoricoPessoaFisicaActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -510,6 +512,11 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     //Intent para a tela de alteração da data de nascimento
     private void abrirTelaAlterarDataNascimentoActivity() {
         Intent intent = new Intent(getApplicationContext(), AlterarDataNascimentoPessoaFisicaActivity.class);
+        startActivity(intent);
+    }
+    //Intent para a tela de histórico pessoa física, onde estão os produtos
+    private void abrirTelaMainHistoricoPessoaFisicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoPessoaFisicaActivity.class);
         startActivity(intent);
     }
 }

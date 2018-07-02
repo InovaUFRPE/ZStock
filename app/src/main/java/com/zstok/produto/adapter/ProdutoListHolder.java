@@ -37,11 +37,6 @@ public class ProdutoListHolder extends RecyclerView.ViewHolder implements View.O
 
     }
 
-    public void setVisibility(){
-        itemView.setVisibility(View.GONE);
-        itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
-    }
-
     @Override
     public void onClick(View v) {
         if (itemClickListener != null){

@@ -29,9 +29,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
-import com.zstok.carrinhoCompra.adapter.ItemCompraListHolder;
 import com.zstok.carrinhoCompra.negocio.CarrinhoCompraServices;
 import com.zstok.historico.dominio.Historico;
+import com.zstok.historico.gui.MainHistoricoPessoaFisicaActivity;
 import com.zstok.historico.negocio.HistoricoServices;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
@@ -41,6 +41,7 @@ import com.zstok.itemcompra.dominio.ItemCompra;
 import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
+import com.zstok.produto.adapter.ProdutoListHolder;
 import com.zstok.produto.dominio.Produto;
 
 import java.text.NumberFormat;
@@ -172,14 +173,17 @@ public class CarrinhoCompraActivity extends AppCompatActivity
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.nav_meu_perfil_fisico:
+                    case R.id.nav_meu_perfil_pessoa_fisica:
                         abrirTelaPerfilPessoaFisicaActivity();
                         return true;
-                    case R.id.nav_produtos_fisico:
+                    case R.id.nav_produtos_pessoa_fisica:
                         abrirTelaMainPessoaFisicaActivity();
                         return true;
-                    case R.id.nav_negociacao_fisico:
+                    case R.id.nav_negociacao_pessoa_fisica:
                         Helper.criarToast(getApplicationContext(), "Em construção...");
+                        return true;
+                    case R.id.nav_meu_historico_pessoa_fisica:
+                        abrirTelaMainHistoricoPessoaFisicaActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -329,14 +333,14 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
         if (databaseReference != null) {
 
-            adapter = new FirebaseRecyclerAdapter<ItemCompra, ItemCompraListHolder>(
+            adapter = new FirebaseRecyclerAdapter<ItemCompra, ProdutoListHolder>(
                     ItemCompra.class,
-                    R.layout.card_item_compra,
-                    ItemCompraListHolder.class,
+                    R.layout.card_produto,
+                    ProdutoListHolder.class,
                     databaseReference) {
 
                 @Override
-                protected void populateViewHolder(final ItemCompraListHolder viewHolder, final ItemCompra model, int position) {
+                protected void populateViewHolder(final ProdutoListHolder viewHolder, final ItemCompra model, int position) {
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
 
@@ -347,12 +351,12 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                             if (produto != null) {
                                 Pessoa pessoa = dataSnapshot.child("pessoa").child(produto.getIdEmpresa()).getValue(Pessoa.class);
                                 if (pessoa != null) {
-                                    viewHolder.tvCardViewNomeItemCompra.setText(produto.getNome());
-                                    viewHolder.tvCardViewPrecoItemCompra.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
-                                    viewHolder.tvCardViewQuantidadeItemCompra.setText(String.valueOf(model.getQuantidade()));
+                                    viewHolder.tvCardViewNomeProduto.setText(produto.getNome());
+                                    viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
+                                    viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidade()));
                                     viewHolder.tvCardViewNomeEmpresa.setText(pessoa.getNome());
                                     if (produto.getUrlImagem() != null) {
-                                        Glide.with(getApplicationContext()).load(produto.getUrlImagem()).into(viewHolder.imgCardViewItemCompra);
+                                        Glide.with(getApplicationContext()).load(produto.getUrlImagem()).into(viewHolder.imgCardViewProduto);
                                     }
                                     if (getItemCount() == 0) {
                                         calcularTotal(produto.getPrecoSugerido(), model.getQuantidade());
@@ -451,6 +455,11 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     //Intent para a tela main pessoa física, onde estão os produtos
     private void abrirTelaMainPessoaFisicaActivity(){
         Intent intent = new Intent(getApplicationContext(), MainPessoaFisicaActivity.class);
+        startActivity(intent);
+    }
+    //Intent para a tela de histórico pessoa física, onde estão os produtos
+    private void abrirTelaMainHistoricoPessoaFisicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoPessoaFisicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de login

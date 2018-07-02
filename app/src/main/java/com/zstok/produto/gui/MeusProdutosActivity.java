@@ -216,7 +216,6 @@ public class MeusProdutosActivity extends AppCompatActivity
         final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
         Query queryAdapter = databaseReference.orderByChild("idEmpresa").equalTo(FirebaseController.getUidUser());
         if (queryAdapter != null) {
-
             adapter = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
                     Produto.class,
                     R.layout.card_produto,
@@ -225,7 +224,6 @@ public class MeusProdutosActivity extends AppCompatActivity
 
                 @Override
                 protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
-                    getItemCount();
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
                     viewHolder.tvCardViewNomeProduto.setText(model.getNome());
@@ -234,7 +232,7 @@ public class MeusProdutosActivity extends AppCompatActivity
                     viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
                     if (model.getUrlImagem() != null) {
                         Glide.with(MeusProdutosActivity.this).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
-                    }else {
+                    } else {
                         viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
                     }
                 }
