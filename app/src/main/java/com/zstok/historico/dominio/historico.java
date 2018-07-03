@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Historico {
 
     private String idHistorico;
-    private String idEmpresa;
+    private String idPessoaJuridica;
     private String idPessoaFisica;
     private String dataCompra;
     private double total;
@@ -21,12 +21,12 @@ public class Historico {
         this.idHistorico = idHistorico;
     }
 
-    public String getIdEmpresa() {
-        return idEmpresa;
+    public String getIdPessoaJuridica() {
+        return idPessoaJuridica;
     }
 
-    public void setIdEmpresa(String cnpj) {
-        this.idEmpresa = cnpj;
+    public void setIdPessoaJuridica(String cnpj) {
+        this.idPessoaJuridica = cnpj;
     }
 
     public String getIdPessoaFisica() {

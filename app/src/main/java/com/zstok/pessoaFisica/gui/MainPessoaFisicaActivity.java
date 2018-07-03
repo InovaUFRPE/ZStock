@@ -41,6 +41,7 @@ import com.zstok.historico.gui.MainHistoricoPessoaFisicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
+import com.zstok.negociacao.gui.MainNegociacaoActivity;
 import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
 import com.zstok.produto.adapter.ProdutoListHolder;
 import com.zstok.produto.dominio.Produto;
@@ -67,7 +68,6 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
     private FirebaseRecyclerAdapter adapter;
 
     private FirebaseUser user;
-    private StorageReference referenciaStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +78,6 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
 
         //Resgantado usuário atual
         user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
-
-        referenciaStorage = FirebaseStorage.getInstance().getReference();
 
         //Instanciando views
         edtPesquisaProdutoPessoaFisica = findViewById(R.id.edtPesquisaProdutoPessoaFisica);
@@ -120,7 +118,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //Instanciando views do menu lateral
-        instanciandoView();
+        instanciandoViews();
 
         //Carregando informações do menu lateral
         setDadosMenuLateral();
@@ -155,8 +153,8 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                         abrirTelaPerfilPessoaFisicaActivity();
                         return true;
                     case R.id.nav_negociacao_pessoa_fisica:
-                        //Activity de turmas
-                        Helper.criarToast(getApplicationContext(), "Em construção...");
+                        //Activity de negociação
+                        abrirTelaMainNegociacaoActivity();
                         return true;
                     case R.id.nav_produtos_pessoa_fisica:
                         drawer.closeDrawers();
@@ -315,7 +313,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
         alertaSair.show();
     }
     //Método que instancia as views
-    private void instanciandoView(){
+    private void instanciandoViews(){
         View headerView = navigationView.getHeaderView(0);
         tvNomeUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderNome);
         tvEmailUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderEmail);
@@ -372,9 +370,14 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
         Intent intent = new Intent(getApplicationContext(), CarrinhoCompraActivity.class);
         startActivity(intent);
     }
-    //Intent para a tela de histórico pessoa física, onde estão os produtos
+    //Intent para a tela de histórico pessoa física
     private void abrirTelaMainHistoricoPessoaFisicaActivity(){
         Intent intent = new Intent(getApplicationContext(), MainHistoricoPessoaFisicaActivity.class);
+        startActivity(intent);
+    }
+    //Intent para a tela de negociação
+    private void abrirTelaMainNegociacaoActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainNegociacaoActivity.class);
         startActivity(intent);
     }
 }

@@ -38,6 +38,7 @@ import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.itemcompra.dominio.ItemCompra;
 import com.zstok.negociacao.dominio.Negociacao;
+import com.zstok.negociacao.gui.MainNegociacaoActivity;
 import com.zstok.negociacao.negocio.NegociacaoServices;
 import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
 import com.zstok.pessoa.dominio.Pessoa;
@@ -299,16 +300,10 @@ public class CarrinhoCompraActivity extends AppCompatActivity
         HashMap<String, ArrayList<ItemCompra>> dicionarioEmpresas = separadorCarrinhoCompra(dataSnapshot);
         Set<String> empresas = dicionarioEmpresas.keySet();
         for (String empresa: empresas) {
-            Helper.criarToast(getApplicationContext(), empresa);
-            Negociacao negociacao = new Negociacao();
-            negociacao.setIdPessoaFisica(FirebaseController.getUidUser());
-            negociacao.setIdPessoaJuridica(dataSnapshot.child("produto").child(dicionarioEmpresas.get(empresa).get(0).getIdProduto()).child("idEmpresa").getValue(String.class));
-            negociacao.setDataInicio(Helper.getData());
-            negociacao.setCarrinhoAtual(dicionarioEmpresas.get(empresa));
-            //Setar negociacao.dao - lembrar de colocar ID da negociacao
+            Negociacao negociacao = criarNegociacao(dataSnapshot, dicionarioEmpresas, empresa);
             NegociacaoServices.inserirNegociacao(negociacao);
         }
-        CarrinhoCompraServices.limparCarrinho();
+        limparCarrinho();
     }
     //Gera Historico - Cada empresa do produto tem seu próprio histórico - Tem como entrada o dicionario gerador pelo separador carrinho compra
     private void geraHistorico(HashMap<String, ArrayList<ItemCompra>> dic){
@@ -318,12 +313,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
             for (ItemCompra itemCompra: dic.get(empresa)){
                 total+=(itemCompra.getValor()*itemCompra.getQuantidade());
             }
-            Historico historico = new Historico();
-            historico.setIdEmpresa(empresa);
-            historico.setIdPessoaFisica(FirebaseController.getUidUser());
-            historico.setCarrinho(dic.get(empresa));
-            historico.setDataCompra(Helper.getData());
-            historico.setTotal(total);
+            Historico historico = criarHistorico(dic, total, empresa);
             HistoricoServices.adicionarHistorico(historico);
         }
     }
@@ -375,6 +365,32 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     //Método que calcula o novo total
     private boolean alterarValorItemCompra(ItemCompra itemCompra, Produto produto) {
         return CarrinhoCompraServices.alterarValorItemCompra(itemCompra, produto);
+    }
+    //Criando objeto negociacao
+    @NonNull
+    private Negociacao criarNegociacao(DataSnapshot dataSnapshot, HashMap<String, ArrayList<ItemCompra>> dicionarioEmpresas, String empresa) {
+        Negociacao negociacao = new Negociacao();
+        negociacao.setIdPessoaFisica(FirebaseController.getUidUser());
+        negociacao.setIdPessoaJuridica(dataSnapshot.child("produto").child(dicionarioEmpresas.get(empresa).get(0).getIdProduto()).child("idEmpresa").getValue(String.class));
+        negociacao.setDataInicio(Helper.getData());
+        negociacao.setCarrinhoAtual(dicionarioEmpresas.get(empresa));
+        return negociacao;
+    }
+    //Criando objeto histórico
+    @NonNull
+    private Historico criarHistorico(HashMap<String, ArrayList<ItemCompra>> dic, double total, String empresa) {
+        Historico historico = new Historico();
+        historico.setIdPessoaJuridica(empresa);
+        historico.setIdPessoaFisica(FirebaseController.getUidUser());
+        historico.setCarrinho(dic.get(empresa));
+        historico.setDataCompra(Helper.getData());
+        historico.setTotal(total);
+        return historico;
+    }
+    //Chamando camada de negócio para limpar carrinho
+    private void limparCarrinho() {
+        CarrinhoCompraServices.limparCarrinho();
+        abrirTelaMainNegocicaoActivity();
     }
     //Montando adapter e jogando no list holder
     private void criarAdapter() {
@@ -510,6 +526,12 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     private void abrirTelaMainHistoricoPessoaFisicaActivity(){
         Intent intent = new Intent(getApplicationContext(), MainHistoricoPessoaFisicaActivity.class);
         startActivity(intent);
+    }
+    //Intetn para a tela de negociacao
+    private void abrirTelaMainNegocicaoActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainNegociacaoActivity.class);
+        startActivity(intent);
+        finish();
     }
     //Intent para a tela de login
     private void abrirTelaLoginActivity(){

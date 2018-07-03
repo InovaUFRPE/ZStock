@@ -29,7 +29,6 @@ import com.zstok.historico.adapter.HistoricoListHolder;
 import com.zstok.historico.dominio.Historico;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
-import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
 import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
 import com.zstok.produto.gui.MeusProdutosActivity;
@@ -212,7 +211,7 @@ public class MainHistoricoPessoaJuridicaActivity extends AppCompatActivity
     private void abrirTelaVisualizarHistoricoActivity(Historico historico){
         Intent intent = new Intent(getApplicationContext(), VisualizarHistoricoActivity.class);
         intent.putExtra("idHistorico", historico.getIdHistorico());
-        intent.putExtra("idEmpresa", historico.getIdEmpresa());
+        intent.putExtra("idEmpresa", historico.getIdPessoaJuridica());
         intent.putExtra("idPessoaFisica", historico.getIdPessoaFisica());
         startActivity(intent);
     }

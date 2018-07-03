@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,12 +18,20 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
 import com.zstok.historico.gui.MainHistoricoPessoaJuridicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
+import com.zstok.negociacao.adapter.NegociacaoListHolder;
+import com.zstok.negociacao.dominio.Negociacao;
 import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
 import com.zstok.produto.gui.MeusProdutosActivity;
 
@@ -39,6 +49,10 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
     private TextView tvEmailUsuarioNavHeader;
     private CircleImageView cvNavHeaderPessoa;
 
+    private RecyclerView recylerViewNegocicao;
+    private FirebaseRecyclerAdapter adapterNegociacao;
+    private RecyclerView.LayoutManager layoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +68,15 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
 
         //Resgatando usuário atual
         user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+
+        //Instanciando recyler view
+        recylerViewNegocicao = findViewById(R.id.recyclerNegociacaoPessoaJuridica);
+        recylerViewNegocicao.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(MainPessoaJuridicaActivity.this);
+        recylerViewNegocicao.setLayoutManager(layoutManager);
+
+        //Criando adapter negociacao
+        criarAdapterNegociacao();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -92,6 +115,50 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
             }
         });
     }
+    //Montando adapter e jogando no list holder
+    private void criarAdapterNegociacao() {
+        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("negociacao");
+        Query queryAdapter = databaseReference.orderByChild("idPessoaJuridica").equalTo(FirebaseController.getUidUser());
+        if (queryAdapter != null) {
+            adapterNegociacao = new FirebaseRecyclerAdapter<Negociacao, NegociacaoListHolder>(
+                    Negociacao.class,
+                    R.layout.card_negociacao,
+                    NegociacaoListHolder.class,
+                    queryAdapter) {
+
+                @Override
+                protected void populateViewHolder(final NegociacaoListHolder viewHolder, final Negociacao model, int position) {
+                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
+                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
+
+                    viewHolder.tvCardViewDataInicio.setText(model.getDataInicio());
+                    if (model.getDataFim() != null){
+                        viewHolder.tvCardViewDataFim.setText("Indefinida");
+                    }else {
+                        viewHolder.tvCardViewDataFim.setText(model.getDataFim());
+                    }
+                    resgatarCpfPessoaFisica(viewHolder, model);
+                }
+            };
+            recylerViewNegocicao.setAdapter(adapterNegociacao);
+        }
+    }
+
+    private void resgatarCpfPessoaFisica(final NegociacaoListHolder viewHolder, final Negociacao model) {
+        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String cpf = dataSnapshot.child("pessoaFisica").child(model.getIdPessoaFisica()).child("cpf").getValue(String.class);
+                viewHolder.tvCardViewNomeCpfEmpresa.setText(cpf);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     //Instanciando views do navigation header
     private void instanciandoView(){
         View headerView = navigationView.getHeaderView(0);

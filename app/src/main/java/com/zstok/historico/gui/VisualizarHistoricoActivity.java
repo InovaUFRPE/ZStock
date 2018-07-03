@@ -124,7 +124,7 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
     private Historico criarHistorico(){
         Historico historico = new Historico();
 
-        historico.setIdEmpresa(getIntent().getStringExtra("idEmpresa"));
+        historico.setIdPessoaJuridica(getIntent().getStringExtra("idEmpresa"));
         historico.setIdPessoaFisica(getIntent().getStringExtra("idPessoaFisica"));
 
         return historico;
@@ -135,9 +135,9 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                tvNomeEmpresaVizualizarHistorico.setText(dataSnapshot.child("pessoa").child(historico.getIdEmpresa()).child("nome").getValue(String.class));
+                tvNomeEmpresaVizualizarHistorico.setText(dataSnapshot.child("pessoa").child(historico.getIdPessoaJuridica()).child("nome").getValue(String.class));
                 tvCpfVisualizarHistorico.setText(dataSnapshot.child("pessoaFisica").child(historico.getIdPessoaFisica()).child("cpf").getValue(String.class));
-                tvCnpjVisualizarHistorico.setText(dataSnapshot.child("pessoaJuridica").child(historico.getIdEmpresa()).child("cnpj").getValue(String.class));
+                tvCnpjVisualizarHistorico.setText(dataSnapshot.child("pessoaJuridica").child(historico.getIdPessoaJuridica()).child("cnpj").getValue(String.class));
                 tvTotalVisualizarHistorico.setText(NumberFormat.getCurrencyInstance().format(dataSnapshot.child("historico").child(idHistorico).child("total").getValue(Double.class)));
                 tvDataCompraVizualizarHistorico.setText(dataSnapshot.child("historico").child(idHistorico).child("dataCompra").getValue(String.class));
             }

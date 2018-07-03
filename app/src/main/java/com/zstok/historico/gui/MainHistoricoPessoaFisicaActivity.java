@@ -30,6 +30,7 @@ import com.zstok.historico.dominio.Historico;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
+import com.zstok.negociacao.gui.MainNegociacaoActivity;
 import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
 import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
 
@@ -77,7 +78,7 @@ public class MainHistoricoPessoaFisicaActivity extends AppCompatActivity
                         return true;
                     case R.id.nav_negociacao_pessoa_fisica:
                         //Intent para tela de negocicao
-                        Helper.criarToast(getApplicationContext(), "Em construção...");
+                        abrirTelaMainNegociacaoActivity();
                         return true;
                     case R.id.nav_produtos_pessoa_fisica:
                         abrirTelaMainPessoaFisicaActivity();
@@ -117,7 +118,7 @@ public class MainHistoricoPessoaFisicaActivity extends AppCompatActivity
                     FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            String nomeEmpresa = dataSnapshot.child("pessoa").child(model.getIdEmpresa()).child("nome").getValue(String.class);
+                            String nomeEmpresa = dataSnapshot.child("pessoa").child(model.getIdPessoaJuridica()).child("nome").getValue(String.class);
                             viewHolder.tvCardViewNomeEmpresa.setText(nomeEmpresa);
                         }
 
@@ -206,8 +207,13 @@ public class MainHistoricoPessoaFisicaActivity extends AppCompatActivity
     private void abrirTelaVisualizarHistoricoActivity(Historico historico){
         Intent intent = new Intent(getApplicationContext(), VisualizarHistoricoActivity.class);
         intent.putExtra("idHistorico", historico.getIdHistorico());
-        intent.putExtra("idEmpresa", historico.getIdEmpresa());
+        intent.putExtra("idEmpresa", historico.getIdPessoaJuridica());
         intent.putExtra("idPessoaFisica", historico.getIdPessoaFisica());
+        startActivity(intent);
+    }
+    //Intent para a tela de negociação
+    private void abrirTelaMainNegociacaoActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainNegociacaoActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de login

@@ -9,10 +9,9 @@
     tools:showIn="@layout/app_bar_main_pessoa_juridica">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerHistoricoPessoaJuridica"
+        android:id="@+id/recyclerNegociacaoPessoaJuridica"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/edtPesquisaProdutoPessoaFisica"
         android:padding="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
