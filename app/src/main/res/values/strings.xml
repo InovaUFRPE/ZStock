@@ -40,6 +40,10 @@
     <string name="zs_texto_registro">Não é registrado?</string>
     <string name="zs_texto_registre_se"><b><u>Registre-se</u></b></string>
     <string name="zs_texto_esqueceu_senha"><u>Não sei minha senha!</u></string>
+    <string name="zs_texto_cpf_visualizar_historico">CPF:</string>
+    <string name="zs_texto_cnpj_visualizar_historico">CNPJ:</string>
+    <string name="zs_texto_data_inicio_negociacao">Data início:</string>
+    <string name="zs_texto_data_fim_negociacao">Data fim:</string>
 
     <string name="zs_dialogo_sim">Sim</string>
     <string name="zs_dialogo_nao">Não</string>

@@ -11,7 +11,6 @@
             android:id="@+id/tvNomeEmpresaVizualizarHistorico"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nome da empresa"
             android:gravity="center"
             android:textSize="30sp"
             android:layout_marginTop="20dp"/>
@@ -19,7 +18,6 @@
             android:id="@+id/tvDataCompraVizualizarHistorico"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Data da compra"
             android:gravity="center"
             android:textSize="20sp"/>
 
@@ -37,8 +35,9 @@
         <TextView
             android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="CPF:"
-            android:gravity="center"
+            android:text="@string/zs_texto_cpf_visualizar_historico"
+            android:paddingLeft="@dimen/padding_left"
+            android:paddingRight="@dimen/padding_left"
             android:textSize="20sp"/>
 
         <TextView
@@ -48,7 +47,6 @@
             android:layout_marginLeft="70dp"
             android:layout_marginStart="70dp"
             android:gravity="center"
-            android:text="CPF"
             android:textSize="20sp" />
     </RelativeLayout>
 
@@ -67,8 +65,9 @@
             android:id="@+id/tvTextoCnpjVisualizarHistorico"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="CNPJ: "
-            android:gravity="center"
+            android:text="@string/zs_texto_cnpj_visualizar_historico"
+            android:paddingLeft="@dimen/padding_left"
+            android:paddingRight="@dimen/padding_left"
             android:textSize="20sp"/>
 
         <TextView
@@ -78,12 +77,11 @@
             android:layout_marginLeft="70dp"
             android:layout_marginStart="70dp"
             android:gravity="center"
-            android:text="CNPJ"
             android:textSize="20sp" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerHistoricoCompraProdutos"
+        android:id="@+id/recyclerItensCompraHistorico"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="100dp"

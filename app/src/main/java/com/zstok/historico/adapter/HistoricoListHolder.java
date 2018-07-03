@@ -20,7 +20,7 @@ public class HistoricoListHolder extends RecyclerView.ViewHolder implements View
     public HistoricoListHolder(final View itemView) {
         super(itemView);
 
-        tvCardViewNomeEmpresa = itemView.findViewById(R.id.tvNomeEmpresaCardViewHistorico);
+        tvCardViewNomeEmpresa = itemView.findViewById(R.id.tvNomeCpfCardViewHistorico);
         tvCardViewTotalCompra = itemView.findViewById(R.id.tvTotalCardViewProduto);
         tvCardViewDataCompra = itemView.findViewById(R.id.tvDataCompraCardViewHistorico);
         mainLayout = itemView.findViewById(R.id.cardViewHistorico);

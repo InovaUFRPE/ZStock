@@ -6,7 +6,8 @@ import com.zstok.infraestrutura.utils.FirebaseController;
 
 public class HistoricoDAO {
     public static boolean adicionarHistorico(Historico historico){
-        FirebaseController.getFirebase().child("historico").push().setValue(historico);
+        historico.setIdHistorico(FirebaseController.getFirebase().push().getKey());
+       FirebaseController.getFirebase().child("historico").child(historico.getIdHistorico()).setValue(historico);
         return true;
     }
 }

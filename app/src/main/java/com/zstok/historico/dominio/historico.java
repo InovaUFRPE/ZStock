@@ -6,11 +6,20 @@ import java.util.ArrayList;
 
 public class Historico {
 
+    private String idHistorico;
     private String idEmpresa;
     private String idPessoaFisica;
     private String dataCompra;
     private double total;
     private ArrayList<ItemCompra> carrinho;
+
+    public String getIdHistorico() {
+        return idHistorico;
+    }
+
+    public void setIdHistorico(String idHistorico) {
+        this.idHistorico = idHistorico;
+    }
 
     public String getIdEmpresa() {
         return idEmpresa;

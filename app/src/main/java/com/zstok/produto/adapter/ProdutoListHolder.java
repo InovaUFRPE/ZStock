@@ -20,7 +20,6 @@ public class ProdutoListHolder extends RecyclerView.ViewHolder implements View.O
     public View linearLayout;
     private ProdutoListHolder.ClickListener itemClickListener;
 
-
     public ProdutoListHolder(final View itemView) {
         super(itemView);
 
@@ -33,7 +32,6 @@ public class ProdutoListHolder extends RecyclerView.ViewHolder implements View.O
         linearLayout = itemView.findViewById(R.id.produtoCard);
 
         itemView.setOnClickListener(this);
-
     }
 
     @Override

@@ -145,22 +145,29 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
             }
         });
-
+        //Evento iniciar negociação
         btnNegociarCompra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(verificaConexao.isConected()){
-                    FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            geraNegociacao(dataSnapshot);
-                        }
+                    if (adapter.getItemCount() > 0) {
+                        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                geraNegociacao(dataSnapshot);
+                            }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
 
-                        }
-                    });
+                            }
+                        });
+                    }
+                    else {
+                        Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_compra_vazia));
+                    }
+                }else {
+                    Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_conexao_falha));
                 }
             }
         });
@@ -215,21 +222,6 @@ public class CarrinhoCompraActivity extends AppCompatActivity
             }
         });
     }
-
-    private void geraNegociacao(DataSnapshot dataSnapshot){
-        HashMap<String, ArrayList<ItemCompra>> dicionarioEmpresas = separadorCarrinhoCompra(dataSnapshot);
-        Set<String> empresas = dicionarioEmpresas.keySet();
-        for (String empresa: empresas) {
-            Negociacao negociacao = new Negociacao();
-            negociacao.setIdPessoaFisica(FirebaseController.getUidUser());
-            negociacao.setIdPessoaJuridica(dataSnapshot.child("produto").child(dicionarioEmpresas.get(empresa).get(0).getIdProduto()).child("idEmpresa").getValue(String.class));
-            negociacao.setDataInicio(Helper.getData());
-            negociacao.setCarrinhoAtual(dicionarioEmpresas.get(empresa));
-            //Setar negociacao.dao - lembrar de colocar ID da negociacao
-            NegociacaoServices.inserirNegociacao(negociacao);
-        }
-    }
-
     //Método que carrega nome e email do usuário e seta nas views do menu lateral
     private void setDadosMenuLateral(){
         if (user.getPhotoUrl() != null){
@@ -301,6 +293,22 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
             }
         });
+    }
+    //Gerando negociação
+    private void geraNegociacao(DataSnapshot dataSnapshot){
+        HashMap<String, ArrayList<ItemCompra>> dicionarioEmpresas = separadorCarrinhoCompra(dataSnapshot);
+        Set<String> empresas = dicionarioEmpresas.keySet();
+        for (String empresa: empresas) {
+            Helper.criarToast(getApplicationContext(), empresa);
+            Negociacao negociacao = new Negociacao();
+            negociacao.setIdPessoaFisica(FirebaseController.getUidUser());
+            negociacao.setIdPessoaJuridica(dataSnapshot.child("produto").child(dicionarioEmpresas.get(empresa).get(0).getIdProduto()).child("idEmpresa").getValue(String.class));
+            negociacao.setDataInicio(Helper.getData());
+            negociacao.setCarrinhoAtual(dicionarioEmpresas.get(empresa));
+            //Setar negociacao.dao - lembrar de colocar ID da negociacao
+            NegociacaoServices.inserirNegociacao(negociacao);
+        }
+        CarrinhoCompraServices.limparCarrinho();
     }
     //Gera Historico - Cada empresa do produto tem seu próprio histórico - Tem como entrada o dicionario gerador pelo separador carrinho compra
     private void geraHistorico(HashMap<String, ArrayList<ItemCompra>> dic){

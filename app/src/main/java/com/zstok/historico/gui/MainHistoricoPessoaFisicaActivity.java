@@ -57,10 +57,13 @@ public class MainHistoricoPessoaFisicaActivity extends AppCompatActivity
         toggle.syncState();
 
         //Instanciando recyler view
-        recyclerViewHistorico = findViewById(R.id.recyclerItensCarrinho);
+        recyclerViewHistorico = findViewById(R.id.recyclerHistoricoPessoaFisica);
         recyclerViewHistorico.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainHistoricoPessoaFisicaActivity.this);
         recyclerViewHistorico.setLayoutManager(layoutManager);
+
+        //Criando adapter
+        criarAdapterHistorico();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -90,8 +93,6 @@ public class MainHistoricoPessoaFisicaActivity extends AppCompatActivity
                 }
             }
         });
-        //Criando adapter
-        criarAdapterHistorico();
     }
     //Método que cria o adapter de histórico
     private void criarAdapterHistorico(){
@@ -110,10 +111,13 @@ public class MainHistoricoPessoaFisicaActivity extends AppCompatActivity
                     getItemCount();
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
+                    viewHolder.tvCardViewTotalCompra.setText(NumberFormat.getCurrencyInstance().format(model.getTotal()));
+                    viewHolder.tvCardViewDataCompra.setText(String.valueOf(model.getDataCompra()));
+
                     FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            String nomeEmpresa = dataSnapshot.child("pessoaJuridica").child(model.getIdEmpresa()).child("nome").getValue(String.class);
+                            String nomeEmpresa = dataSnapshot.child("pessoa").child(model.getIdEmpresa()).child("nome").getValue(String.class);
                             viewHolder.tvCardViewNomeEmpresa.setText(nomeEmpresa);
                         }
 
@@ -122,8 +126,6 @@ public class MainHistoricoPessoaFisicaActivity extends AppCompatActivity
 
                         }
                     });
-                    viewHolder.tvCardViewTotalCompra.setText(NumberFormat.getCurrencyInstance().format(model.getTotal()));
-                    viewHolder.tvCardViewDataCompra.setText(String.valueOf(model.getDataCompra()));
                 }
 
                 @NonNull
@@ -134,7 +136,7 @@ public class MainHistoricoPessoaFisicaActivity extends AppCompatActivity
                         @Override
                         public void onItemClick(View view, int position) {
                             Historico historico =  (Historico) adapterHistorico.getItem(position);
-                            Helper.criarToast(getApplicationContext(), historico.getDataCompra()    );
+                            abrirTelaVisualizarHistoricoActivity(historico);
                         }
                     });
                     return viewHolder;
@@ -198,6 +200,14 @@ public class MainHistoricoPessoaFisicaActivity extends AppCompatActivity
     //Intent para a tela de perfil pessoa física
     private void abrirTelaMeuPerfilPessoaFisicaActivity(){
         Intent intent = new Intent(getApplicationContext(), PerfilPessoaFisicaActivity.class);
+        startActivity(intent);
+    }
+    //Intent para a tela visualizar histórico
+    private void abrirTelaVisualizarHistoricoActivity(Historico historico){
+        Intent intent = new Intent(getApplicationContext(), VisualizarHistoricoActivity.class);
+        intent.putExtra("idHistorico", historico.getIdHistorico());
+        intent.putExtra("idEmpresa", historico.getIdEmpresa());
+        intent.putExtra("idPessoaFisica", historico.getIdPessoaFisica());
         startActivity(intent);
     }
     //Intent para a tela de login

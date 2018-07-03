@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.zstok.R;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 
-public class NegociacaoActivity extends AppCompatActivity {
+public class ChatNegociacaoActivity extends AppCompatActivity {
 
     private TextView tvNegociacaoNomeEmpresa;
     private EditText edtNegociacaoBarraMensagem;
@@ -22,10 +22,9 @@ public class NegociacaoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_negociacao);
+        setContentView(R.layout.activity_chat_negocicao);
 
         //Recuperando Views
-
         Button btnNegociacaoCarrinho = findViewById(R.id.btnNegociacaoCarrinho);
         Button btnNegociacaoOferta = findViewById(R.id.btnNegociacaoOferta);
         Button btnNegociacaoEnviarMensagem = findViewById(R.id.btnNegociacaoEnviarMensagem);
