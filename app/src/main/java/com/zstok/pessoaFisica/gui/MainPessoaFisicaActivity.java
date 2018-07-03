@@ -91,7 +91,6 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
             }
         });
 
-
         btnPesquisaProdutoPessoaJuridica.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -152,7 +152,7 @@ public class MainNegociacaoActivity extends AppCompatActivity
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
 
                     viewHolder.tvCardViewDataInicio.setText(model.getDataInicio());
-                    if (model.getDataFim() != null){
+                    if (model.getDataFim() == null){
                         viewHolder.tvCardViewDataFim.setText("Indefinida");
                     }else {
                         viewHolder.tvCardViewDataFim.setText(model.getDataFim());

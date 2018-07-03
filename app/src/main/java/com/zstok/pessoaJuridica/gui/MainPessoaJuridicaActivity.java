@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -32,6 +33,7 @@ import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.negociacao.adapter.NegociacaoListHolder;
 import com.zstok.negociacao.dominio.Negociacao;
+import com.zstok.negociacao.gui.ChatNegociacaoActivity;
 import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
 import com.zstok.produto.gui.MeusProdutosActivity;
 
@@ -132,12 +134,26 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
 
                     viewHolder.tvCardViewDataInicio.setText(model.getDataInicio());
-                    if (model.getDataFim() != null){
+                    if (model.getDataFim() == null){
                         viewHolder.tvCardViewDataFim.setText("Indefinida");
                     }else {
                         viewHolder.tvCardViewDataFim.setText(model.getDataFim());
                     }
                     resgatarCpfPessoaFisica(viewHolder, model);
+                }
+
+                @NonNull
+                @Override
+                public NegociacaoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+                    final NegociacaoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                    viewHolder.setOnItemClickListener(new NegociacaoListHolder.ClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            Negociacao negociacao = (Negociacao) adapterNegociacao.getItem(position);
+                            abrirTelaChatNegociacaoActivity(negociacao.getIdNegociacao());
+                        }
+                    });
+                    return viewHolder;
                 }
             };
             recylerViewNegocicao.setAdapter(adapterNegociacao);
@@ -234,6 +250,12 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
     //Intent para a tela de histórico de vendas
     private void abrirTelaHistoricoPessoaJuridicaActivity(){
         Intent intent = new Intent(getApplicationContext(), MainHistoricoPessoaJuridicaActivity.class);
+        startActivity(intent);
+    }
+    //Intent para a tela de chat
+    private void abrirTelaChatNegociacaoActivity(String idNegociacao){
+        Intent intent = new Intent(getApplicationContext(), ChatNegociacaoActivity.class);
+        intent.putExtra("idNegociacao", idNegociacao);
         startActivity(intent);
     }
     //Intent para a tela de login
