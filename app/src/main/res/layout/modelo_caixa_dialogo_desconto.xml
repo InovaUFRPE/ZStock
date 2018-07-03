@@ -1,0 +1,63 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:src="@drawable/ic_carrinho_compra"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:scaleType="center"
+        android:background="@color/goiaba"
+        android:contentDescription="@string/app_name" />
+    <TextView
+        android:id="@+id/tvTotalCaixaDialogo"
+        android:text="TOTAL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/tvTotalDescontoCaixaDialogo"
+        android:text="TOTAL DESCONTO"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp" />
+
+    <EditText
+        android:id="@+id/edtDescontoCaixaDialogo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="80dp"
+        android:gravity="center"
+        android:hint="Valor do desconto"
+        android:layout_marginRight="80dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:inputType="text"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnGerarDescontoCaixaDialogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="Gerar desconto"
+            android:background="@color/goiaba"
+            android:textColor="@color/jabuticaba"
+            android:layout_alignParentLeft="true" />
+
+
+    </RelativeLayout>
+
+</LinearLayout>

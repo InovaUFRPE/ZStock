@@ -77,6 +77,7 @@
             android:name=".negociacao.gui.MainNegociacaoActivity"
             android:label="@string/title_activity_negociacao"
             android:theme="@style/AppTheme" />
+        <activity android:name=".carrinhoCompra.gui.CarrinhoCompraNegociacao"></activity>
     </application>
 
 </manifest>

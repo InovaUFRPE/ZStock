@@ -15,14 +15,14 @@
         android:gravity="center">
 
         <TextView
-            android:id="@+id/tvNegociacaoNomeEmpresa"
+            android:id="@+id/tvNegociacaoNome"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center_vertical"
             android:layout_marginTop="10dp"
             android:singleLine="true"
             android:layout_marginStart="25dp"
-            android:text="Nome da empresa"
+            android:text="Nome"
             android:textSize="25sp"
             android:textAllCaps="true"
             android:layout_marginLeft="25dp" />
@@ -33,7 +33,7 @@
             android:layout_height="1dp"
             android:layout_marginStart="25dp"
             android:background="@color/goiaba"
-            android:layout_below="@id/tvNegociacaoNomeEmpresa"
+            android:layout_below="@id/tvNegociacaoNome"
             android:layout_marginLeft="25dp" />
 
         <LinearLayout

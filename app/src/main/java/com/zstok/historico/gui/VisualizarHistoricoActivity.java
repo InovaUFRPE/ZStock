@@ -69,7 +69,7 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
     }
     //Montando adapter e jogando no list holder
     private void criarAdapterItensCompra() {
-        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("historico").child(idHistorico).child("carrinho");
+        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("Historico").child(idHistorico).child("carrinho");
 
         if (databaseReference != null) {
 
@@ -138,8 +138,8 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
                 tvNomeEmpresaVizualizarHistorico.setText(dataSnapshot.child("pessoa").child(historico.getIdPessoaJuridica()).child("nome").getValue(String.class));
                 tvCpfVisualizarHistorico.setText(dataSnapshot.child("pessoaFisica").child(historico.getIdPessoaFisica()).child("cpf").getValue(String.class));
                 tvCnpjVisualizarHistorico.setText(dataSnapshot.child("pessoaJuridica").child(historico.getIdPessoaJuridica()).child("cnpj").getValue(String.class));
-                tvTotalVisualizarHistorico.setText(NumberFormat.getCurrencyInstance().format(dataSnapshot.child("historico").child(idHistorico).child("total").getValue(Double.class)));
-                tvDataCompraVizualizarHistorico.setText(dataSnapshot.child("historico").child(idHistorico).child("dataCompra").getValue(String.class));
+                tvTotalVisualizarHistorico.setText(NumberFormat.getCurrencyInstance().format(dataSnapshot.child("Historico").child(idHistorico).child("total").getValue(Double.class)));
+                tvDataCompraVizualizarHistorico.setText(dataSnapshot.child("Historico").child(idHistorico).child("dataCompra").getValue(String.class));
             }
 
             @Override
