@@ -283,7 +283,9 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                 for (DataSnapshot dataSnapshotChild: itensCarrinho){
                     String idProduto = dataSnapshotChild.child("idProduto").getValue(String.class);
                     if (idProduto.equals(idProdutoRemovido)){
-                        FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child(dataSnapshotChild.getKey()).setValue(null);
+                        Helper.criarToast(getApplicationContext(), dataSnapshotChild.getKey());
+                        FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(dataSnapshotChild.getKey()).setValue(null);
+                        resgatarTotal();
                         criarAdapter();
                         break;
                     }
