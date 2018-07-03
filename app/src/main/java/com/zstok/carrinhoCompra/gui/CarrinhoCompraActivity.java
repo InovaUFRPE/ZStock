@@ -127,13 +127,11 @@ public class CarrinhoCompraActivity extends AppCompatActivity
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 atualizarCarrinhoCompra(dataSnapshot.getKey());
-                //Preenchendo recyclerView
-                criarAdapter();
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                removerProdutoCarrinho(dataSnapshot.getKey());
             }
 
             @Override
@@ -276,6 +274,28 @@ public class CarrinhoCompraActivity extends AppCompatActivity
             CarrinhoCompraServices.reduzirQuantidade(produto);
         }
     }
+    //Removendo produto carrinho compra
+    private void removerProdutoCarrinho(final String idProdutoRemovido){
+        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> itensCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
+                for (DataSnapshot dataSnapshotChild: itensCarrinho){
+                    String idProduto = dataSnapshotChild.child("idProduto").getValue(String.class);
+                    if (idProduto.equals(idProdutoRemovido)){
+                        FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child(dataSnapshotChild.getKey()).setValue(null);
+                        criarAdapter();
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
     //Método que atualiza carrinho compra
     private void atualizarCarrinhoCompra(final String idProdutoAlterado){
         FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
@@ -348,6 +368,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                 if (alterarValorItemCompra(itemCompra, produto)){
                     inserirTotal(produto, itemCompra, total);
                     resgatarTotal();
+                    criarAdapter();
                     break;
                 }else {
                     Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
@@ -406,9 +427,6 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
                 @Override
                 protected void populateViewHolder(final ProdutoListHolder viewHolder, final ItemCompra model, int position) {
-                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
-                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
-
                     FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -416,12 +434,16 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                             if (produto != null) {
                                 Pessoa pessoa = dataSnapshot.child("pessoa").child(produto.getIdEmpresa()).getValue(Pessoa.class);
                                 if (pessoa != null) {
+                                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
+                                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
                                     viewHolder.tvCardViewNomeProduto.setText(produto.getNome());
                                     viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
                                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidade()));
                                     viewHolder.tvCardViewNomeEmpresa.setText(pessoa.getNome());
                                     if (produto.getUrlImagem() != null) {
                                         Glide.with(getApplicationContext()).load(produto.getUrlImagem()).into(viewHolder.imgCardViewProduto);
+                                    }else {
+                                        viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
                                     }
                                     if (getItemCount() == 0) {
                                         calcularTotal(produto.getPrecoSugerido(), model.getQuantidade());
