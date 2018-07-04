@@ -21,4 +21,5 @@ public class ProdutoServices {
     public static boolean adicionarProdutoCarrinho(ItemCompra itemCompra, DataSnapshot dataSnapshot){
         return ProdutoDAO.adicionarProdutoCarrinho(itemCompra, dataSnapshot);
     }
+
 }

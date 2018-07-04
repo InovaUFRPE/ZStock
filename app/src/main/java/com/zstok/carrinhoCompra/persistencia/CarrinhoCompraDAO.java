@@ -1,5 +1,6 @@
 package com.zstok.carrinhoCompra.persistencia;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseException;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.itemcompra.dominio.ItemCompra;
@@ -27,11 +28,17 @@ public class CarrinhoCompraDAO {
         return verificador;
     }
 
-    public static void inserirToral(double novoTotal){
+    public static void inserirToral(double novoTotal, Produto produto, ItemCompra itemCompra){
+        FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(itemCompra.getIdItemCompra()).child("valor").setValue(produto.getPrecoSugerido());
         FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").setValue(novoTotal);
     }
 
     public static void limparCarrinho(){
         FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).setValue(null);
+    }
+
+    public static void removerItemCarrinho(String idItemCompra){
+
+        FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(idItemCompra).setValue(null);
     }
 }
