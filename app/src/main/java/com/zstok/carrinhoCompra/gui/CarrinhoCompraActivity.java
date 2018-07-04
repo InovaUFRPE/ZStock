@@ -138,6 +138,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 verificarItensRemovidos();
+                atualizarTotalCarrinho();
             }
 
             @Override
@@ -280,60 +281,6 @@ public class CarrinhoCompraActivity extends AppCompatActivity
             CarrinhoCompraServices.reduzirQuantidade(produto);
         }
     }
-/*    private void retirarItemInativo(){
-                FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()) != null) {
-                            Iterable<DataSnapshot> itensCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
-                            for (DataSnapshot dataSnapshotChild : itensCarrinho) {
-                                String idProduto = dataSnapshotChild.child("idProduto").getValue(String.class);
-                                if (dataSnapshot.child("produtoExcluido").child(idProduto).exists()){
-                                    FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(dataSnapshotChild.getKey()).setValue(null);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }*/
-/*    //Removendo produto carrinho compra
-    private void removerProdutoCarrinho(final String idProdutoRemovido){
-        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).exists()) {
-                    Double total = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").getValue(Double.class);
-                    Produto produto = dataSnapshot.child("produtoExcluido").child(idProdutoRemovido).getValue(Produto.class);
-                    excluirItemCarrinho(dataSnapshot, produto, total, idProdutoRemovido);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-    //Método que exclui os itens do carrinho
-    private void excluirItemCarrinho(DataSnapshot dataSnapshot, Produto produto, double total, String idProdutoRemovido) {
-        Iterable<DataSnapshot> itensCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
-        for (DataSnapshot dataSnapshotChild : itensCarrinho) {
-            ItemCompra itemCompra = dataSnapshotChild.getValue(ItemCompra.class);
-            if (produto.getIdProduto().equals(idProdutoRemovido)) {
-                FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(dataSnapshotChild.getKey()).setValue(null);
-                inserirTotal(produto, itemCompra, total);
-                resgatarTotal();
-                criarAdapter();
-                break;
-            }
-        }
-    }*/
     //Método que atualiza carrinho compra
     private void atualizarCarrinhoCompra(final String idProdutoAlterado){
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
@@ -353,7 +300,6 @@ public class CarrinhoCompraActivity extends AppCompatActivity
             }
         });
     }
-
 
     private void verificarItensRemovidos(){
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
@@ -381,12 +327,17 @@ public class CarrinhoCompraActivity extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).exists()){
+                    Double totalAntigo = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").getValue(Double.class);
                     Iterable<DataSnapshot> itensCompra = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").getChildren();
                     for (DataSnapshot itensCompraCarrinhoUser: itensCompra){
                         ItemCompra itemCompra = itensCompraCarrinhoUser.getValue(ItemCompra.class);
-                        Produto produto = dataSnapshot.child("produto").child(itemCompra.getIdProduto()).getValue(Produto.class);
-                        Double total = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").getValue(Double.class);
-                        inserirTotal(produto,itemCompra,total);
+                        if (dataSnapshot.child("produtoExcluido").child(itemCompra.getIdProduto()).exists()) {
+                            Produto produto = dataSnapshot.child("produtoExcluido").child(itemCompra.getIdProduto()).getValue(Produto.class);
+                            if (itemCompra.getIdProduto().equals(produto.getIdProduto())) {
+                                double novoTotal = totalAntigo - (itemCompra.getValor() * itemCompra.getQuantidade());
+                                FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").setValue(novoTotal);
+                            }
+                        }
                     }
                 }
             }
