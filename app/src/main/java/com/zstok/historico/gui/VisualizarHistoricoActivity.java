@@ -75,7 +75,7 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
 
             FirebaseRecyclerAdapter adapterItensCompra = new FirebaseRecyclerAdapter<ItemCompra, ItemCompraListHolder>(
                     ItemCompra.class,
-                    R.layout.card_itens_compra,
+                    R.layout.card_item_compra,
                     ItemCompraListHolder.class,
                     databaseReference) {
 

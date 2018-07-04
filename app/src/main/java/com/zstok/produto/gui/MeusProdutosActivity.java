@@ -187,6 +187,8 @@ public class MeusProdutosActivity extends AppCompatActivity
                     viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
                     if (model.getUrlImagem() != null) {
                         Glide.with(getApplicationContext()).load(model.getUrlImagem()).into(viewHolder.imgCardViewProduto);
+                    }else {
+                        viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
                     }
                 }
                 @NonNull
@@ -264,7 +266,7 @@ public class MeusProdutosActivity extends AppCompatActivity
             }
         });
         //Define a opção de excluir produto
-        builder.setNegativeButton(getString(R.string.zs_dialogo_excluir_produto), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.zs_dialogo_excluir), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
                 excluirProduto(produto);
             }

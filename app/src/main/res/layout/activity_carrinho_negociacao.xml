@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        tools:context=".carrinhoCompra.gui.CarrinhoCompraActivity"
-        android:background="@color/jabuticaba"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:showIn="@layout/app_bar_carrinho_compra">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.zstok.negociacao.gui.CarrinhoNegociacaoActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        app:title="Carrinho negociação"
+        app:titleTextColor="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerItensCarrinho"
+        android:id="@+id/recyclerItensCarrinhoNecogiacao"
+        android:background="@color/jabuticaba"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="130dp"
+        android:layout_below="@+id/toolbar"
         android:padding="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
@@ -25,7 +33,7 @@
         android:background="@color/cimento">
 
         <TextView
-            android:id="@+id/tvTextoTotalCarrinhoProduto"
+            android:id="@+id/tvTextoPrecoCardViewProduto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/rltBotoesNegociacao"
@@ -60,7 +68,7 @@
             android:layout_below="@id/tvTotalCardViewItemCompra">
 
             <Button
-                android:id="@+id/btnNegociarCompra"
+                android:id="@+id/button1"
                 android:layout_width="134dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -70,24 +78,25 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginLeft="30dp"
                 android:background="@drawable/borda_goiaba"
-                android:text="@string/zs_btn_negociar_produto"
+                    android:text="BUTTON 1"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/btnComprar"
+                android:id="@+id/button2"
                 android:layout_width="130dp"
                 android:layout_height="50dp"
-                android:text="@string/zs_btn_comprar_produto"
+                android:text="BUTTON 2"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:background="@drawable/borda_goiaba"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/btnNegociarCompra"
+                android:layout_alignTop="@+id/button1"
                 android:layout_marginEnd="30dp"
                 android:layout_marginRight="30dp"/>
 
         </RelativeLayout>
     </RelativeLayout>
+
 </RelativeLayout>

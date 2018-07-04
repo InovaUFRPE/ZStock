@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -28,8 +29,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
-import com.zstok.carrinhoCompra.dominio.CarrinhoCompra;
 import com.zstok.carrinhoCompra.negocio.CarrinhoCompraServices;
+import com.zstok.historico.adapter.ItemCompraListHolder;
 import com.zstok.historico.dominio.Historico;
 import com.zstok.historico.gui.MainHistoricoPessoaFisicaActivity;
 import com.zstok.historico.negocio.HistoricoServices;
@@ -44,7 +45,6 @@ import com.zstok.negociacao.negocio.NegociacaoServices;
 import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
-import com.zstok.produto.adapter.ProdutoListHolder;
 import com.zstok.produto.dominio.Produto;
 
 import java.text.NumberFormat;
@@ -67,6 +67,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     private NavigationView navigationView;
 
     private AlertDialog alertaSair;
+    private AlertDialog alertaRemoverItem;
 
     private FirebaseUser user;
 
@@ -122,7 +123,6 @@ public class CarrinhoCompraActivity extends AppCompatActivity
         //Verifica itens excluidos enquanto usuário estava off
         verificarItensRemovidos();
         atualizarTotalCarrinho();
-
 
         FirebaseController.getFirebase().child("produto").addChildEventListener(new ChildEventListener() {
             @Override
@@ -310,7 +310,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                     for (DataSnapshot itensCompraCarrinhoUser: itensCompra){
                         ItemCompra itemCompra = itensCompraCarrinhoUser.getValue(ItemCompra.class);
                         if (dataSnapshot.child("produtoExcluido").child(itemCompra.getIdProduto()).exists()){
-                            CarrinhoCompraServices.removerItemCarrinho(itemCompra.getIdItemCompra());
+                            CarrinhoCompraServices.removerItemInativoCarrinho(itemCompra.getIdItemCompra());
                         }
                     }
                 }
@@ -412,7 +412,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     private void inserirTotal(Produto produto, ItemCompra itemCompra, Double total) {
         if (itemCompra.getValor() != produto.getPrecoSugerido()) {
             double novoTotal = total - (itemCompra.getValor()*itemCompra.getQuantidade()) + (produto.getPrecoSugerido()*itemCompra.getQuantidade());
-            CarrinhoCompraServices.inserirTotal(novoTotal, produto,itemCompra);
+            CarrinhoCompraServices.inserirTotal(produto,itemCompra, novoTotal);
         }
     }
     //Método que calcula o novo total
@@ -451,14 +451,14 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
         if (databaseReference != null) {
 
-            adapter = new FirebaseRecyclerAdapter<ItemCompra, ProdutoListHolder>(
+            adapter = new FirebaseRecyclerAdapter<ItemCompra, ItemCompraListHolder>(
                     ItemCompra.class,
-                    R.layout.card_produto,
-                    ProdutoListHolder.class,
+                    R.layout.card_item_compra,
+                    ItemCompraListHolder.class,
                     databaseReference) {
 
                 @Override
-                protected void populateViewHolder(final ProdutoListHolder viewHolder, final ItemCompra model, int position) {
+                protected void populateViewHolder(final ItemCompraListHolder viewHolder, final ItemCompra model, int position) {
                     FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -468,14 +468,14 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                                 if (pessoa != null) {
                                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                                    viewHolder.tvCardViewNomeProduto.setText(produto.getNome());
-                                    viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
-                                    viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidade()));
-                                    viewHolder.tvCardViewNomeEmpresa.setText(pessoa.getNome());
+                                    viewHolder.tvCardViewNomeItemCompra.setText(produto.getNome());
+                                    viewHolder.tvCardViewPrecoItemCompra.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
+                                    viewHolder.tvCardViewQuantidadeItemCompra.setText(String.valueOf(model.getQuantidade()));
+                                    viewHolder.tvCardViewNomeEmpresaItemCompra.setText(pessoa.getNome());
                                     if (produto.getUrlImagem() != null) {
-                                        Glide.with(getApplicationContext()).load(produto.getUrlImagem()).into(viewHolder.imgCardViewProduto);
+                                        Glide.with(getApplicationContext()).load(produto.getUrlImagem()).into(viewHolder.imgCardViewItemCompra);
                                     }else {
-                                        viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
+                                        viewHolder.imgCardViewItemCompra.setImageResource(R.drawable.ic_produtos);
                                     }
                                     if (getItemCount() == 0) {
                                         calcularTotal(produto.getPrecoSugerido(), model.getQuantidade());
@@ -492,6 +492,19 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
                         }
                     });
+                }
+                @NonNull
+                @Override
+                public ItemCompraListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+                    final ItemCompraListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                    viewHolder.setOnItemClickListener(new ItemCompraListHolder.ClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            ItemCompra itemCompra = (ItemCompra) adapter.getItem(position);
+                            dialogoItemCompra(itemCompra);
+                        }
+                    });
+                    return viewHolder;
                 }
             };
             recyclerViewItens.setAdapter(adapter);
@@ -515,6 +528,32 @@ public class CarrinhoCompraActivity extends AppCompatActivity
 
             }
         });
+    }
+    //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
+    private void dialogoItemCompra(final ItemCompra itemCompra) {
+        //Cria o gerador do AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //Define o titulo
+        builder.setTitle(getString(R.string.zs_dialogo_titulo_produto));
+        //Define a mensagem
+        builder.setMessage(getString(R.string.zs_dialogo_mensagem_item_compra));
+        //Define a opção de editar produto
+        builder.setPositiveButton(getString(R.string.zs_dialogo_mensagem_item_compra), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+                //Excluir item compra
+                excluirItemCarrinho(itemCompra);
+            }
+        });
+        //Define a opção de excluir produto
+        builder.setNegativeButton(getString(R.string.zs_dialogo_voltar), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+                alertaRemoverItem.dismiss();
+            }
+        });
+        //Cria o AlertDialog
+        alertaRemoverItem = builder.create();
+        //Exibe
+        alertaRemoverItem.show();
     }
     //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
     private void sair () {
@@ -546,6 +585,41 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     private void calcularTotal(double preco, int quantidade) {
         total+=(preco*quantidade);
         tvTotalCardViewItemCompra.setText(NumberFormat.getCurrencyInstance().format(total));
+    }
+    //Chamando camada de negócio para excluir produto
+    private void excluirItemCarrinho(final ItemCompra itemCompra){
+        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Double total = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").getValue(Double.class);
+                if (total != null) {
+                    double novoTotal = total - (itemCompra.getValor() * itemCompra.getQuantidade());
+                    excluirItem(dataSnapshot, itemCompra, novoTotal);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    //Método que chama a camada de negócio
+    private void excluirItem(DataSnapshot dataSnapshot, ItemCompra itemCompra, double novoTotal) {
+        if (CarrinhoCompraServices.removerItemCompraCarrinho(itemCompra)) {
+            //Verificar pq mesmo após itensCompra ser excluído a condição abaixo é executada
+            if (dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").exists()) {
+                CarrinhoCompraServices.inserirTotal(null, itemCompra, novoTotal);
+                Helper.criarToast(getApplicationContext(), getString(R.string.zs_item_removido_sucesso));
+                resgatarTotal();
+            }else {
+                CarrinhoCompraServices.limparCarrinho();
+                tvTotalCardViewItemCompra.setText("R$0,00");
+                Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_carrinho_vazio));
+            }
+        } else {
+            Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
+        }
     }
 
     @Override

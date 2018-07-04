@@ -1,5 +1,6 @@
 package com.zstok.negociacao.gui;
 
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -43,7 +44,6 @@ public class ChatNegociacaoActivity extends AppCompatActivity {
     private VerificaConexao verificaConexao;
     private List<HashMap<String, String>> listaMensagem = new ArrayList<>();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,12 +63,10 @@ public class ChatNegociacaoActivity extends AppCompatActivity {
         //Recuperando ID da negociação
         idNegociacao = getIntent().getStringExtra("idNegociacao");
 
-
-
         btnNegociacaoCarrinho.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                abrirTelaCarrinhoNegociacaoActivity();
             }
         });
 
@@ -131,6 +129,12 @@ public class ChatNegociacaoActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void abrirTelaCarrinhoNegociacaoActivity() {
+        Intent intent = new Intent(getApplicationContext(), CarrinhoNegociacaoActivity.class);
+        intent.putExtra("idNegociacao", idNegociacao);
+        startActivity(intent);
     }
 
     private void visualizarOferta(){

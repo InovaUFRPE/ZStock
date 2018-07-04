@@ -29,16 +29,29 @@ public class CarrinhoCompraDAO {
     }
 
     public static void inserirToral(double novoTotal, Produto produto, ItemCompra itemCompra){
-        FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(itemCompra.getIdItemCompra()).child("valor").setValue(produto.getPrecoSugerido());
+        if (produto != null){
+            FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(itemCompra.getIdItemCompra()).child("valor").setValue(produto.getPrecoSugerido());
+        }
         FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").setValue(novoTotal);
+    }
+
+    public static boolean removerItemCompraCarrinho(ItemCompra itemCompra){
+        boolean verificador;
+
+        try {
+            FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(itemCompra.getIdItemCompra()).setValue(null);
+            verificador = true;
+        }catch (DatabaseException e){
+            verificador = false;
+        }
+        return verificador;
     }
 
     public static void limparCarrinho(){
         FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).setValue(null);
     }
 
-    public static void removerItemCarrinho(String idItemCompra){
-
+    public static void removerItemInativoCarrinho(String idItemCompra){
         FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(idItemCompra).setValue(null);
     }
 }
