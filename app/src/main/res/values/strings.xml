@@ -152,5 +152,8 @@
     <string name="title_activity_chat_negociacao">ChatNegociacaoActivity</string>
     <string name="title_activity_chat_negociacao_pessoa_fisica">ChatNegociacaoPessoaFisicaActivity
     </string>
+    <string name="title_activity_main_historico_negociacao_pessoa_fisica">
+        MainHistoricoNegociacaoPessoaFisicaActivity
+    </string>
 
 </resources>

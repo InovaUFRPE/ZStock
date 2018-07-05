@@ -87,6 +87,10 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
 
         criarAdapter();
     }
+    //Gerando histórico negociação
+    private void gerarHistoricoNegociacao(){
+
+    }
     //Fechando negociação
     private void fecharNegociacao(){
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {

@@ -118,7 +118,7 @@ public class MainHistoricoPessoaJuridicaActivity extends AppCompatActivity
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             String cpfPessoaFisica = dataSnapshot.child("pessoaFisica").child(model.getIdPessoaFisica()).child("cpf").getValue(String.class);
-                            viewHolder.tvCardViewNomeEmpresa.setText(cpfPessoaFisica);
+                            viewHolder.tvCardViewNome.setText(cpfPessoaFisica);
                         }
 
                         @Override

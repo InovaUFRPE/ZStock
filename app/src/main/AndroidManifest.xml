@@ -78,7 +78,11 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".carrinhoCompra.gui.CarrinhoCompraNegociacao" />
         <activity android:name=".negociacao.gui.CarrinhoNegociacaoActivity" />
-        <activity android:name=".negociacao.gui.ChatNegociacaoActivity"></activity>
+        <activity android:name=".negociacao.gui.ChatNegociacaoActivity" />
+        <activity
+            android:name=".historico.gui.MainHistoricoNegociacaoPessoaFisicaActivity"
+            android:label="@string/title_activity_main_historico_negociacao_pessoa_fisica"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

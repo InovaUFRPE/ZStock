@@ -9,7 +9,7 @@ import com.zstok.R;
 public class HistoricoListHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     //public int currentItem;
-    public TextView tvCardViewNomeEmpresa;
+    public TextView tvCardViewNome;
     public TextView tvCardViewTotalCompra;
     public TextView tvCardViewDataCompra;
     public View mainLayout;
@@ -20,7 +20,7 @@ public class HistoricoListHolder extends RecyclerView.ViewHolder implements View
     public HistoricoListHolder(final View itemView) {
         super(itemView);
 
-        tvCardViewNomeEmpresa = itemView.findViewById(R.id.tvNomeCpfCardViewHistorico);
+        tvCardViewNome = itemView.findViewById(R.id.tvNomeCpfCardViewHistorico);
         tvCardViewTotalCompra = itemView.findViewById(R.id.tvTotalCardViewProduto);
         tvCardViewDataCompra = itemView.findViewById(R.id.tvDataCompraCardViewHistorico);
         mainLayout = itemView.findViewById(R.id.cardViewHistorico);

@@ -29,7 +29,6 @@ import com.zstok.historico.adapter.HistoricoListHolder;
 import com.zstok.historico.dominio.Historico;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
-import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.negociacao.gui.MainNegociacaoActivity;
 import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
 import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
@@ -119,7 +118,7 @@ public class MainHistoricoPessoaFisicaActivity extends AppCompatActivity
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             String nomeEmpresa = dataSnapshot.child("pessoa").child(model.getIdPessoaJuridica()).child("nome").getValue(String.class);
-                            viewHolder.tvCardViewNomeEmpresa.setText(nomeEmpresa);
+                            viewHolder.tvCardViewNome.setText(nomeEmpresa);
                         }
 
                         @Override

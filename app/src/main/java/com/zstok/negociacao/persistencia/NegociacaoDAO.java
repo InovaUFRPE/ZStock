@@ -17,7 +17,8 @@ public class NegociacaoDAO {
         boolean verificador;
 
         try{
-            FirebaseController.getFirebase().child("negociacao").child(negociacao.getIdNegociacao()).setValue(negociacao);
+            //FirebaseController.getFirebase().child("negociacao").child(negociacao.getIdNegociacao()).setValue(negociacao);
+            FirebaseController.getFirebase().child("historicoNegociacao").child(negociacao.getIdNegociacao()).setValue(negociacao);
             verificador = true;
         }catch (DatabaseException e){
             verificador = false;
