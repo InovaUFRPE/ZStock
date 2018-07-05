@@ -71,15 +71,14 @@
             android:name=".historico.gui.MainHistoricoPessoaJuridicaActivity"
             android:label="@string/zs_menu_lateral_historico_pessoa_juridica"
             android:theme="@style/AppTheme" />
-        <activity android:name=".negociacao.gui.ChatNegociacaoActivity" />
         <activity android:name=".historico.gui.VisualizarHistoricoActivity" />
         <activity
             android:name=".negociacao.gui.MainNegociacaoActivity"
             android:label="@string/title_activity_negociacao"
             android:theme="@style/AppTheme" />
         <activity android:name=".carrinhoCompra.gui.CarrinhoCompraNegociacao" />
-        <activity
-            android:name=".negociacao.gui.CarrinhoNegociacaoActivity" />
+        <activity android:name=".negociacao.gui.CarrinhoNegociacaoActivity" />
+        <activity android:name=".negociacao.gui.ChatNegociacaoActivity"></activity>
     </application>
 
 </manifest>

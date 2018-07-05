@@ -91,6 +91,7 @@
     <string name="zs_produto_cadastrado_sucesso">Produto cadastrado com sucesso!</string>
     <string name="zs_adicionar_carrinho_compra_sucesso">Produto adicionado ao carrinho de compra!</string>
     <string name="zs_compra_realizada_sucesso">Compra realizada com sucesso!</string>
+    <string name="zs_negociacao_finalizada_sucesso">Negociação finalizada com sucesso!</string>
 
     <string name="zs_excecao_campo_vazio">Preencha o campo vazio</string>
     <string name="zs_excecao_cpf_cnpj">Digite um CPF ou CNPJ válido</string>
@@ -148,5 +149,8 @@
     <string name="zs_titulo_progress_dialog_cadastrando_produto">Cadastrando produto...</string>
     <string name="zs_titulo_progress_dialog_alterar_produto">Alterando produto...</string>
     <string name="zs_titulo_progress_dialog_perfil">Carregando informações...</string>
+    <string name="title_activity_chat_negociacao">ChatNegociacaoActivity</string>
+    <string name="title_activity_chat_negociacao_pessoa_fisica">ChatNegociacaoPessoaFisicaActivity
+    </string>
 
 </resources>

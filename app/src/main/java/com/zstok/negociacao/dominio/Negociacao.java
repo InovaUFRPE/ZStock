@@ -13,11 +13,28 @@ public class Negociacao {
     private String idPessoaJuridica;
     private String dataInicio;
     private String dataFim;
+    private double total;
     private List<ItemCompra> carrinhoOferta = new ArrayList<>();
     private List<ItemCompra> carrinhoAtual = new ArrayList<>();
 
     public String getIdNegociacao() {
         return idNegociacao;
+    }
+
+    public String getIdPessoaFisica() {
+        return idPessoaFisica;
+    }
+
+    public void setIdPessoaFisica(String idPessoaFisica) {
+        this.idPessoaFisica = idPessoaFisica;
+    }
+
+    public String getIdPessoaJuridica() {
+        return idPessoaJuridica;
+    }
+
+    public void setIdPessoaJuridica(String idPessoaJuridica) {
+        this.idPessoaJuridica = idPessoaJuridica;
     }
 
     public String getDataInicio() {
@@ -40,20 +57,12 @@ public class Negociacao {
         this.idNegociacao = idNegociacao;
     }
 
-    public String getIdPessoaFisica() {
-        return idPessoaFisica;
+    public double getTotal() {
+        return total;
     }
 
-    public void setIdPessoaFisica(String idPessoaFisica) {
-        this.idPessoaFisica = idPessoaFisica;
-    }
-
-    public String getIdPessoaJuridica() {
-        return idPessoaJuridica;
-    }
-
-    public void setIdPessoaJuridica(String idPessoaJuridica) {
-        this.idPessoaJuridica = idPessoaJuridica;
+    public void setTotal(double total) {
+        this.total = total;
     }
 
     public List<ItemCompra> getCarrinhoOferta() {

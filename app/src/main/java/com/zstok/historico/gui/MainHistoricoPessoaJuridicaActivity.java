@@ -97,7 +97,7 @@ public class MainHistoricoPessoaJuridicaActivity extends AppCompatActivity
     }
     //Método que cria o adapter de histórico
     private void criarAdapterHistorico(){
-        DatabaseReference referenciaHistorico = FirebaseController.getFirebase().child("Historico");
+        DatabaseReference referenciaHistorico = FirebaseController.getFirebase().child("historico");
         Query queryHistoricoCompra = referenciaHistorico.orderByChild("idEmpresa").equalTo(FirebaseController.getUidUser());
 
         if (queryHistoricoCompra != null) {

@@ -1,53 +1,47 @@
 package com.zstok.negociacao.gui;
 
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
+import com.zstok.carrinhoCompra.negocio.CarrinhoCompraServices;
 import com.zstok.historico.adapter.ItemCompraListHolder;
 import com.zstok.infraestrutura.utils.FirebaseController;
-import com.zstok.infraestrutura.utils.MoneyTextWatcher;
+import com.zstok.infraestrutura.utils.Helper;
+import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.itemcompra.dominio.ItemCompra;
+import com.zstok.negociacao.dominio.Negociacao;
+import com.zstok.negociacao.negocio.NegociacaoServices;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.produto.dominio.Produto;
 
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 
 public class CarrinhoNegociacaoActivity extends AppCompatActivity {
 
-    private TextView tvTotalCarrinhoNegocicao;
-
-    //Views da caixa de diálogo
-    private EditText edtDescontoCaixaDialogo;
-    private TextView tvTotalCaixaDialogo;
-    private TextView tvTotalDescontoCaixaDialogo;
-    private Button btnGerarDescontoCaixaDialogo;
+    private TextView tvTotalCarrinhoNegociacao;
+    private Button btnComprarCarrinhoNegociacao;
 
     private FirebaseRecyclerAdapter adapter;
     private RecyclerView recyclerViewItens;
 
-    private AlertDialog alerta;
+    private VerificaConexao verificaConexao;
 
-    private double total;
     private String idNegociacao;
 
     @Override
@@ -55,15 +49,107 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carrinho_negociacao);
 
+        //Resgatando ID passada pela intent
         idNegociacao = getIntent().getStringExtra("idNegociacao");
 
-        tvTotalCarrinhoNegocicao = findViewById(R.id.tvTotalCardViewItemCompra);
+        //Criando instância da class "VerificarConexao"
+        verificaConexao = new VerificaConexao(this);
+
+        //Instanciando views
+        tvTotalCarrinhoNegociacao = findViewById(R.id.tvTotalCarrinhoNegociacao);
+        btnComprarCarrinhoNegociacao = findViewById(R.id.btnComprarCarrinhoNegociacao);
+
+        //Se for pessoa jurídica ocultamos o botão comprar
+        verificarNegociacao();
+
+        btnComprarCarrinhoNegociacao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Comprar carrinho
+                if (verificaConexao.isConected()) {
+                    if (adapter.getItemCount() != 0) {
+                        //Falta atualizar preco do produto caso tenha alguma atualização
+                        fecharNegociacao();
+                    }else {
+                        Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_carrinho_vazio));
+                    }
+                }else {
+                    Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
+                }
+            }
+        });
 
         //Instanciando recyler view
         recyclerViewItens = findViewById(R.id.recyclerItensCarrinhoNecogiacao);
         recyclerViewItens.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(CarrinhoNegociacaoActivity.this);
         recyclerViewItens.setLayoutManager(layoutManager);
+
+        criarAdapter();
+    }
+    //Fechando negociação
+    private void fecharNegociacao(){
+        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Negociacao negociacao = dataSnapshot.child("negociacao").child(idNegociacao).getValue(Negociacao.class);
+                if (negociacao != null) {
+                    negociacao.setDataFim(Helper.getData());
+                    if (verificaQuantidade(dataSnapshot, negociacao)) {
+                        finalizarNegociacao(negociacao);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    //Verificando se a quantidade solicitada pelo usuário está disponível em estoque
+    private boolean verificaQuantidade(DataSnapshot dataSnapshot, Negociacao negociacao) {
+        //Validando quantidade
+        for(ItemCompra itemCompra: negociacao.getCarrinhoAtual()){
+            Produto produtoCompra = dataSnapshot.child("produto").child(itemCompra.getIdProduto()).getValue(Produto.class);
+            if (itemCompra.getQuantidade() > produtoCompra.getQuantidadeEstoque() ) {
+                Helper.criarToast(getApplicationContext(), "Quantidade de " + produtoCompra.getNome() + " indisponível!");
+                return false;
+            }else {
+                //Diminuindo quando caso esteja disponível
+                diminuirQuantidade(produtoCompra, itemCompra);
+            }
+        }
+        return true;
+    }
+    //Diminuindo quantidade produto
+    private void diminuirQuantidade(Produto produto, ItemCompra itemCompra){
+        NegociacaoServices.diminuirQuantidade(produto, itemCompra);
+    }
+    //Chamando camada de negócio
+    private void finalizarNegociacao(Negociacao negociacao){
+        if (NegociacaoServices.finalizarNegociacao(negociacao)){
+            Helper.criarToast(getApplicationContext(), getString(R.string.zs_negociacao_finalizada_sucesso));
+            abrirTelaMainNegociacaoActivity();
+        }else{
+            Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
+        }
+    }
+    //Verificando tipo da conta
+    private void verificarNegociacao() {
+        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child("pessoaJuridica").child(FirebaseController.getUidUser()).exists() || dataSnapshot.child("negociacao").child(idNegociacao).child("dataFim").exists()){
+                    btnComprarCarrinhoNegociacao.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
     //Montando adapter e jogando no list holder
     private void criarAdapter() {
@@ -115,7 +201,6 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
                         @Override
                         public void onItemClick(View view, int position) {
                             ItemCompra itemCompra = (ItemCompra) adapter.getItem(position);
-                            dialogoItemCompra(itemCompra);
                         }
                     });
                     return viewHolder;
@@ -124,72 +209,10 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
             recyclerViewItens.setAdapter(adapter);
         }
     }
-    //Calculando total
-    private void calcularTotal(double preco, int quantidade) {
-        total+=(preco*quantidade);
-        tvTotalCarrinhoNegocicao.setText(NumberFormat.getCurrencyInstance().format(total));
-    }
-    //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
-    private void dialogoItemCompra(final ItemCompra itemCompra) {
-        //Cria o gerador do AlertDialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View mView = getLayoutInflater().inflate(R.layout.modelo_caixa_dialogo_desconto, null);
-
-        //Instanciando views
-        instanciandoViews(mView);
-
-        //Setando views da caixa de diálogo
-        setarInformacoesViews(itemCompra);
-
-        //Cria o AlertDialog
-        builder.setView(mView);
-        alerta = builder.create();
-        alerta.show();
-
-        clickGerarDesconto();
-    }
-    //Método que gera desconto
-    private void clickGerarDesconto() {
-        btnGerarDescontoCaixaDialogo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Fazer método que aplica desconto ao produto selecionado
-            }
-        });
-    }
-    //Método que seta as informações para as views da caixa de diálogo
-    private void setarInformacoesViews(ItemCompra itemCompra){
-        tvTotalCaixaDialogo.setText(String.valueOf(itemCompra.getQuantidade() * itemCompra.getValor()));
-        edtDescontoCaixaDialogo.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!edtDescontoCaixaDialogo.getText().toString().isEmpty() ||
-                        !(edtDescontoCaixaDialogo.getText().toString().trim().length() == 0)){
-                    //Fazer método
-                }
-
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (!edtDescontoCaixaDialogo.getText().toString().isEmpty() ||
-                        !(edtDescontoCaixaDialogo.getText().toString().trim().length() == 0)){
-                    //Fazer método
-                }else {
-                    //Fazer método
-                }
-            }
-        });
-    }
-    //Método que instancia as views da caixa de diálogo
-    private void instanciandoViews(View mView){
-        edtDescontoCaixaDialogo = mView.findViewById(R.id.edtDescontoCaixaDialogo);
-        tvTotalCaixaDialogo = mView.findViewById(R.id.tvTotalCaixaDialogo);
-        tvTotalDescontoCaixaDialogo = mView.findViewById(R.id.tvTotalDescontoCaixaDialogo);
-        btnGerarDescontoCaixaDialogo = mView.findViewById(R.id.btnGerarDescontoCaixaDialogo);
+    //Intent para a tela main negociacao da pessoa física
+    private void abrirTelaMainNegociacaoActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainNegociacaoActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

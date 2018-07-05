@@ -36,7 +36,7 @@
             android:layout_below="@id/tvNegociacaoNome"
             android:layout_marginLeft="25dp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/rltBotoesNegociacao"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -57,13 +57,13 @@
             <Button
                 android:id="@+id/btnNegociacaoOferta"
                 android:layout_width="wrap_content"
-                android:background="@color/goiaba"
                 android:layout_height="45dp"
-                android:text="Oferta"
-                />
+                android:background="@color/goiaba"
+                android:layout_toRightOf="@id/btnNegociacaoCarrinho"
+                android:layout_toEndOf="@id/btnNegociacaoCarrinho"
+                android:text="Oferta" />
 
-        </LinearLayout>
-
+        </RelativeLayout>
     </RelativeLayout>
 
     <View
@@ -104,6 +104,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginBottom="15dp"
                 android:hint="Digite sua mensagem"
+                android:background="@drawable/borda_enviar_mensagem"
                 android:inputType="text"
                 android:paddingLeft="30dp"
                 android:paddingRight="30dp"
@@ -115,11 +116,13 @@
                 android:layout_height="40dp"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
+                android:layout_marginTop="4dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginEnd="10dp"
                 android:background="@drawable/borda_goiaba"
-                android:drawableLeft="@drawable/ic_setinha"
-                android:drawableStart="@drawable/ic_setinha"
+                android:drawableLeft="@drawable/ic_enviar_mensagem"
+                android:drawableStart="@drawable/ic_enviar_mensagem"
+                android:drawableTint="@color/white"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:gravity="center_vertical|center_horizontal"/>

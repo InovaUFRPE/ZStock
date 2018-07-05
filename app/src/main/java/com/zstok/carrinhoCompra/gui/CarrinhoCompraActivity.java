@@ -366,10 +366,14 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     }
     //Gerando negociação
     private void geraNegociacao(DataSnapshot dataSnapshot){
+        double total = 0.0;
         HashMap<String, ArrayList<ItemCompra>> dicionarioEmpresas = separadorCarrinhoCompra(dataSnapshot);
         Set<String> empresas = dicionarioEmpresas.keySet();
         for (String empresa: empresas) {
-            Negociacao negociacao = criarNegociacao(dataSnapshot, dicionarioEmpresas, empresa);
+            for (ItemCompra itemCompra: dicionarioEmpresas.get(empresa)){
+                total+=(itemCompra.getValor() * itemCompra.getQuantidade());
+            }
+            Negociacao negociacao = criarNegociacao(dicionarioEmpresas,empresa,total);
             NegociacaoServices.inserirNegociacao(negociacao);
         }
         limparCarrinho();
@@ -421,12 +425,13 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     }
     //Criando objeto negociacao
     @NonNull
-    private Negociacao criarNegociacao(DataSnapshot dataSnapshot, HashMap<String, ArrayList<ItemCompra>> dicionarioEmpresas, String empresa) {
+    private Negociacao criarNegociacao(HashMap<String, ArrayList<ItemCompra>> dicionarioEmpresas, String idPessoaJuridica, double total) {
         Negociacao negociacao = new Negociacao();
         negociacao.setIdPessoaFisica(FirebaseController.getUidUser());
-        negociacao.setIdPessoaJuridica(dataSnapshot.child("produto").child(dicionarioEmpresas.get(empresa).get(0).getIdProduto()).child("idEmpresa").getValue(String.class));
+        negociacao.setIdPessoaJuridica(idPessoaJuridica);
         negociacao.setDataInicio(Helper.getData());
-        negociacao.setCarrinhoAtual(dicionarioEmpresas.get(empresa));
+        negociacao.setCarrinhoAtual(dicionarioEmpresas.get(idPessoaJuridica));
+        negociacao.setTotal(total);
         return negociacao;
     }
     //Criando objeto histórico

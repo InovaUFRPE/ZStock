@@ -105,7 +105,7 @@ public class MeusProdutosActivity extends AppCompatActivity
             }
         });
 
-        FloatingActionButton fabCadastrarProduto = (FloatingActionButton) findViewById(R.id.fabCadastrarProduto);
+        FloatingActionButton fabCadastrarProduto = findViewById(R.id.fabCadastrarProduto);
         fabCadastrarProduto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

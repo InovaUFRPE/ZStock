@@ -23,6 +23,7 @@ import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.mensagem.dominio.Mensagem;
 import com.zstok.mensagem.negocio.MensagemServices;
+import com.zstok.negociacao.dominio.Negociacao;
 import com.zstok.produto.gui.VisualizarProdutoActivity;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class ChatNegociacaoActivity extends AppCompatActivity {
     private TextView tvTotalDescontoCaixaDialogo;
     private EditText edtDescontoCaixaDialogo;
     private Button btnGerarDescontoCaixaDialogo;
+    private Button btnNegociacaoEnviarMensagem;
 
     private VerificaConexao verificaConexao;
     private List<HashMap<String, String>> listaMensagem = new ArrayList<>();
@@ -52,13 +54,17 @@ public class ChatNegociacaoActivity extends AppCompatActivity {
         //Recuperando Views
         Button btnNegociacaoCarrinho = findViewById(R.id.btnNegociacaoCarrinho);
         Button btnNegociacaoOferta = findViewById(R.id.btnNegociacaoOferta);
-        Button btnNegociacaoEnviarMensagem = findViewById(R.id.btnNegociacaoEnviarMensagem);
+        btnNegociacaoEnviarMensagem = findViewById(R.id.btnNegociacaoEnviarMensagem);
         tvNegociacaoNome = findViewById(R.id.tvNegociacaoNome);
         edtNegociacaoBarraMensagem = findViewById(R.id.edtNegociacaoBarraMensagem);
         lvMensagens = findViewById(R.id.lvMensagens);
         verificaConexao = new VerificaConexao(this);
 
+        //Carregando nome
         carregarNome();
+
+        //Verificando status da negociação
+        verificarNegociacao();
 
         //Recuperando ID da negociação
         idNegociacao = getIntent().getStringExtra("idNegociacao");
@@ -140,15 +146,22 @@ public class ChatNegociacaoActivity extends AppCompatActivity {
     private void visualizarOferta(){
 
     }
-
+    //Pessoa jurídica gerando a oferta
     private void gerarOferta(){
         AlertDialog.Builder builder = new AlertDialog.Builder(ChatNegociacaoActivity.this);
         View mView = getLayoutInflater().inflate(R.layout.modelo_caixa_dialogo_desconto, null);
         builder.setView(mView);
+
+        //Instanciando views da caixa de diálogo
         instanciandoViews(mView);
+
+        //Setando informações referentes a caixa de diálogo
         setarInformacoesViews(mView);
+
+        //Gerando
         alertaDesconto = builder.create();
         alertaDesconto.show();
+
         clickGerarDesconto();
     }
 
@@ -190,7 +203,24 @@ public class ChatNegociacaoActivity extends AppCompatActivity {
         edtDescontoCaixaDialogo = mView.findViewById(R.id.edtDescontoCaixaDialogo);
         btnGerarDescontoCaixaDialogo = mView.findViewById(R.id.btnGerarDescontoCaixaDialogo);
     }
+    //Bloquenado views caso a negociação ja tenha sido fechada
+    private void verificarNegociacao(){
+        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child("negociacao").child(idNegociacao).child("dataFim").exists()){
+                    edtNegociacaoBarraMensagem.setEnabled(false);
+                    btnNegociacaoEnviarMensagem.setEnabled(false);
+                }
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    //Carregando nome
     private void carregarNome(){
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -283,5 +313,4 @@ public class ChatNegociacaoActivity extends AppCompatActivity {
         lvMensagens.setAdapter(adapter);
         lvMensagens.setSelection(lvMensagens.getAdapter().getCount()-1);
     }
-
 }
