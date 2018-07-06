@@ -99,8 +99,7 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                //Fazer métodos para tratar da remoção de produtos
-                //Caso o carrinho da negociação fique vazio excluímos ela do banco
+
             }
 
             @Override
@@ -152,7 +151,7 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
                 });
             }
         }else {
-            Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_conexao_falha));
+            Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
         }
     }
     //Resgatando total do banco
@@ -177,12 +176,10 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child("negociacao").child(idProdutoAlterado).exists()) {
-                    Negociacao negociacao = dataSnapshot.child("negociacao").child(idNegociacao).getValue(Negociacao.class);
-                    Produto produto = dataSnapshot.child("produto").child(idProdutoAlterado).getValue(Produto.class);
-                    if (produto != null) {
-                        resgatarItensComprasCarrinho(produto, negociacao, idProdutoAlterado);
-                    }
+                Negociacao negociacao = dataSnapshot.child("negociacao").child(idNegociacao).getValue(Negociacao.class);
+                Produto produto = dataSnapshot.child("produto").child(idProdutoAlterado).getValue(Produto.class);
+                if (produto != null) {
+                    resgatarItensComprasCarrinho(produto, negociacao, idProdutoAlterado);
                 }
             }
             @Override
