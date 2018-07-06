@@ -69,13 +69,12 @@
             android:layout_below="@id/tvTotalCarrinhoNegociacao">
 
             <Button
-                android:id="@+id/btnComprarCarrinhoNegociacao"
+                android:id="@+id/btnCarrinhoNegociacao"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_left"
                 android:layout_centerInParent="true"
                 android:background="@drawable/borda_goiaba"
-                android:text="@string/zs_btn_finalizar_compra"
                 android:textSize="20sp"
                 android:textStyle="bold" />
         </RelativeLayout>

@@ -36,11 +36,6 @@ public class ChatNegociacaoActivity extends AppCompatActivity {
     private EditText edtNegociacaoBarraMensagem;
     private ListView lvMensagens;
     private String idNegociacao;
-    private AlertDialog alertaDesconto;
-    private TextView tvTotalCaixaDialogo;
-    private TextView tvTotalDescontoCaixaDialogo;
-    private EditText edtDescontoCaixaDialogo;
-    private Button btnGerarDescontoCaixaDialogo;
     private Button btnNegociacaoEnviarMensagem;
 
     private VerificaConexao verificaConexao;
@@ -53,7 +48,6 @@ public class ChatNegociacaoActivity extends AppCompatActivity {
 
         //Recuperando Views
         Button btnNegociacaoCarrinho = findViewById(R.id.btnNegociacaoCarrinho);
-        Button btnNegociacaoOferta = findViewById(R.id.btnNegociacaoOferta);
         btnNegociacaoEnviarMensagem = findViewById(R.id.btnNegociacaoEnviarMensagem);
         tvNegociacaoNome = findViewById(R.id.tvNegociacaoNome);
         edtNegociacaoBarraMensagem = findViewById(R.id.edtNegociacaoBarraMensagem);
@@ -76,34 +70,13 @@ public class ChatNegociacaoActivity extends AppCompatActivity {
             }
         });
 
-        btnNegociacaoOferta.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.child("pessoaFisica").child(FirebaseController.getUidUser()).exists()){
-                            visualizarOferta();
-                        }else{
-                            gerarOferta();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-            }
-        });
-
         btnNegociacaoEnviarMensagem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(verificaConexao.isConected()){
                     verificaMensagem();
                 }else{
-                    Helper.criarToast(getApplicationContext(),"Sem conexão com a internet!");
+                    Helper.criarToast(getApplicationContext(),getString(R.string.zs_excecao_carrinho_vazio));
                 }
             }
         });
@@ -141,67 +114,6 @@ public class ChatNegociacaoActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), CarrinhoNegociacaoActivity.class);
         intent.putExtra("idNegociacao", idNegociacao);
         startActivity(intent);
-    }
-
-    private void visualizarOferta(){
-
-    }
-    //Pessoa jurídica gerando a oferta
-    private void gerarOferta(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(ChatNegociacaoActivity.this);
-        View mView = getLayoutInflater().inflate(R.layout.modelo_caixa_dialogo_desconto, null);
-        builder.setView(mView);
-
-        //Instanciando views da caixa de diálogo
-        instanciandoViews(mView);
-
-        //Setando informações referentes a caixa de diálogo
-        setarInformacoesViews(mView);
-
-        //Gerando
-        alertaDesconto = builder.create();
-        alertaDesconto.show();
-
-        clickGerarDesconto();
-    }
-
-    private void clickGerarDesconto(){
-        btnGerarDescontoCaixaDialogo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (verificaConexao.isConected()){
-                    Helper.criarToast(getApplicationContext(),"Teste");
-                }
-            }
-        });
-    }
-
-    private void setarInformacoesViews(View mView){
-        tvTotalCaixaDialogo.setText("A");
-        tvTotalDescontoCaixaDialogo.setText("A");
-        edtDescontoCaixaDialogo.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-    }
-
-    private void instanciandoViews(View mView){
-        tvTotalCaixaDialogo = mView.findViewById(R.id.tvTotalCaixaDialogo);
-        tvTotalDescontoCaixaDialogo = mView.findViewById(R.id.tvTotalDescontoCaixaDialogo);
-        edtDescontoCaixaDialogo = mView.findViewById(R.id.edtDescontoCaixaDialogo);
-        btnGerarDescontoCaixaDialogo = mView.findViewById(R.id.btnGerarDescontoCaixaDialogo);
     }
     //Bloquenado views caso a negociação ja tenha sido fechada
     private void verificarNegociacao(){

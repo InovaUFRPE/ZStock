@@ -38,7 +38,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.zstok.R;
-import com.zstok.historico.gui.MainHistoricoPessoaFisicaActivity;
+import com.zstok.historico.gui.MainHistoricoNegociacaoPessoaJuridicaActivity;
 import com.zstok.historico.gui.MainHistoricoPessoaJuridicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
@@ -206,9 +206,12 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
                         //Função abrir tela produtos
                         abrirTelaMeusProdutosActivity();
                         return true;
-                    case R.id.nav_meu_historico_pessoa_juridica:
+                    case R.id.nav_meu_historico_vendas_pessoa_juridica:
                         //Função abrir tela histórico
                         abrirTelaMainHistoricoPessoaJuridicaActivity();
+                        return true;
+                    case  R.id.nav_meu_historico_negociacao_pessoa_juridica:
+                        abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -508,6 +511,11 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     //Intent meus produtos
     private void abrirTelaMeusProdutosActivity(){
         Intent intent = new Intent(getApplicationContext(), MeusProdutosActivity.class);
+        startActivity(intent);
+    }
+    //Intent para a tela com o histórico de negociações
+    private void abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoNegociacaoPessoaJuridicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de histórico pessoa jurídica, onde estão os produtos

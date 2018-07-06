@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
+import com.zstok.historico.gui.MainHistoricoNegociacaoPessoaJuridicaActivity;
 import com.zstok.historico.gui.MainHistoricoPessoaJuridicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
@@ -104,9 +105,13 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
                         //Função abrir tela produtos
                         abrirTelaMeusProdutosActivity();
                         return true;
-                    case R.id.nav_meu_historico_pessoa_juridica:
+                    case R.id.nav_meu_historico_vendas_pessoa_juridica:
                         //Função abrir tela histórico de vendas
                         abrirTelaHistoricoPessoaJuridicaActivity();
+                        return true;
+                    case  R.id.nav_meu_historico_negociacao_pessoa_juridica:
+                        //Função abrir tela histórico de negociações
+                        abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -256,6 +261,11 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
     private void abrirTelaChatNegociacaoActivity(String idNegociacao){
         Intent intent = new Intent(getApplicationContext(), ChatNegociacaoActivity.class);
         intent.putExtra("idNegociacao", idNegociacao);
+        startActivity(intent);
+    }
+    //Intent para a tela com o histórico de negociações
+    private void abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoNegociacaoPessoaJuridicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de login

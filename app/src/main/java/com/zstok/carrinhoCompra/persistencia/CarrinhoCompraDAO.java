@@ -28,7 +28,7 @@ public class CarrinhoCompraDAO {
         return verificador;
     }
 
-    public static void inserirToral(double novoTotal, Produto produto, ItemCompra itemCompra){
+    public static void inserirTotal(double novoTotal, Produto produto, ItemCompra itemCompra){
         if (produto != null){
             FirebaseController.getFirebase().child("carrinhoCompra").child(FirebaseController.getUidUser()).child("itensCompra").child(itemCompra.getIdItemCompra()).child("valor").setValue(produto.getPrecoSugerido());
         }

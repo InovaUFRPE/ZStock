@@ -37,6 +37,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.zstok.carrinhoCompra.gui.CarrinhoCompraActivity;
 import com.zstok.R;
+import com.zstok.historico.gui.MainHistoricoNegociacaoPessoaJuridicaActivity;
 import com.zstok.historico.gui.MainHistoricoPessoaFisicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
@@ -160,6 +161,9 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                         return true;
                     case R.id.nav_meu_historico_pessoa_fisica:
                         abrirTelaMainHistoricoPessoaFisicaActivity();
+                        return true;
+                    case  R.id.nav_meu_historico_negociacao_pessoa_fisica:
+                        abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -372,6 +376,11 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
     //Intent para a tela de histórico pessoa física
     private void abrirTelaMainHistoricoPessoaFisicaActivity(){
         Intent intent = new Intent(getApplicationContext(), MainHistoricoPessoaFisicaActivity.class);
+        startActivity(intent);
+    }
+    //Intent para a tela com o histórico de negociações
+    private void abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoNegociacaoPessoaJuridicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de negociação

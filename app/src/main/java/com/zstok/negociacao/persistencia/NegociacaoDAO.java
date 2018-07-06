@@ -13,12 +13,19 @@ public class NegociacaoDAO {
         FirebaseController.getFirebase().child("negociacao").child(negociacao.getIdNegociacao()).setValue(negociacao);
     }
 
-    public static boolean finalizarNegociacao(Negociacao negociacao){
+    public static void diminuirQuantidade(Produto produto, ItemCompra itemCompra){
+        FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("quantidadeEstoque").setValue(produto.getQuantidadeEstoque() - itemCompra.getQuantidade());
+    }
+
+    public static void inserirTotal(String idNegociacao, double novoTotal){
+        FirebaseController.getFirebase().child("negociacao").child(idNegociacao).child("total").setValue(novoTotal);
+    }
+
+    public static boolean alterarItemCarrinho(Produto produto, String idNegociacao, String chave){
         boolean verificador;
 
-        try{
-            //FirebaseController.getFirebase().child("negociacao").child(negociacao.getIdNegociacao()).setValue(negociacao);
-            FirebaseController.getFirebase().child("historicoNegociacao").child(negociacao.getIdNegociacao()).setValue(negociacao);
+        try {
+            FirebaseController.getFirebase().child("negociacao").child(idNegociacao).child("carrinhoAtual").child(chave).child("valor").setValue(produto.getPrecoSugerido());
             verificador = true;
         }catch (DatabaseException e){
             verificador = false;
@@ -26,7 +33,19 @@ public class NegociacaoDAO {
         return verificador;
     }
 
-    public static void diminuirQuantidade(Produto produto, ItemCompra itemCompra){
-        FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("quantidadeEstoque").setValue(produto.getQuantidadeEstoque() - itemCompra.getQuantidade());
+    public static void removerItemInativoCarrinho(String idNegociacao, String chave){
+        FirebaseController.getFirebase().child("negociacao").child(idNegociacao).child("carrinhoAtual").child(chave).setValue(null);
+    }
+
+    public static boolean limparNegociacao(String idNegociacao){
+        boolean verificador;
+
+        try {
+            FirebaseController.getFirebase().child("negociacao").child(idNegociacao).setValue(null);
+            verificador = true;
+        }catch (DatabaseException e){
+            verificador = false;
+        }
+        return verificador;
     }
 }

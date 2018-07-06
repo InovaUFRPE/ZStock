@@ -30,6 +30,7 @@
     <string name="zs_hint_cidade_alterar_perfil">Digite sua cidade</string>
     <string name="zs_hint_cpf_atual_alterar_perfil">Digite seu cpf atual</string>
     <string name="zs_hint_cpf_alterar_perfil">Digite novo cpf</string>
+    <string name="zs_hint_valor_desconto">Valor do desconto</string>
 
     <string name="zs_texto_preco_produto">Preço:</string>
     <string name="zs_texto_quantidade_disponivel_produto">Quantidade disponível:</string>
@@ -59,6 +60,7 @@
 
     <string name="zs_btn_voltar_dialogo_compra">Voltar</string>
     <string name="zs_btn_comprar_dialogo_compra">Adicionar ao carrinho</string>
+    <string name="zs_btn_confirmar_dialogo_compra">Confirmar quantidade</string>
     <string name="zs_texto_total_dialogo_compra">TOTAL:</string>
     <string name="zs_hint_quantidade_dialogo_compra">Digite a quantidade desejada</string>
 
@@ -76,6 +78,8 @@
     <string name="zs_btn_comprar_produto">Comprar</string>
     <string name="zs_btn_adicionar_carrinho">Adicionar ao carrinho</string>
     <string name="zs_btn_finalizar_compra">Finalizar compra</string>
+    <string name="zs_btn_finalizar_negociacao">Finalizar negociação</string>
+    <string name="zs_btn_gerar_desconto_carrinho_negociacao">Gerar desconto</string>
 
     <string name="zs_sucesso_usuario_cadastrado">Usuário cadastrado com sucesso!</string>
     <string name="zs_email_enviado_sucesso">Email enviado com sucesso!</string>
@@ -125,6 +129,7 @@
     <string name="zs_menu_lateral_compras">Compras</string>
     <string name="zs_menu_lateral_historico_pessoa_fisica">Histórico de compras</string>
     <string name="zs_menu_lateral_historico_pessoa_juridica">Histórico de vendas</string>
+    <string name="zs_menu_lateral_historico_negociacao">Histórico de negociações</string>
     <string name="zs_menu_lateral_sair">Sair</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -141,6 +146,8 @@
     <string name="title_activity_meus_produtos">Meus produtos</string>
     <string name="title_activity_carrinho_compra">Carrinho de compra</string>
     <string name="title_activity_negociacao">Negociação</string>
+    <string name="title_activity_main_historico_negociacao_pessoa_fisica">Histórico de negociações</string>
+    <string name="title_activity_main_historico_negociacao_pessoa_juridica">Histórico de negociações</string>
 
     <string name="zs_content_description_card_item_compra">Imamgem do produto adicionado ao carrinho</string>
 
@@ -149,11 +156,4 @@
     <string name="zs_titulo_progress_dialog_cadastrando_produto">Cadastrando produto...</string>
     <string name="zs_titulo_progress_dialog_alterar_produto">Alterando produto...</string>
     <string name="zs_titulo_progress_dialog_perfil">Carregando informações...</string>
-    <string name="title_activity_chat_negociacao">ChatNegociacaoActivity</string>
-    <string name="title_activity_chat_negociacao_pessoa_fisica">ChatNegociacaoPessoaFisicaActivity
-    </string>
-    <string name="title_activity_main_historico_negociacao_pessoa_fisica">
-        MainHistoricoNegociacaoPessoaFisicaActivity
-    </string>
-
 </resources>

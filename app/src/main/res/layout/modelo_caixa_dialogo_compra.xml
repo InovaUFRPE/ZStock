@@ -85,7 +85,7 @@
             android:layout_alignParentEnd="true"
             android:layout_below="@id/tvTotalDialogoCompra"
             android:background="@drawable/borda_cimento"
-            android:text="@string/zs_btn_comprar_dialogo_compra" />
+            android:text="@string/zs_btn_confirmar_dialogo_compra" />
 
     </RelativeLayout>
 

@@ -151,7 +151,7 @@ public class MeusProdutosActivity extends AppCompatActivity
                         drawer.closeDrawers();
                         //Função abrir tela produtos
                         return true;
-                    case R.id.nav_meu_historico_pessoa_juridica:
+                    case R.id.nav_meu_historico_vendas_pessoa_juridica:
                         //Função abrir tela histórico pessoa jurídica
                         abrirTelaMainHistoricoPessoaJuridicaActivity();
                         return true;

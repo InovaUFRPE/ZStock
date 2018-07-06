@@ -250,11 +250,16 @@ public class CarrinhoCompraActivity extends AppCompatActivity
        if (verificaQuantidade(dataSnapshot)){
            reduzirQuantidade(dataSnapshot);
            //HistoricoServices.adicionarHistorico(dataSnapshot);
-           geraHistorico(separadorCarrinhoCompra(dataSnapshot));
-           Helper.criarToast(getApplicationContext(),getString(R.string.zs_compra_realizada_sucesso));
-           tvTotalCardViewItemCompra.setText("");
-           CarrinhoCompraServices.limparCarrinho();
+           finalizarCompra(dataSnapshot);
        }
+    }
+    //Finalizando compra
+    private void finalizarCompra(DataSnapshot dataSnapshot) {
+        geraHistorico(separadorCarrinhoCompra(dataSnapshot));
+        Helper.criarToast(getApplicationContext(),getString(R.string.zs_compra_realizada_sucesso));
+        tvTotalCardViewItemCompra.setText("");
+        CarrinhoCompraServices.limparCarrinho();
+        abrirTelaMainPessoaFisicaActivity();
     }
     //Verificando se a quantidade solicitada pelo usuário está disponível em estoque
     private boolean verificaQuantidade(DataSnapshot dataSnapshot) {
@@ -360,6 +365,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                     break;
                 }else {
                     Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
+                    break;
                 }
             }
         }
@@ -441,7 +447,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
         historico.setIdPessoaJuridica(empresa);
         historico.setIdPessoaFisica(FirebaseController.getUidUser());
         historico.setCarrinho(dic.get(empresa));
-        historico.setDataCompra(Helper.getData());
+        historico.setDataInicio(Helper.getData());
         historico.setTotal(total);
         return historico;
     }
@@ -660,7 +666,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
         Intent intent = new Intent(getApplicationContext(), MainHistoricoPessoaFisicaActivity.class);
         startActivity(intent);
     }
-    //Intetn para a tela de negociacao
+    //Intent para a tela de negociacao
     private void abrirTelaMainNegocicaoActivity(){
         Intent intent = new Intent(getApplicationContext(), MainNegociacaoActivity.class);
         startActivity(intent);

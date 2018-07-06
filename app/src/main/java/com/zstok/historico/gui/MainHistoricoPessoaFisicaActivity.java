@@ -85,6 +85,9 @@ public class MainHistoricoPessoaFisicaActivity extends AppCompatActivity
                     case R.id.nav_meu_historico_pessoa_fisica:
                         drawer.closeDrawers();
                         return true;
+                    case  R.id.nav_meu_historico_negociacao_pessoa_juridica:
+                        abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity();
+                        return true;
                     case R.id.nav_sair:
                         sair();
                         return true;
@@ -112,7 +115,7 @@ public class MainHistoricoPessoaFisicaActivity extends AppCompatActivity
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
                     viewHolder.tvCardViewTotalCompra.setText(NumberFormat.getCurrencyInstance().format(model.getTotal()));
-                    viewHolder.tvCardViewDataCompra.setText(String.valueOf(model.getDataCompra()));
+                    viewHolder.tvCardViewDataCompra.setText(String.valueOf(model.getDataInicio()));
 
                     FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -213,6 +216,11 @@ public class MainHistoricoPessoaFisicaActivity extends AppCompatActivity
     //Intent para a tela de negociação
     private void abrirTelaMainNegociacaoActivity(){
         Intent intent = new Intent(getApplicationContext(), MainNegociacaoActivity.class);
+        startActivity(intent);
+    }
+    //Intent para a tela com o histórico de negociações
+    private void abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoNegociacaoPessoaJuridicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de login

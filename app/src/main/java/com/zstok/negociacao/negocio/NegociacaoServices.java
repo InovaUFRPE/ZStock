@@ -11,11 +11,23 @@ public class NegociacaoServices {
         NegociacaoDAO.inserirNegociacao(negociacao);
     }
 
-    public static boolean finalizarNegociacao(Negociacao negociacao){
-        return NegociacaoDAO.finalizarNegociacao(negociacao);
-    }
-
     public static void diminuirQuantidade(Produto produto, ItemCompra itemCompra){
         NegociacaoDAO.diminuirQuantidade(produto, itemCompra);
+    }
+
+    public static void inserirTotal(String idNegociacao, double novoTotal){
+        NegociacaoDAO.inserirTotal(idNegociacao, novoTotal);
+    }
+
+    public static boolean alterarItemCarrinho(Produto produto, String idNegociacao, String chave){
+        return NegociacaoDAO.alterarItemCarrinho(produto, idNegociacao, chave);
+    }
+
+    public static void removerItemInativoCarrinho(String idNegociacao, String chave){
+        NegociacaoDAO.removerItemInativoCarrinho(idNegociacao, chave);
+    }
+
+    public static boolean limparNegociacao(String idNegociacao){
+        return NegociacaoDAO.limparNegociacao(idNegociacao);
     }
 }

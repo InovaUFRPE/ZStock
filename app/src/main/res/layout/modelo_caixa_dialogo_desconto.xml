@@ -11,35 +11,41 @@
         android:contentDescription="@string/app_name" />
     <TextView
         android:id="@+id/tvTotalCaixaDialogo"
-        android:text="TOTAL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textColor="@color/preto"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/tvTotalDescontoCaixaDialogo"
-        android:text="TOTAL DESCONTO"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textColor="@color/preto"
+        android:textStyle="bold"/>
 
     <EditText
         android:id="@+id/edtDescontoCaixaDialogo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="80dp"
         android:gravity="center"
-        android:hint="Valor do desconto"
-        android:layout_marginRight="80dp"
+        android:hint="@string/zs_hint_valor_desconto"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginBottom="15dp"
         android:layout_marginTop="15dp"
-        android:inputType="text"/>
+        android:inputType="numberDecimal"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -50,14 +56,12 @@
             android:id="@+id/btnGerarDescontoCaixaDialogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
+            android:layout_marginBottom="10dp"
             android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
             android:text="Gerar desconto"
             android:background="@color/goiaba"
-            android:textColor="@color/jabuticaba"
-            android:layout_alignParentLeft="true" />
-
+            android:textColor="@color/jabuticaba" />
 
     </RelativeLayout>
-
 </LinearLayout>

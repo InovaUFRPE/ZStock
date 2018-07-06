@@ -7,9 +7,11 @@ import java.util.ArrayList;
 public class Historico {
 
     private String idHistorico;
+    private String idNegociacao;
     private String idPessoaJuridica;
     private String idPessoaFisica;
-    private String dataCompra;
+    private String dataInicio;
+    private String dataFim;
     private double total;
     private ArrayList<ItemCompra> carrinho;
 
@@ -25,24 +27,24 @@ public class Historico {
         return idPessoaJuridica;
     }
 
-    public void setIdPessoaJuridica(String cnpj) {
-        this.idPessoaJuridica = cnpj;
+    public void setIdPessoaJuridica(String idPessoaJuridica) {
+        this.idPessoaJuridica = idPessoaJuridica;
     }
 
     public String getIdPessoaFisica() {
         return idPessoaFisica;
     }
 
-    public void setIdPessoaFisica(String cpf) {
-        this.idPessoaFisica = cpf;
+    public void setIdPessoaFisica(String idPessoaFisica) {
+        this.idPessoaFisica = idPessoaFisica;
     }
 
-    public String getDataCompra() {
-        return dataCompra;
+    public String getDataInicio() {
+        return dataInicio;
     }
 
-    public void setDataCompra(String dataCompra) {
-        this.dataCompra = dataCompra;
+    public void setDataInicio(String dataInicio) {
+        this.dataInicio = dataInicio;
     }
 
     public ArrayList<ItemCompra> getCarrinho() {
@@ -59,5 +61,21 @@ public class Historico {
 
     public void setTotal(double total) {
         this.total = total;
+    }
+
+    public String getDataFim() {
+        return dataFim;
+    }
+
+    public void setDataFim(String dataFim) {
+        this.dataFim = dataFim;
+    }
+
+    public String getIdNegociacao() {
+        return idNegociacao;
+    }
+
+    public void setIdNegociacao(String idNegociacao) {
+        this.idNegociacao = idNegociacao;
     }
 }

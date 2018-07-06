@@ -1,8 +1,6 @@
 package com.zstok.carrinhoCompra.negocio;
 
-import com.google.firebase.database.DataSnapshot;
 import com.zstok.carrinhoCompra.persistencia.CarrinhoCompraDAO;
-import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.itemcompra.dominio.ItemCompra;
 import com.zstok.produto.dominio.Produto;
 
@@ -17,7 +15,7 @@ public class CarrinhoCompraServices {
     }
 
     public static void inserirTotal(Produto produto, ItemCompra itemCompra, double total){
-        CarrinhoCompraDAO.inserirToral(total, produto, itemCompra);
+        CarrinhoCompraDAO.inserirTotal(total, produto, itemCompra);
     }
 
     public static boolean removerItemCompraCarrinho(ItemCompra itemCompra){

@@ -82,9 +82,12 @@ public class MainHistoricoPessoaJuridicaActivity extends AppCompatActivity
                         //Função abrir tela produtos
                         abrirTelaMeusProdutosActivity();
                         return true;
-                    case R.id.nav_meu_historico_pessoa_juridica:
+                    case R.id.nav_meu_historico_vendas_pessoa_juridica:
                         //Função abrir tela histórico pessoa jurídica
                         drawer.closeDrawers();
+                        return true;
+                    case  R.id.nav_meu_historico_negociacao_pessoa_juridica:
+                        abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -113,7 +116,7 @@ public class MainHistoricoPessoaJuridicaActivity extends AppCompatActivity
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
                     viewHolder.tvCardViewTotalCompra.setText(NumberFormat.getCurrencyInstance().format(model.getTotal()));
-                    viewHolder.tvCardViewDataCompra.setText(String.valueOf(model.getDataCompra()));
+                    viewHolder.tvCardViewDataCompra.setText(String.valueOf(model.getDataInicio()));
                     FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -213,6 +216,11 @@ public class MainHistoricoPessoaJuridicaActivity extends AppCompatActivity
         intent.putExtra("idHistorico", historico.getIdHistorico());
         intent.putExtra("idEmpresa", historico.getIdPessoaJuridica());
         intent.putExtra("idPessoaFisica", historico.getIdPessoaFisica());
+        startActivity(intent);
+    }
+    //Intent para a tela com o histórico de negociações
+    private void abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoNegociacaoPessoaJuridicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de login
