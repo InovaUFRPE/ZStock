@@ -39,7 +39,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.zstok.R;
 import com.zstok.historico.gui.MainHistoricoNegociacaoPessoaJuridicaActivity;
-import com.zstok.historico.gui.MainHistoricoPessoaFisicaActivity;
+import com.zstok.historico.gui.MainHistoricoCompraPessoaFisicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
@@ -62,8 +62,9 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
 
     private TextView tvNomeUsuarioNavHeader;
     private TextView tvEmailUsuarioNavHeader;
-    private CircleImageView cvPerfilPessoaFisica;
     private CircleImageView cvNavHeaderPessoa;
+
+    private CircleImageView cvPerfilPessoaFisica;
     private TextView tvNomePerfilFisico;
     private TextView tvEmailPerfilFisico;
     private TextView tvCpfPerfilFisico;
@@ -117,7 +118,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         habilitarScrollBars();
 
         //Instanciando views do menu lateral
-        instanciandoView();
+        instanciandoViews();
 
         //Carregar dados do menu lateral
         setDadosMenuLateral();
@@ -147,7 +148,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                     case R.id.nav_produtos_pessoa_fisica:
                         abrirTelaMainPessoaFisicaActivity();
                         return true;
-                    case R.id.nav_meu_historico_pessoa_fisica:
+                    case R.id.nav_meu_historico_compra_pessoa_fisica:
                         abrirTelaMainHistoricoPessoaFisicaActivity();
                         return true;
                     case  R.id.nav_meu_historico_negociacao_pessoa_juridica:
@@ -250,7 +251,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
         progressDialog.show();
     }
-    private void instanciandoView(){
+    private void instanciandoViews(){
         View headerView = navigationView.getHeaderView(0);
         tvNomeUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderNome);
         tvEmailUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderEmail);
@@ -431,7 +432,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         }
         progressDialog.dismiss();
     }
-    //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
+    //Método que exibe a caixa de diálogo para o usuário confirmar ou não a sua saída do sistema
     private void sair () {
         //Cria o gerador do AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -521,7 +522,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     }
     //Intent para a tela de histórico pessoa física, onde estão os produtos
     private void abrirTelaMainHistoricoPessoaFisicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainHistoricoPessoaFisicaActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoCompraPessoaFisicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela com o histórico de negociações

@@ -28,7 +28,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
-import com.zstok.historico.gui.MainHistoricoPessoaFisicaActivity;
+import com.zstok.historico.gui.MainHistoricoNegociacaoPessoaFisicaActivity;
+import com.zstok.historico.gui.MainHistoricoCompraPessoaFisicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.negociacao.adapter.NegociacaoListHolder;
@@ -105,9 +106,13 @@ public class MainNegociacaoActivity extends AppCompatActivity
                         //Abrir a tela main
                         abrirTelaMainPessoaFisicaActivity();
                         return true;
-                    case R.id.nav_meu_historico_pessoa_fisica:
-                        //Abrir a tela de negociações
-                        abrirTelaMainHistoricoPessoaFisicaActivity();
+                    case R.id.nav_meu_historico_compra_pessoa_fisica:
+                        //Abrir a tela histórico de compras
+                        abrirTelaMainHistoricoCompraPessoaFisicaActivity();
+                        return true;
+                    case R.id.nav_meu_historico_negociacao_pessoa_fisica:
+                        //Abrir tela histórico de negociações
+                        abrirTelaMainHistoricoNegociacaoPessoaFisicaActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -192,7 +197,7 @@ public class MainNegociacaoActivity extends AppCompatActivity
             }
         });
     }
-    //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
+    //Método que exibe a caixa de diálogo para o usuário confirmar ou não a sua saída do sistema
     private void sair () {
         //Cria o gerador do AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -251,8 +256,13 @@ public class MainNegociacaoActivity extends AppCompatActivity
         startActivity(intent);
     }
     //Intent para a tela de histórico pessoa física
-    private void abrirTelaMainHistoricoPessoaFisicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainHistoricoPessoaFisicaActivity.class);
+    private void abrirTelaMainHistoricoCompraPessoaFisicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoCompraPessoaFisicaActivity.class);
+        startActivity(intent);
+    }
+    //Intent para a tela de histórico negociações pessoa física
+    private void abrirTelaMainHistoricoNegociacaoPessoaFisicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoNegociacaoPessoaFisicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela main pessoa física, onde estão os produtos

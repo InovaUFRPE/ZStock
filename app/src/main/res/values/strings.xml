@@ -154,6 +154,13 @@
     <string name="zs_titulo_progress_dialog_registro">Cadastrando usuário...</string>
     <string name="zs_titulo_progress_dialog_carregar_informacoes_produto">Carregando produto...</string>
     <string name="zs_titulo_progress_dialog_cadastrando_produto">Cadastrando produto...</string>
+    <string name="zs_titulo_progress_dialog_carregar_produto">Carregando produtos...</string>
+    <string name="zs_titulo_progress_dialog_visualizar_historico">Carregando histórico...</string>
+    <string name="zs_titulo_progress_dialog_carregar_historico_venda">Carregando histórico de vendas...</string>
+    <string name="zs_titulo_progress_dialog_carregar_historico_compra">Carregando histórico de compras...</string>
+    <string name="zs_titulo_progress_dialog_carregar_historico_negociacao">Carregando histórico de negociações...</string>
     <string name="zs_titulo_progress_dialog_alterar_produto">Alterando produto...</string>
     <string name="zs_titulo_progress_dialog_perfil">Carregando informações...</string>
+
+    <string name="zs_mensagem_produto_esgotado">Produto esgotado!</string>
 </resources>

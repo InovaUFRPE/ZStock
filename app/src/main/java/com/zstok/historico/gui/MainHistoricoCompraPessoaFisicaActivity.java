@@ -1,24 +1,28 @@
 package com.zstok.historico.gui;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,26 +33,44 @@ import com.zstok.historico.adapter.HistoricoListHolder;
 import com.zstok.historico.dominio.Historico;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
-import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
-import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
-import com.zstok.produto.gui.MeusProdutosActivity;
+import com.zstok.negociacao.gui.MainNegociacaoActivity;
+import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
+import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
 
 import java.text.NumberFormat;
 
-public class MainHistoricoPessoaJuridicaActivity extends AppCompatActivity
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class MainHistoricoCompraPessoaFisicaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private AlertDialog alertaSair;
 
-    private RecyclerView recyclerViewHistorico;
+    private TextView tvNomeUsuarioNavHeader;
+    private TextView tvEmailUsuarioNavHeader;
+    private CircleImageView cvNavHeaderPessoa;
+
     private FirebaseRecyclerAdapter adapterHistorico;
+    private RecyclerView recyclerViewHistorico;
+
+    private NavigationView navigationView;
+
+    private ProgressDialog progressDialog;
+
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_historico_pessoa_juridica);
+        setContentView(R.layout.activity_main_historico_compra_pessoa_fisica);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Resgatando usuario atual
+        user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+
+        //Instanciando progress dialog
+        progressDialog = new ProgressDialog(this);
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -57,37 +79,42 @@ public class MainHistoricoPessoaJuridicaActivity extends AppCompatActivity
         toggle.syncState();
 
         //Instanciando recyler view
-        recyclerViewHistorico = findViewById(R.id.recyclerHistoricoPessoaJuridica);
+        recyclerViewHistorico = findViewById(R.id.recyclerHistoricoCompraPessoaFisica);
         recyclerViewHistorico.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainHistoricoPessoaJuridicaActivity.this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainHistoricoCompraPessoaFisicaActivity.this);
         recyclerViewHistorico.setLayoutManager(layoutManager);
 
-        //Criando adapter histórico
+        //Criando adapter
         criarAdapterHistorico();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Instanciando views do menu lateral
+        instanciandoViews();
+
+        //Carregar dados do menu lateral
+        setDadosMenuLateral();
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.nav_meu_perfil_pessoa_juridica:
-                        abrirTelaPerfilPessoaJuridicaActivity();
+                    case R.id.nav_meu_perfil_pessoa_fisica:
+                        abrirTelaMeuPerfilPessoaFisicaActivity();
                         return true;
-                    case R.id.nav_negociacao_pessoa_juridica:
-                        abrirTelaMainPessoaJuridicaActivity();
+                    case R.id.nav_negociacao_pessoa_fisica:
+                        //Intent para tela de negocicao
+                        abrirTelaMainNegociacaoActivity();
                         return true;
-                    case R.id.nav_produtos_pessoa_juridica:
-                        //Função abrir tela produtos
-                        abrirTelaMeusProdutosActivity();
+                    case R.id.nav_produtos_pessoa_fisica:
+                        abrirTelaMainPessoaFisicaActivity();
                         return true;
-                    case R.id.nav_meu_historico_vendas_pessoa_juridica:
-                        //Função abrir tela histórico pessoa jurídica
+                    case R.id.nav_meu_historico_compra_pessoa_fisica:
                         drawer.closeDrawers();
                         return true;
-                    case  R.id.nav_meu_historico_negociacao_pessoa_juridica:
-                        abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity();
+                    case  R.id.nav_meu_historico_negociacao_pessoa_fisica:
+                        abrirTelaMainHistoricoNegociacaoPessoaFisicaActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -98,10 +125,34 @@ public class MainHistoricoPessoaJuridicaActivity extends AppCompatActivity
             }
         });
     }
+    //Método que instancia as views
+    private void instanciandoViews(){
+        View headerView = navigationView.getHeaderView(0);
+        tvNomeUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderNome);
+        tvEmailUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderEmail);
+        cvNavHeaderPessoa = headerView.findViewById(R.id.cvNavHeaderPessoa);
+    }
+    //Método que carrega nome e email do usuário e seta nas views do menu lateral
+    private void setDadosMenuLateral(){
+        if (user.getPhotoUrl() != null){
+            Glide.with(MainHistoricoCompraPessoaFisicaActivity.this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
+        }else {
+            cvNavHeaderPessoa.setImageResource(R.drawable.ic_sem_foto);
+        }
+        tvNomeUsuarioNavHeader.setText(user.getDisplayName());
+        tvEmailUsuarioNavHeader.setText(user.getEmail());
+    }
+    //Método que inicia o progress dialog
+    private void iniciarProgressDialog() {
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_carregar_historico_compra));
+        progressDialog.show();
+    }
     //Método que cria o adapter de histórico
     private void criarAdapterHistorico(){
-        DatabaseReference referenciaHistorico = FirebaseController.getFirebase().child("historico");
-        Query queryHistoricoCompra = referenciaHistorico.orderByChild("idEmpresa").equalTo(FirebaseController.getUidUser());
+        iniciarProgressDialog();
+        DatabaseReference referenciaHistorico = FirebaseController.getFirebase().child("historicoCompra");
+        Query queryHistoricoCompra = referenciaHistorico.orderByChild("idPessoaFisica").equalTo(FirebaseController.getUidUser());
 
         if (queryHistoricoCompra != null) {
             adapterHistorico = new FirebaseRecyclerAdapter<Historico, HistoricoListHolder>(
@@ -116,19 +167,10 @@ public class MainHistoricoPessoaJuridicaActivity extends AppCompatActivity
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
                     viewHolder.tvCardViewTotalCompra.setText(NumberFormat.getCurrencyInstance().format(model.getTotal()));
-                    viewHolder.tvCardViewDataCompra.setText(String.valueOf(model.getDataInicio()));
-                    FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            String cpfPessoaFisica = dataSnapshot.child("pessoaFisica").child(model.getIdPessoaFisica()).child("cpf").getValue(String.class);
-                            viewHolder.tvCardViewNome.setText(cpfPessoaFisica);
-                        }
+                    viewHolder.tvCardViewDataCompra.setText(String.valueOf(model.getDataFim()));
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
+                    //Método que resgata o cnpj da pessoa jurídica
+                    resgatarCpnjPessoaJuridica(viewHolder, model);
                 }
 
                 @NonNull
@@ -138,7 +180,7 @@ public class MainHistoricoPessoaJuridicaActivity extends AppCompatActivity
                     viewHolder.setOnItemClickListener(new HistoricoListHolder.ClickListener() {
                         @Override
                         public void onItemClick(View view, int position) {
-                            Historico historico = (Historico) adapterHistorico.getItem(position);
+                            Historico historico =  (Historico) adapterHistorico.getItem(position);
                             abrirTelaVisualizarHistoricoActivity(historico);
                         }
                     });
@@ -148,7 +190,24 @@ public class MainHistoricoPessoaJuridicaActivity extends AppCompatActivity
             recyclerViewHistorico.setAdapter(adapterHistorico);
         }
     }
-    //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
+    //Resgatando o cnpj envolvido na compra
+    private void resgatarCpnjPessoaJuridica(final HistoricoListHolder viewHolder, final Historico model) {
+        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String nomeEmpresa = dataSnapshot.child("pessoa").child(model.getIdPessoaJuridica()).child("nome").getValue(String.class);
+                viewHolder.tvCardViewNome.setText(nomeEmpresa);
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    //Método que exibe a caixa de diálogo para o usuário confirmar ou não a sua saída do sistema
     private void sair () {
         //Cria o gerador do AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -195,32 +254,32 @@ public class MainHistoricoPessoaJuridicaActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    //Intent para a tela onde estará as negociações
-    private void abrirTelaMainPessoaJuridicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainPessoaJuridicaActivity.class);
+    //Intent para tela main
+    private void abrirTelaMainPessoaFisicaActivity() {
+        Intent intent = new Intent(getApplicationContext(), MainPessoaFisicaActivity.class);
         startActivity(intent);
     }
-    //Intent para a tela de perfil pessoa jurídica
-    private void abrirTelaPerfilPessoaJuridicaActivity() {
-        Intent intent = new Intent(getApplicationContext(), PerfilPessoaJuridicaActivity.class);
-        startActivity(intent);
-    }
-    //Intent para a tela meus produtos
-    private void abrirTelaMeusProdutosActivity(){
-        Intent intent = new Intent(getApplicationContext(), MeusProdutosActivity.class);
+    //Intent para a tela de perfil pessoa física
+    private void abrirTelaMeuPerfilPessoaFisicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), PerfilPessoaFisicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela visualizar histórico
     private void abrirTelaVisualizarHistoricoActivity(Historico historico){
-        Intent intent = new Intent(getApplicationContext(), VisualizarHistoricoActivity.class);
+        Intent intent = new Intent(getApplicationContext(), VisualizarHistoricoCompraActivity.class);
         intent.putExtra("idHistorico", historico.getIdHistorico());
         intent.putExtra("idEmpresa", historico.getIdPessoaJuridica());
         intent.putExtra("idPessoaFisica", historico.getIdPessoaFisica());
         startActivity(intent);
     }
+    //Intent para a tela de negociação
+    private void abrirTelaMainNegociacaoActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainNegociacaoActivity.class);
+        startActivity(intent);
+    }
     //Intent para a tela com o histórico de negociações
-    private void abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainHistoricoNegociacaoPessoaJuridicaActivity.class);
+    private void abrirTelaMainHistoricoNegociacaoPessoaFisicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoNegociacaoPessoaFisicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de login

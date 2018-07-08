@@ -32,7 +32,7 @@ import com.zstok.R;
 import com.zstok.carrinhoCompra.negocio.CarrinhoCompraServices;
 import com.zstok.historico.adapter.ItemCompraListHolder;
 import com.zstok.historico.dominio.Historico;
-import com.zstok.historico.gui.MainHistoricoPessoaFisicaActivity;
+import com.zstok.historico.gui.MainHistoricoCompraPessoaFisicaActivity;
 import com.zstok.historico.negocio.HistoricoServices;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
@@ -216,7 +216,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                     case R.id.nav_negociacao_pessoa_fisica:
                         Helper.criarToast(getApplicationContext(), "Em construção...");
                         return true;
-                    case R.id.nav_meu_historico_pessoa_fisica:
+                    case R.id.nav_meu_historico_compra_pessoa_fisica:
                         abrirTelaMainHistoricoPessoaFisicaActivity();
                         return true;
                     case R.id.nav_sair:
@@ -249,7 +249,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     private void verificaCompra(DataSnapshot dataSnapshot){
        if (verificaQuantidade(dataSnapshot)){
            reduzirQuantidade(dataSnapshot);
-           //HistoricoServices.adicionarHistorico(dataSnapshot);
+           //HistoricoServices.inserirHistoricoCompra(dataSnapshot);
            finalizarCompra(dataSnapshot);
        }
     }
@@ -393,7 +393,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                 total+=(itemCompra.getValor()*itemCompra.getQuantidade());
             }
             Historico historico = criarHistorico(dic, total, empresa);
-            HistoricoServices.adicionarHistorico(historico);
+            HistoricoServices.inserirHistoricoCompra(historico);
         }
     }
     //Separa carrinho de compra em um dicionário contendo Dic<Empresa, produtos comprados da empresa>
@@ -447,7 +447,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
         historico.setIdPessoaJuridica(empresa);
         historico.setIdPessoaFisica(FirebaseController.getUidUser());
         historico.setCarrinho(dic.get(empresa));
-        historico.setDataInicio(Helper.getData());
+        historico.setDataFim(Helper.getData());
         historico.setTotal(total);
         return historico;
     }
@@ -663,7 +663,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     }
     //Intent para a tela de histórico pessoa física, onde estão os produtos
     private void abrirTelaMainHistoricoPessoaFisicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainHistoricoPessoaFisicaActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoCompraPessoaFisicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de negociacao

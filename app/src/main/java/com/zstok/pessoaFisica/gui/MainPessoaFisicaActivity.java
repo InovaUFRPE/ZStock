@@ -1,5 +1,6 @@
 package com.zstok.pessoaFisica.gui;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -33,12 +34,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.zstok.carrinhoCompra.gui.CarrinhoCompraActivity;
 import com.zstok.R;
 import com.zstok.historico.gui.MainHistoricoNegociacaoPessoaJuridicaActivity;
-import com.zstok.historico.gui.MainHistoricoPessoaFisicaActivity;
+import com.zstok.historico.gui.MainHistoricoCompraPessoaFisicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
@@ -68,6 +67,8 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
     private RecyclerView recylerViewMeusprodutos;
     private FirebaseRecyclerAdapter adapter;
 
+    private ProgressDialog progressDialog;
+
     private FirebaseUser user;
 
     @Override
@@ -79,6 +80,9 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
 
         //Resgantado usuário atual
         user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+
+        //Instanciando progress dialog
+        progressDialog = new ProgressDialog(this);
 
         //Instanciando views
         edtPesquisaProdutoPessoaFisica = findViewById(R.id.edtPesquisaProdutoPessoaFisica);
@@ -131,7 +135,6 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                criandoAdapterPesquisa(Helper.removerAcentos(edtPesquisaProdutoPessoaFisica.getText().toString().toLowerCase()));
             }
 
             @Override
@@ -153,16 +156,18 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                         abrirTelaPerfilPessoaFisicaActivity();
                         return true;
                     case R.id.nav_negociacao_pessoa_fisica:
-                        //Activity de negociação
+                        //Função abrir tela de negociações em
                         abrirTelaMainNegociacaoActivity();
                         return true;
                     case R.id.nav_produtos_pessoa_fisica:
                         drawer.closeDrawers();
                         return true;
-                    case R.id.nav_meu_historico_pessoa_fisica:
-                        abrirTelaMainHistoricoPessoaFisicaActivity();
+                    case R.id.nav_meu_historico_compra_pessoa_fisica:
+                        //Função abrir tela histórico de vendas
+                        abrirTelaMainHistoricoVendaPessoaFisicaActivity();
                         return true;
                     case  R.id.nav_meu_historico_negociacao_pessoa_fisica:
+                        //Função abrir tela histórico de negociações
                         abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity();
                         return true;
                     case R.id.nav_sair:
@@ -227,8 +232,15 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
             recylerViewMeusprodutos.setAdapter(adapter1);
         }
     }
+    //Método que inicia o progress dialog
+    private void iniciarProgressDialog() {
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_carregar_produto));
+        progressDialog.show();
+    }
     //Montando adapter e jogando no list holder
     private void criandoAdapter() {
+        iniciarProgressDialog();
         final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
 
         if (databaseReference != null) {
@@ -248,14 +260,15 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                     if (model.getQuantidadeEstoque() != 0) {
                         viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
                     }else {
-                        viewHolder.tvCardViewQuantidadeEstoque.setText("Produto esgotado!");
+                        viewHolder.tvCardViewQuantidadeEstoque.setText(getString(R.string.zs_mensagem_produto_esgotado));
                     }
-                    resgatarNomeEmpresa(viewHolder, model);
                     if (model.getUrlImagem() != null) {
                         Glide.with(MainPessoaFisicaActivity.this).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
                     }else {
                         viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
                     }
+                    //Resgatando nome da pessoa jurídica
+                    resgatarNomeEmpresa(viewHolder, model);
                 }
 
                 @NonNull
@@ -281,6 +294,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 viewHolder.tvCardViewNomeEmpresa.setText(dataSnapshot.getValue(String.class));
+                progressDialog.dismiss();
             }
 
             @Override
@@ -289,7 +303,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
             }
         });
     }
-    //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
+    //Método que exibe a caixa de diálogo para o usuário confirmar ou não a sua saída do sistema
     private void sair () {
         //Cria o gerador do AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -374,8 +388,8 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
         startActivity(intent);
     }
     //Intent para a tela de histórico pessoa física
-    private void abrirTelaMainHistoricoPessoaFisicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainHistoricoPessoaFisicaActivity.class);
+    private void abrirTelaMainHistoricoVendaPessoaFisicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoCompraPessoaFisicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela com o histórico de negociações

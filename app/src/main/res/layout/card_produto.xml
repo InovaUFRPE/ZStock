@@ -42,7 +42,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:gravity="center"
-            android:text="@string/zs_texto_nome_produto"
             android:textSize="22sp"
             android:textStyle="bold"/>
         <!--TAG PREÇO-->
@@ -65,8 +64,7 @@
             android:layout_below="@+id/tvNomeCardViewProduto"
             android:layout_marginTop="17dp"
             android:layout_toEndOf="@+id/tvTextoPrecoCardViewProduto"
-            android:layout_toRightOf="@+id/tvTextoPrecoCardViewProduto"
-            android:text="Preço" />
+            android:layout_toRightOf="@+id/tvTextoPrecoCardViewProduto" />
         <!-- TAG QUANTIDADE-->
         <TextView
             android:layout_width="78dp"
@@ -88,8 +86,7 @@
             android:layout_below="@+id/tvPrecoCardViewProduto"
             android:layout_marginTop="13dp"
             android:layout_toEndOf="@+id/textView2"
-            android:layout_toRightOf="@+id/textView2"
-            android:text="Quantidade" />
+            android:layout_toRightOf="@+id/textView2" />
         <!-- TAG EMPRESA-->
         <TextView
             android:id="@+id/tvTextoEmpresaCardViewProduto"
@@ -109,8 +106,7 @@
             android:layout_below="@+id/tvQuantidadeCardViewProduto"
             android:layout_marginTop="10dp"
             android:layout_toEndOf="@+id/tvTextoEmpresaCardViewProduto"
-            android:layout_toRightOf="@+id/tvTextoEmpresaCardViewProduto"
-            android:text="Nome Empresa" />
+            android:layout_toRightOf="@+id/tvTextoEmpresaCardViewProduto" />
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>

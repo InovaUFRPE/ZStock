@@ -145,6 +145,7 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
                 btnCarrinhoNegociacao.setText(getString(R.string.zs_btn_finalizar_negociacao));
                 btnCarrinhoNegociacao.setOnClickListener(new View.OnClickListener() {
                     @Override
+                    
                     public void onClick(View v) {
                         fecharNegociacao();
                     }
@@ -176,10 +177,12 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Negociacao negociacao = dataSnapshot.child("negociacao").child(idNegociacao).getValue(Negociacao.class);
-                Produto produto = dataSnapshot.child("produto").child(idProdutoAlterado).getValue(Produto.class);
-                if (produto != null) {
-                    resgatarItensComprasCarrinho(produto, negociacao, idProdutoAlterado);
+                if (dataSnapshot.child("negociacao").child(idNegociacao).exists()) {
+                    Negociacao negociacao = dataSnapshot.child("negociacao").child(idNegociacao).getValue(Negociacao.class);
+                    Produto produto = dataSnapshot.child("produto").child(idProdutoAlterado).getValue(Produto.class);
+                    if (produto != null && negociacao != null) {
+                        resgatarItensComprasCarrinho(produto, negociacao, idProdutoAlterado);
+                    }
                 }
             }
             @Override
@@ -356,7 +359,6 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
                     negociacao.setDataFim(Helper.getData());
                     if (verificaQuantidade(dataSnapshot, negociacao)) {
                         gerarHistorico(negociacao);
-                        finalizarNegociacao();
                     }
                 }
             }
@@ -367,6 +369,15 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
             }
         });
     }
+    //Gerando histórico
+    private void gerarHistorico(Negociacao negociacao){
+        Historico historico = criarHistorico(negociacao);
+        if (HistoricoServices.inserirHistoricoNegociacao(historico)){
+            finalizarNegociacao();
+        }else {
+            Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
+        }
+    }
     //Finalizando negociação
     private void finalizarNegociacao() {
         if (NegociacaoServices.limparNegociacao(idNegociacao)) {
@@ -375,12 +386,6 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
         }else {
             Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
         }
-    }
-    //gerando histórico
-    private void gerarHistorico(Negociacao negociacao){
-        Historico historico = criarHistorico(negociacao);
-
-        HistoricoServices.adicionarHistorico(historico);
     }
     //Criando o objeto histórico
     private Historico criarHistorico(Negociacao negociacao){

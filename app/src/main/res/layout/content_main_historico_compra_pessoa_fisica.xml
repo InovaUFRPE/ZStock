@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     android:background="@color/jabuticaba"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".historico.gui.MainHistoricoPessoaJuridicaActivity"
-    tools:showIn="@layout/app_bar_main_historico_pessoa_juridica">
+    tools:context=".historico.gui.MainHistoricoCompraPessoaFisicaActivity"
+    tools:showIn="@layout/app_bar_main_historico_compra_pessoa_fisica">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerHistoricoPessoaJuridica"
+        android:id="@+id/recyclerHistoricoCompraPessoaFisica"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp"

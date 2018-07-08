@@ -64,14 +64,14 @@
             android:label="@string/title_activity_carrinho_compra"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".historico.gui.MainHistoricoPessoaFisicaActivity"
+            android:name=".historico.gui.MainHistoricoCompraPessoaFisicaActivity"
             android:label="@string/zs_menu_lateral_historico_pessoa_fisica"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".historico.gui.MainHistoricoPessoaJuridicaActivity"
+            android:name=".historico.gui.MainHistoricoVendaPessoaJuridicaActivity"
             android:label="@string/zs_menu_lateral_historico_pessoa_juridica"
             android:theme="@style/AppTheme" />
-        <activity android:name=".historico.gui.VisualizarHistoricoActivity" />
+        <activity android:name=".historico.gui.VisualizarHistoricoCompraActivity" />
         <activity
             android:name=".negociacao.gui.MainNegociacaoActivity"
             android:label="@string/title_activity_negociacao"

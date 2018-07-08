@@ -52,8 +52,7 @@
             android:layout_below="@+id/tvNomeCpfCardViewHistorico"
             android:layout_marginTop="10dp"
             android:layout_toEndOf="@+id/tvTextoTotalCardViewHistorico"
-            android:layout_toRightOf="@+id/tvTextoTotalCardViewHistorico"
-            android:text="R$ XXX,XX" />
+            android:layout_toRightOf="@+id/tvTextoTotalCardViewHistorico" />
 
         <TextView
             android:id="@+id/tvTextoDataCompraCardViewHistorico"
@@ -76,8 +75,7 @@
             android:layout_below="@+id/tvTotalCardViewProduto"
             android:layout_marginTop="13dp"
             android:layout_toEndOf="@+id/tvTextoDataCompraCardViewHistorico"
-            android:layout_toRightOf="@+id/tvTextoDataCompraCardViewHistorico"
-            android:text="XX/XX/XXXX" />
+            android:layout_toRightOf="@+id/tvTextoDataCompraCardViewHistorico" />
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>

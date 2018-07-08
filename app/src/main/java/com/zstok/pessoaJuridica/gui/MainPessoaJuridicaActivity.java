@@ -29,7 +29,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
 import com.zstok.historico.gui.MainHistoricoNegociacaoPessoaJuridicaActivity;
-import com.zstok.historico.gui.MainHistoricoPessoaJuridicaActivity;
+import com.zstok.historico.gui.MainHistoricoVendaPessoaJuridicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.negociacao.adapter.NegociacaoListHolder;
@@ -107,7 +107,7 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
                         return true;
                     case R.id.nav_meu_historico_vendas_pessoa_juridica:
                         //Função abrir tela histórico de vendas
-                        abrirTelaHistoricoPessoaJuridicaActivity();
+                        abrirTelaHistoricoVendaPessoaJuridicaActivity();
                         return true;
                     case  R.id.nav_meu_historico_negociacao_pessoa_juridica:
                         //Função abrir tela histórico de negociações
@@ -197,7 +197,7 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
         tvNomeUsuarioNavHeader.setText(user.getDisplayName());
         tvEmailUsuarioNavHeader.setText(user.getEmail());
     }
-    //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
+    //Método que exibe a caixa de diálogo para o usuário confirmar ou não a sua saída do sistema
     private void sair () {
         //Cria o gerador do AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -253,8 +253,8 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
         startActivity(intent);
     }
     //Intent para a tela de histórico de vendas
-    private void abrirTelaHistoricoPessoaJuridicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainHistoricoPessoaJuridicaActivity.class);
+    private void abrirTelaHistoricoVendaPessoaJuridicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoVendaPessoaJuridicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de chat

@@ -1,10 +1,12 @@
 package com.zstok.historico.gui;
 
+import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -24,7 +26,7 @@ import com.zstok.produto.dominio.Produto;
 
 import java.text.NumberFormat;
 
-public class VisualizarHistoricoActivity extends AppCompatActivity {
+public class VisualizarHistoricoCompraActivity extends AppCompatActivity {
 
     private TextView tvNomeEmpresaVizualizarHistorico;
     private TextView tvDataCompraVizualizarHistorico;
@@ -33,16 +35,20 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
     private TextView tvTotalVisualizarHistorico;
 
     private RecyclerView recyclerViewItens;
+    private ProgressDialog progressDialog;
 
     private String idHistorico;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_visualizar_historico);
+        setContentView(R.layout.activity_visualizar_historico_compra);
 
         //Resgatando id da intent
         idHistorico = getIntent().getStringExtra("idHistorico");
+
+        //Instanciando progress dialog
+        progressDialog = new ProgressDialog(this);
 
         //Instanciando views
         tvNomeEmpresaVizualizarHistorico = findViewById(R.id.tvNomeEmpresaVizualizarHistorico);
@@ -58,7 +64,7 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
         //Instanciando recyler view
         recyclerViewItens = findViewById(R.id.recyclerItensCompraHistorico);
         recyclerViewItens.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(VisualizarHistoricoActivity.this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(VisualizarHistoricoCompraActivity.this);
         recyclerViewItens.setLayoutManager(layoutManager);
 
         //Setando informações do histórico
@@ -69,7 +75,7 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
     }
     //Montando adapter e jogando no list holder
     private void criarAdapterItensCompra() {
-        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("historico").child(idHistorico).child("carrinho");
+        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("historicoCompra").child(idHistorico).child("carrinho");
 
         if (databaseReference != null) {
 
@@ -120,6 +126,12 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
             }
         });
     }
+    //Método que inicia o progress dialog
+    private void iniciarProgressDialog() {
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_visualizar_historico));
+        progressDialog.show();
+    }
     //Criando objeto histórico
     private Historico criarHistorico(){
         Historico historico = new Historico();
@@ -130,6 +142,7 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
         return historico;
     }
     private void setarViews(){
+        iniciarProgressDialog();
         final Historico historico = criarHistorico();
 
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
@@ -138,8 +151,9 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
                 tvNomeEmpresaVizualizarHistorico.setText(dataSnapshot.child("pessoa").child(historico.getIdPessoaJuridica()).child("nome").getValue(String.class));
                 tvCpfVisualizarHistorico.setText(dataSnapshot.child("pessoaFisica").child(historico.getIdPessoaFisica()).child("cpf").getValue(String.class));
                 tvCnpjVisualizarHistorico.setText(dataSnapshot.child("pessoaJuridica").child(historico.getIdPessoaJuridica()).child("cnpj").getValue(String.class));
-                tvTotalVisualizarHistorico.setText(NumberFormat.getCurrencyInstance().format(dataSnapshot.child("historico").child(idHistorico).child("total").getValue(Double.class)));
-                tvDataCompraVizualizarHistorico.setText(dataSnapshot.child("historico").child(idHistorico).child("dataCompra").getValue(String.class));
+                tvTotalVisualizarHistorico.setText(NumberFormat.getCurrencyInstance().format(dataSnapshot.child("historicoCompra").child(idHistorico).child("total").getValue(Double.class)));
+                tvDataCompraVizualizarHistorico.setText(dataSnapshot.child("historicoCompra").child(idHistorico).child("dataFim").getValue(String.class));
+                progressDialog.dismiss();
             }
 
             @Override

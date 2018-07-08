@@ -29,7 +29,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:gravity="center"
-            android:text="Nome da empresa"
             android:textSize="22sp"
             android:textStyle="bold"/>
 

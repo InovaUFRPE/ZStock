@@ -17,7 +17,7 @@
             android:icon="@drawable/ic_negociacao"
             android:title="@string/zs_menu_lateral_negociacao" />
         <item
-            android:id="@+id/nav_meu_historico_pessoa_fisica"
+            android:id="@+id/nav_meu_historico_compra_pessoa_fisica"
             android:icon="@drawable/ic_historico"
             android:title="@string/zs_menu_lateral_historico_pessoa_fisica" />
         <item

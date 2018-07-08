@@ -39,7 +39,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.zstok.R;
 import com.zstok.historico.gui.MainHistoricoNegociacaoPessoaJuridicaActivity;
-import com.zstok.historico.gui.MainHistoricoPessoaJuridicaActivity;
+import com.zstok.historico.gui.MainHistoricoVendaPessoaJuridicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
@@ -424,7 +424,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
             }
         }
     }
-    //Método que abre a caixa de diálogo para realizar SignOut
+    //Método que exibe a caixa de diálogo para o usuário confirmar ou não a sua saída do sistema
     private void sair () {
         //Cria o gerador do AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -520,7 +520,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     }
     //Intent para a tela de histórico pessoa jurídica, onde estão os produtos
     private void abrirTelaMainHistoricoPessoaJuridicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainHistoricoPessoaJuridicaActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoVendaPessoaJuridicaActivity.class);
         startActivity(intent);
     }
 }
