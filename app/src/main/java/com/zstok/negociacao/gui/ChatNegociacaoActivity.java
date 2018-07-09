@@ -56,6 +56,7 @@ public class ChatNegociacaoActivity extends AppCompatActivity {
 
         //Carregando nome
         carregarNome();
+        carregarMensagens();
 
         //Verificando status da negociação
         verificarNegociacao();
@@ -200,6 +201,7 @@ public class ChatNegociacaoActivity extends AppCompatActivity {
 
     private void montandoArrayListMensagem(DataSnapshot dataSnapshot) {
         Iterable<DataSnapshot> referencia = dataSnapshot.child("chat").child(idNegociacao).getChildren();
+        listaMensagem.clear();
 
         for (DataSnapshot dataSnapshotChild: referencia){
             HashMap<String, String> dicionarioMensagem = new HashMap<>();
