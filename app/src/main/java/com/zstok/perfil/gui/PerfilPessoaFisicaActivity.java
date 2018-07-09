@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -226,7 +227,8 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     }
     //Método que recupera os dados do perfil
     private void recuperarDados(){
-        iniciarProgressDialog();
+        final Handler handler = iniciarProgressDialog();
+
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -235,7 +237,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
 
                 if (pessoa != null && pessoaFisica != null){
                     setInformacoesPerfil(pessoa, pessoaFisica);
-                    carregarFoto();
+                    carregarFoto(handler);
                 }
             }
 
@@ -245,12 +247,42 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
             }
         });
     }
-    //Método que inicia o progress dialog
-    private void iniciarProgressDialog() {
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
-        progressDialog.show();
+    //Iniciando progress dialog
+    private Handler iniciarProgressDialog() {
+        Object[] objects = (Object[]) Helper.iniciarProgressDialog(progressDialog, getString(R.string.zs_titulo_progress_dialog_perfil), getApplicationContext());
+
+        final Handler handler = (Handler) objects[0];
+        ProgressDialog progressDialog1 = (ProgressDialog) objects[1];
+
+        progressDialog1.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                signOut();
+            }
+        });
+        return handler;
     }
+    //Caso a conexão falhe
+    private void signOut() {
+        progressDialog.dismiss();
+        FirebaseAuth.getInstance().signOut();
+        abrirTelaLoginActivity();
+        Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_conexao_limite));
+    }
+    //Resgatando url da foto que encontra-se na camada de autenticação
+    private void carregarFoto(Handler handler){
+        if (user != null) {
+            if (user.getPhotoUrl() != null) {
+                Glide.with(this).load(user.getPhotoUrl()).into(cvPerfilPessoaFisica);
+                progressDialog.dismiss();
+            }else {
+                cvNavHeaderPessoa.setImageResource(R.drawable.ic_sem_foto);
+            }
+        }
+        handler.removeCallbacksAndMessages(null);
+        progressDialog.dismiss();
+    }
+    //Instanciando views do menu lateral
     private void instanciandoViews(){
         View headerView = navigationView.getHeaderView(0);
         tvNomeUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderNome);
@@ -259,7 +291,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     }
     private void setInformacoesPerfil(Pessoa pessoa, PessoaFisica pessoaFisica){
         tvNomePerfilFisico.setText(pessoa.getNome());
-        tvEmailPerfilFisico.setText(FirebaseController.getFirebaseAuthentication().getCurrentUser().getEmail());
+        tvEmailPerfilFisico.setText(user.getEmail());
         tvCpfPerfilFisico.setText(pessoaFisica.getCpf());
         tvTelefonePerfilFisico.setText(pessoa.getTelefone());
         tvEnderecoPerfilFisico.setText(pessoa.getEndereco());
@@ -346,23 +378,6 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
             }
         }
     }
-    /*
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
-    }
-    */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -403,7 +418,8 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     }
     //Inserindo imagem no banco
     private void inserirFoto(Uri uriFoto){
-        iniciarProgressDialog();
+        Helper.iniciarProgressDialog(progressDialog, getString(R.string.zs_titulo_progress_dialog_perfil), getApplicationContext());
+
         StorageReference ref = storageReference.child("images/perfil/" + FirebaseController.getUidUser() + ".bmp");
         ref.putFile(uriFoto).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -419,18 +435,6 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                 progressDialog.dismiss();
             }
         });
-    }
-    //Resgatando foto do Storage
-    private void carregarFoto(){
-        if (user != null) {
-            if (user.getPhotoUrl() != null) {
-                Glide.with(this).load(user.getPhotoUrl()).into(cvPerfilPessoaFisica);
-                progressDialog.dismiss();
-            }else {
-                cvNavHeaderPessoa.setImageResource(R.drawable.ic_sem_foto);
-            }
-        }
-        progressDialog.dismiss();
     }
     //Método que exibe a caixa de diálogo para o usuário confirmar ou não a sua saída do sistema
     private void sair () {

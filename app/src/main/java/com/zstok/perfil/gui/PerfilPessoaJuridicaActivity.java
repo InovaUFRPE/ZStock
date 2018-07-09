@@ -278,7 +278,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
         tvNomeFantasiaPerfilJuridico.setText(pessoa.getNome());
         tvTelefonePerfilJuridico.setText(pessoa.getTelefone());
         tvCnpjPerfilJuridico.setText(pessoaJuridica.getCnpj());
-        tvEmailPerfilJuridico.setText(FirebaseController.getFirebaseAuthentication().getCurrentUser().getEmail());
+        tvEmailPerfilJuridico.setText(user.getEmail());
         tvEnderecoPerfilJuridico.setText(pessoa.getEndereco());
         tvRazaoSocialPerfilJuridico.setText(pessoaJuridica.getRazaoSocial());
         progressDialog.dismiss();

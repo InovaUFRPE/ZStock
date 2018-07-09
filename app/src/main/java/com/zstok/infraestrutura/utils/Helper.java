@@ -1,9 +1,12 @@
 package com.zstok.infraestrutura.utils;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.widget.EditText;
@@ -12,6 +15,7 @@ import android.widget.Toast;
 
 import com.github.rtoshiro.util.format.SimpleMaskFormatter;
 import com.github.rtoshiro.util.format.text.MaskTextWatcher;
+import com.zstok.R;
 
 import java.io.ByteArrayOutputStream;
 import java.text.Normalizer;
@@ -94,11 +98,39 @@ public class Helper {
     public static String removerAcentos(String str) {
         return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
     }
-
-    //getData
+    //Resgatando data atual
     public static String getData(){
         Date data = new Date();
         SimpleDateFormat formatar = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         return formatar.format(data);
+    }
+    public static Object iniciarProgressDialog(ProgressDialog progressDialog, String titulo, Context context){
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(titulo);
+        progressDialog.show();
+
+        return delimitarTempoProgressDialog(progressDialog, context);
+    }
+    //Delimitando tempo do progress dialog
+    private static Object delimitarTempoProgressDialog(final ProgressDialog progressDialog, final Context context){
+        Runnable progressRunnable = new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.cancel();
+            }
+        };
+
+        Handler pdCanceller = new Handler();
+        pdCanceller.postDelayed(progressRunnable, 1000);//Tempo limite de 10 s
+
+        return objetctTemp(pdCanceller, progressDialog);
+    }
+    //Objeto temporário para auxiliar na manipulação do progress dialog
+    private static Object objetctTemp(Handler handler, ProgressDialog progressDialog){
+        Object[] object = new Object[2];
+        object[0] = handler;
+        object[1] = progressDialog;
+
+        return object;
     }
 }
