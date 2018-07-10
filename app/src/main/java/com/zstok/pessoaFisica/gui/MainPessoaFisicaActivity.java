@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -42,7 +41,7 @@ import com.zstok.historico.gui.MainHistoricoCompraPessoaFisicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
-import com.zstok.negociacao.gui.MainNegociacaoActivity;
+import com.zstok.negociacao.gui.MainNegociacaoPessoaFisicaActivity;
 import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
 import com.zstok.produto.adapter.ProdutoListHolder;
 import com.zstok.produto.dominio.Produto;
@@ -166,10 +165,6 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                     case R.id.nav_meu_historico_compra_pessoa_fisica:
                         //Função abrir tela histórico de vendas
                         abrirTelaMainHistoricoVendaPessoaFisicaActivity();
-                        return true;
-                    case  R.id.nav_meu_historico_negociacao_pessoa_fisica:
-                        //Função abrir tela histórico de negociações
-                        abrirTelaMainHistoricoNegociacaoPessoaFisicacaActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -393,14 +388,9 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
         Intent intent = new Intent(getApplicationContext(), MainHistoricoCompraPessoaFisicaActivity.class);
         startActivity(intent);
     }
-    //Intent para a tela com o histórico de negociações
-    private void abrirTelaMainHistoricoNegociacaoPessoaFisicacaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainHistoricoNegociacaoPessoaFisicaActivity.class);
-        startActivity(intent);
-    }
     //Intent para a tela de negociação
     private void abrirTelaMainNegociacaoActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainNegociacaoActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainNegociacaoPessoaFisicaActivity.class);
         startActivity(intent);
     }
 }

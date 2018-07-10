@@ -121,7 +121,7 @@ public class Helper {
         };
 
         Handler pdCanceller = new Handler();
-        pdCanceller.postDelayed(progressRunnable, 1000);//Tempo limite de 10 s
+        pdCanceller.postDelayed(progressRunnable, 15000);//Tempo limite de 15s
 
         return objetctTemp(pdCanceller, progressDialog);
     }

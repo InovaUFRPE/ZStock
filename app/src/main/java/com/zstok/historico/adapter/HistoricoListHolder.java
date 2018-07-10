@@ -16,7 +16,6 @@ public class HistoricoListHolder extends RecyclerView.ViewHolder implements View
     public View linearLayout;
     private HistoricoListHolder.ClickListener itemClickListener;
 
-
     public HistoricoListHolder(final View itemView) {
         super(itemView);
 

@@ -44,7 +44,7 @@ import com.zstok.historico.gui.MainHistoricoCompraPessoaFisicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
-import com.zstok.negociacao.gui.MainNegociacaoActivity;
+import com.zstok.negociacao.gui.MainNegociacaoPessoaFisicaActivity;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.pessoaFisica.dominio.PessoaFisica;
 import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
@@ -58,6 +58,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
 
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int GALERY_REQUEST_CODE = 71;
+    private static final int PERMISSION_REQUEST = 0;
 
     private AlertDialog alertaSair;
 
@@ -87,6 +88,9 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         setContentView(R.layout.activity_perfil_pessoa_fisica);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Solicitando permissão ao usuário, caso o mesmo ainda não tenha permitido a solicitação
+        permissaoGravarLerArquivos();
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -124,9 +128,6 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         //Carregar dados do menu lateral
         setDadosMenuLateral();
 
-        //Solicitando permissão ao usuário, caso o mesmo ainda não tenha permitido a solicitação
-        permissaoGravarLerArquivos();
-
         //Recuperando dados do usuário do banco
         recuperarDados();
 
@@ -151,9 +152,6 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                         return true;
                     case R.id.nav_meu_historico_compra_pessoa_fisica:
                         abrirTelaMainHistoricoPessoaFisicaActivity();
-                        return true;
-                    case  R.id.nav_meu_historico_negociacao_pessoa_juridica:
-                        abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -310,27 +308,18 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     //Permissão para ler e gravar arquivos do celular
     private void permissaoGravarLerArquivos(){
         //Trecho adiciona permissão de ler arquivos
-        int PERMISSION_REQUEST = 0;
+        int permissionCheckRead = ContextCompat.checkSelfPermission(PerfilPessoaFisicaActivity.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE);
 
-        if(ContextCompat.checkSelfPermission(PerfilPessoaFisicaActivity.this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+        if(permissionCheckRead != PackageManager.PERMISSION_GRANTED){
             //Não tem permissão: solicitar
             if(ActivityCompat.shouldShowRequestPermissionRationale(PerfilPessoaFisicaActivity.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)){
-
+                ActivityCompat.requestPermissions(this, new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST);
             }else{
                 ActivityCompat.requestPermissions(PerfilPessoaFisicaActivity.this,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST);
-            }
-        }
-        //Trecho adiciona permissão de gravar arquivos
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST);
             }
         }
     }
@@ -376,6 +365,12 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                     break;
                 }
             }
+            case PERMISSION_REQUEST:{
+                if (!(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)){
+                    abrirTelaMainPessoaFisicaActivity();
+                    break;
+                }
+            }
         }
     }
     @Override
@@ -418,7 +413,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     }
     //Inserindo imagem no banco
     private void inserirFoto(Uri uriFoto){
-        Helper.iniciarProgressDialog(progressDialog, getString(R.string.zs_titulo_progress_dialog_perfil), getApplicationContext());
+        final Handler handler = iniciarProgressDialog();
 
         StorageReference ref = storageReference.child("images/perfil/" + FirebaseController.getUidUser() + ".bmp");
         ref.putFile(uriFoto).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -432,6 +427,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                             .build();
                     user.updateProfile(profileChangeRequest);
                 }
+                handler.removeCallbacksAndMessages(null);
                 progressDialog.dismiss();
             }
         });
@@ -529,14 +525,9 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         Intent intent = new Intent(getApplicationContext(), MainHistoricoCompraPessoaFisicaActivity.class);
         startActivity(intent);
     }
-    //Intent para a tela com o histórico de negociações
-    private void abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainHistoricoNegociacaoPessoaJuridicaActivity.class);
-        startActivity(intent);
-    }
     //Intent para a tela de negociação
     private void abrirTelaMainNegociacaoActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainNegociacaoActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainNegociacaoPessoaFisicaActivity.class);
         startActivity(intent);
     }
 }

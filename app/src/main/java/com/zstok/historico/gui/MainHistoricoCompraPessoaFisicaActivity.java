@@ -33,7 +33,7 @@ import com.zstok.historico.adapter.HistoricoListHolder;
 import com.zstok.historico.dominio.Historico;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
-import com.zstok.negociacao.gui.MainNegociacaoActivity;
+import com.zstok.negociacao.gui.MainNegociacaoPessoaFisicaActivity;
 import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
 import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
 
@@ -112,9 +112,6 @@ public class MainHistoricoCompraPessoaFisicaActivity extends AppCompatActivity
                         return true;
                     case R.id.nav_meu_historico_compra_pessoa_fisica:
                         drawer.closeDrawers();
-                        return true;
-                    case  R.id.nav_meu_historico_negociacao_pessoa_fisica:
-                        abrirTelaMainHistoricoNegociacaoPessoaFisicaActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -274,12 +271,7 @@ public class MainHistoricoCompraPessoaFisicaActivity extends AppCompatActivity
     }
     //Intent para a tela de negociação
     private void abrirTelaMainNegociacaoActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainNegociacaoActivity.class);
-        startActivity(intent);
-    }
-    //Intent para a tela com o histórico de negociações
-    private void abrirTelaMainHistoricoNegociacaoPessoaFisicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainHistoricoNegociacaoPessoaFisicaActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainNegociacaoPessoaFisicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de login

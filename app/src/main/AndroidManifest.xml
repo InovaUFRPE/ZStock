@@ -40,7 +40,7 @@
             android:label="@string/title_activity_perfil_pessoa_juridica"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".pessoaJuridica.gui.MainPessoaJuridicaActivity"
+            android:name=".negociacao.gui.MainNegociacaoPessoaJuridicaActivity"
             android:label="@string/title_activity_main_pessoa_juridica"
             android:theme="@style/AppTheme" />
         <activity android:name=".perfil.gui.AlterarEmailPessoaActivity" />
@@ -73,7 +73,7 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".historico.gui.VisualizarHistoricoCompraActivity" />
         <activity
-            android:name=".negociacao.gui.MainNegociacaoActivity"
+            android:name=".negociacao.gui.MainNegociacaoPessoaFisicaActivity"
             android:label="@string/title_activity_negociacao"
             android:theme="@style/AppTheme" />
         <activity android:name=".negociacao.gui.CarrinhoNegociacaoActivity" />

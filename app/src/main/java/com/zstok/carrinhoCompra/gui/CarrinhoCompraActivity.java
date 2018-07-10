@@ -40,7 +40,7 @@ import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.itemcompra.dominio.ItemCompra;
 import com.zstok.negociacao.dominio.Negociacao;
-import com.zstok.negociacao.gui.MainNegociacaoActivity;
+import com.zstok.negociacao.gui.MainNegociacaoPessoaFisicaActivity;
 import com.zstok.negociacao.negocio.NegociacaoServices;
 import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
 import com.zstok.pessoa.dominio.Pessoa;
@@ -668,7 +668,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     }
     //Intent para a tela de negociacao
     private void abrirTelaMainNegocicaoActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainNegociacaoActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainNegociacaoPessoaFisicaActivity.class);
         startActivity(intent);
         finish();
     }

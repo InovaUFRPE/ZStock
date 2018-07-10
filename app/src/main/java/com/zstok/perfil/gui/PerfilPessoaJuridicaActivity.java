@@ -45,7 +45,7 @@ import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.pessoaJuridica.dominio.PessoaJuridica;
-import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
+import com.zstok.negociacao.gui.MainNegociacaoPessoaJuridicaActivity;
 import com.zstok.produto.gui.MeusProdutosActivity;
 
 import java.io.IOException;
@@ -57,6 +57,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
 
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int GALERY_REQUEST_CODE = 71;
+    private static final int PERMISSION_REQUEST = 0;
 
     private AlertDialog alertaSair;
 
@@ -86,6 +87,9 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
         setContentView(R.layout.activity_perfil_pessoa_juridica);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Solicitando permissão ao usuário
+        permissaoGravarLerArquivos();
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -125,9 +129,6 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
 
         //Recuperando dados do perfil
         recuperarDados();
-
-        //Solicitando permissão ao usuário
-        permissaoGravarLerArquivos();
 
         //Máscaras cnpj e telfone
         Helper.mascaraCnpj(tvCnpjPerfilJuridico);
@@ -208,10 +209,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
                         return true;
                     case R.id.nav_meu_historico_vendas_pessoa_juridica:
                         //Função abrir tela histórico
-                        abrirTelaMainHistoricoPessoaJuridicaActivity();
-                        return true;
-                    case  R.id.nav_meu_historico_negociacao_pessoa_juridica:
-                        abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity();
+                        abrirTelaMainHistoricoVendasPessoaJuridicaActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -293,30 +291,21 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
         tvNomeUsuarioNavHeader.setText(user.getDisplayName());
         tvEmailUsuarioNavHeader.setText(user.getEmail());
     }
-    //Permissão para gravar e ler arquivos do celular
+    //Permissão para ler e gravar arquivos do celular
     private void permissaoGravarLerArquivos(){
         //Trecho adiciona permissão de ler arquivos
-        int PERMISSION_REQUEST = 0;
+        int permissionCheckRead = ContextCompat.checkSelfPermission(PerfilPessoaJuridicaActivity.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE);
 
-        if(ContextCompat.checkSelfPermission(PerfilPessoaJuridicaActivity.this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+        if(permissionCheckRead != PackageManager.PERMISSION_GRANTED){
             //Não tem permissão: solicitar
             if(ActivityCompat.shouldShowRequestPermissionRationale(PerfilPessoaJuridicaActivity.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)){
-
+                ActivityCompat.requestPermissions(this, new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST);
             }else{
                 ActivityCompat.requestPermissions(PerfilPessoaJuridicaActivity.this,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST);
-            }
-        }
-        //Trecho adiciona permissão de gravar arquivos
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST);
             }
         }
     }
@@ -422,6 +411,12 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
                     break;
                 }
             }
+            case PERMISSION_REQUEST:{
+                if (!(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)){
+                    abrirTelaMainPessoaJuridicaActivity();
+                    break;
+                }
+            }
         }
     }
     //Método que exibe a caixa de diálogo para o usuário confirmar ou não a sua saída do sistema
@@ -505,7 +500,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     }
     //Intent para a tela main
     private void abrirTelaMainPessoaJuridicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainPessoaJuridicaActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainNegociacaoPessoaJuridicaActivity.class);
         startActivity(intent);
     }
     //Intent meus produtos
@@ -513,13 +508,8 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
         Intent intent = new Intent(getApplicationContext(), MeusProdutosActivity.class);
         startActivity(intent);
     }
-    //Intent para a tela com o histórico de negociações
-    private void abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainHistoricoNegociacaoPessoaJuridicaActivity.class);
-        startActivity(intent);
-    }
     //Intent para a tela de histórico pessoa jurídica, onde estão os produtos
-    private void abrirTelaMainHistoricoPessoaJuridicaActivity(){
+    private void abrirTelaMainHistoricoVendasPessoaJuridicaActivity(){
         Intent intent = new Intent(getApplicationContext(), MainHistoricoVendaPessoaJuridicaActivity.class);
         startActivity(intent);
     }

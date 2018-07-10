@@ -33,8 +33,9 @@ import com.zstok.historico.adapter.HistoricoListHolder;
 import com.zstok.historico.dominio.Historico;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
+import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
-import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
+import com.zstok.negociacao.gui.MainNegociacaoPessoaJuridicaActivity;
 import com.zstok.produto.gui.MeusProdutosActivity;
 
 import java.text.NumberFormat;
@@ -114,9 +115,6 @@ public class MainHistoricoVendaPessoaJuridicaActivity extends AppCompatActivity
                         //Função abrir tela histórico pessoa jurídica
                         drawer.closeDrawers();
                         return true;
-                    case  R.id.nav_meu_historico_negociacao_pessoa_juridica:
-                        abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity();
-                        return true;
                     case R.id.nav_sair:
                         sair();
                         return true;
@@ -164,7 +162,6 @@ public class MainHistoricoVendaPessoaJuridicaActivity extends AppCompatActivity
 
                 @Override
                 protected void populateViewHolder(final HistoricoListHolder viewHolder, final Historico model, int position) {
-                    getItemCount();
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
 
@@ -258,7 +255,7 @@ public class MainHistoricoVendaPessoaJuridicaActivity extends AppCompatActivity
     }
     //Intent para a tela onde estará as negociações
     private void abrirTelaMainPessoaJuridicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainPessoaJuridicaActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainNegociacaoPessoaJuridicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de perfil pessoa jurídica
@@ -277,11 +274,6 @@ public class MainHistoricoVendaPessoaJuridicaActivity extends AppCompatActivity
         intent.putExtra("idHistorico", historico.getIdHistorico());
         intent.putExtra("idEmpresa", historico.getIdPessoaJuridica());
         intent.putExtra("idPessoaFisica", historico.getIdPessoaFisica());
-        startActivity(intent);
-    }
-    //Intent para a tela com o histórico de negociações
-    private void abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainHistoricoNegociacaoPessoaJuridicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de login

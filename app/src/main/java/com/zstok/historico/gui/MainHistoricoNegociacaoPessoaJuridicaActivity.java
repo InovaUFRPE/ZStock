@@ -33,7 +33,7 @@ import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.negociacao.adapter.NegociacaoListHolder;
 import com.zstok.negociacao.dominio.Negociacao;
 import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
-import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
+import com.zstok.negociacao.gui.MainNegociacaoPessoaJuridicaActivity;
 import com.zstok.produto.gui.MeusProdutosActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -112,10 +112,6 @@ public class MainHistoricoNegociacaoPessoaJuridicaActivity extends AppCompatActi
                     case R.id.nav_meu_historico_vendas_pessoa_juridica:
                         //Abrir a tela de histórico vendas
                         abrirTelaMainHistoricoVendaPessoaJuridicaActivity();
-                        return true;
-                    case R.id.nav_meu_historico_negociacao_pessoa_juridica:
-                        //Fechar menu lateral
-                        drawer.closeDrawers();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -250,7 +246,7 @@ public class MainHistoricoNegociacaoPessoaJuridicaActivity extends AppCompatActi
     }
     //Intent para a tela de negociação
     private void abrirTelaMainPessoaJuridicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainPessoaJuridicaActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainNegociacaoPessoaJuridicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de historico vendas

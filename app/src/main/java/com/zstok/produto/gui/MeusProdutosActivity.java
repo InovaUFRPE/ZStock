@@ -12,7 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -39,7 +38,7 @@ import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
-import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
+import com.zstok.negociacao.gui.MainNegociacaoPessoaJuridicaActivity;
 import com.zstok.produto.adapter.ProdutoListHolder;
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
@@ -161,10 +160,6 @@ public class MeusProdutosActivity extends AppCompatActivity
                     case R.id.nav_meu_historico_vendas_pessoa_juridica:
                         //Função abrir tela histórico de vendas
                         abrirTelaMainHistoricoVendaPessoaJuridicaActivity();
-                        return true;
-                    case R.id.nav_meu_historico_negociacao_pessoa_juridica:
-                        //Função abrir tela histórico de negociações
-                        abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -378,17 +373,12 @@ public class MeusProdutosActivity extends AppCompatActivity
     }
     //Intent para a tela onde estará as negociações
     private void abrirTelaMainPessoaJuridicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainPessoaJuridicaActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainNegociacaoPessoaJuridicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de perfil pessoa jurídica
     private void abrirTelaPerfilPessoaJuridicaActivity() {
         Intent intent = new Intent(getApplicationContext(), PerfilPessoaJuridicaActivity.class);
-        startActivity(intent);
-    }
-    //Intent para a tela de login
-    private void abrirTelaLoginActivity(){
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de editar produto
@@ -402,9 +392,9 @@ public class MeusProdutosActivity extends AppCompatActivity
         Intent intent = new Intent(getApplicationContext(), MainHistoricoVendaPessoaJuridicaActivity.class);
         startActivity(intent);
     }
-    //Intent para a tela de histórico negociação pessoa jurídica
-    private void abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainHistoricoNegociacaoPessoaJuridicaActivity.class);
+    //Intent para a tela de login
+    private void abrirTelaLoginActivity(){
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(intent);
     }
 }

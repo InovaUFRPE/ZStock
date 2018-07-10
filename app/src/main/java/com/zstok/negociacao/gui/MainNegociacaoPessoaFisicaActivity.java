@@ -1,4 +1,4 @@
-package com.zstok.pessoaJuridica.gui;
+package com.zstok.negociacao.gui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,39 +28,38 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
-import com.zstok.historico.gui.MainHistoricoNegociacaoPessoaJuridicaActivity;
-import com.zstok.historico.gui.MainHistoricoVendaPessoaJuridicaActivity;
+import com.zstok.historico.gui.MainHistoricoNegociacaoPessoaFisicaActivity;
+import com.zstok.historico.gui.MainHistoricoCompraPessoaFisicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
-import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.negociacao.adapter.NegociacaoListHolder;
 import com.zstok.negociacao.dominio.Negociacao;
-import com.zstok.negociacao.gui.ChatNegociacaoActivity;
-import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
-import com.zstok.produto.gui.MeusProdutosActivity;
+import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
+import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainPessoaJuridicaActivity extends AppCompatActivity
+public class MainNegociacaoPessoaFisicaActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private NavigationView navigationView;
-    private AlertDialog alertaSair;
-
-    private FirebaseUser user;
-
+    private CircleImageView cvNavHeaderPessoa;
     private TextView tvNomeUsuarioNavHeader;
     private TextView tvEmailUsuarioNavHeader;
-    private CircleImageView cvNavHeaderPessoa;
+
+    private NavigationView navigationView;
+
+    private AlertDialog alertaSair;
 
     private RecyclerView recylerViewNegocicao;
     private FirebaseRecyclerAdapter adapterNegociacao;
     private RecyclerView.LayoutManager layoutManager;
 
+    private FirebaseUser user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_pessoa_juridica);
+        setContentView(R.layout.activity_main_negociacao);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -74,45 +73,42 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
         user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
 
         //Instanciando recyler view
-        recylerViewNegocicao = findViewById(R.id.recyclerNegociacaoPessoaJuridica);
+        recylerViewNegocicao = findViewById(R.id.recyclerNegociacaoPessoaFisica);
         recylerViewNegocicao.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(MainPessoaJuridicaActivity.this);
+        layoutManager = new LinearLayoutManager(MainNegociacaoPessoaFisicaActivity.this);
         recylerViewNegocicao.setLayoutManager(layoutManager);
 
-        //Criando adapter negociacao
+        //Criando adapter
         criarAdapterNegociacao();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         //Instanciando views do menu lateral
-        instanciandoView();
+        instanciandoViews();
 
-        //Carregando informações do menu lateral
+        //Setando dados do menu lateral
         setDadosMenuLateral();
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.nav_meu_perfil_pessoa_juridica:
-                        abrirTelaPerfilPessoaJuridicaActivity();
+                    case R.id.nav_meu_perfil_pessoa_fisica:
+                        //Abrir a tela de perfil
+                        abrirTelaPerfilPessoaFisicaActivity();
                         return true;
-                    case R.id.nav_negociacao_pessoa_juridica:
-                        //Função abrir tela negociacao
+                    case R.id.nav_negociacao_pessoa_fisica:
+                        //Fechando menu lateral
                         drawer.closeDrawers();
                         return true;
-                    case R.id.nav_produtos_pessoa_juridica:
-                        //Função abrir tela produtos
-                        abrirTelaMeusProdutosActivity();
+                    case R.id.nav_produtos_pessoa_fisica:
+                        //Abrir a tela main
+                        abrirTelaMainPessoaFisicaActivity();
                         return true;
-                    case R.id.nav_meu_historico_vendas_pessoa_juridica:
-                        //Função abrir tela histórico de vendas
-                        abrirTelaHistoricoVendaPessoaJuridicaActivity();
-                        return true;
-                    case  R.id.nav_meu_historico_negociacao_pessoa_juridica:
-                        //Função abrir tela histórico de negociações
-                        abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity();
+                    case R.id.nav_meu_historico_compra_pessoa_fisica:
+                        //Abrir a tela histórico de compras
+                        abrirTelaMainHistoricoCompraPessoaFisicaActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -123,10 +119,27 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
             }
         });
     }
+    //Método que instancia as views
+    private void instanciandoViews(){
+        View headerView = navigationView.getHeaderView(0);
+        tvNomeUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderNome);
+        tvEmailUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderEmail);
+        cvNavHeaderPessoa = headerView.findViewById(R.id.cvNavHeaderPessoa);
+    }
+    //Método que carrega nome e email do usuário e seta nas views do menu lateral
+    private void setDadosMenuLateral(){
+        if (user.getPhotoUrl() != null){
+            Glide.with(MainNegociacaoPessoaFisicaActivity.this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
+        }else {
+            cvNavHeaderPessoa.setImageResource(R.drawable.ic_sem_foto);
+        }
+        tvNomeUsuarioNavHeader.setText(user.getDisplayName());
+        tvEmailUsuarioNavHeader.setText(user.getEmail());
+    }
     //Montando adapter e jogando no list holder
     private void criarAdapterNegociacao() {
         final DatabaseReference databaseReference = FirebaseController.getFirebase().child("negociacao");
-        Query queryAdapter = databaseReference.orderByChild("idPessoaJuridica").equalTo(FirebaseController.getUidUser());
+        Query queryAdapter = databaseReference.orderByChild("idPessoaFisica").equalTo(FirebaseController.getUidUser());
         if (queryAdapter != null) {
             adapterNegociacao = new FirebaseRecyclerAdapter<Negociacao, NegociacaoListHolder>(
                     Negociacao.class,
@@ -145,7 +158,7 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
                     }else {
                         viewHolder.tvCardViewDataFim.setText(model.getDataFim());
                     }
-                    resgatarCpfPessoaFisica(viewHolder, model);
+                    regatarNomeEmpresa(viewHolder, model);
                 }
 
                 @NonNull
@@ -166,13 +179,12 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
         }
     }
 
-    private void resgatarCpfPessoaFisica(final NegociacaoListHolder viewHolder, final Negociacao model) {
+    private void regatarNomeEmpresa(final NegociacaoListHolder viewHolder, final Negociacao model) {
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String cpf = dataSnapshot.child("pessoaFisica").child(model.getIdPessoaFisica()).child("cpf").getValue(String.class);
-                Helper.mascaraCpf(viewHolder.tvCardViewNomeCpfEmpresa);
-                viewHolder.tvCardViewNomeCpfEmpresa.setText(cpf);
+                String nomeEmpresa = dataSnapshot.child("pessoa").child(model.getIdPessoaJuridica()).child("nome").getValue(String.class);
+                viewHolder.tvCardViewNomeCpfEmpresa.setText(nomeEmpresa);
             }
 
             @Override
@@ -180,24 +192,6 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
 
             }
         });
-    }
-
-    //Instanciando views do navigation header
-    private void instanciandoView(){
-        View headerView = navigationView.getHeaderView(0);
-        tvNomeUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderNome);
-        tvEmailUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderEmail);
-        cvNavHeaderPessoa = headerView.findViewById(R.id.cvNavHeaderPessoa);
-    }
-    //Método que carrega nome e email do usuário e seta nas views do menu lateral
-    private void setDadosMenuLateral(){
-        if (user.getPhotoUrl() != null) {
-            Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
-        }else {
-            cvNavHeaderPessoa.setImageResource(R.drawable.ic_sem_foto);
-        }
-        tvNomeUsuarioNavHeader.setText(user.getDisplayName());
-        tvEmailUsuarioNavHeader.setText(user.getEmail());
     }
     //Método que exibe a caixa de diálogo para o usuário confirmar ou não a sua saída do sistema
     private void sair () {
@@ -231,6 +225,8 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -244,35 +240,31 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    //Intent para a tela dos produtos cadastrados
-    private void abrirTelaMeusProdutosActivity(){
-        Intent intent = new Intent(getApplicationContext(), MeusProdutosActivity.class);
-        startActivity(intent);
-    }
-    //Intent para a tela de perfil da pessoa jurídica
-    private void abrirTelaPerfilPessoaJuridicaActivity() {
-        Intent intent = new Intent(getApplicationContext(), PerfilPessoaJuridicaActivity.class);
-        startActivity(intent);
-    }
-    //Intent para a tela de histórico de vendas
-    private void abrirTelaHistoricoVendaPessoaJuridicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainHistoricoVendaPessoaJuridicaActivity.class);
-        startActivity(intent);
-    }
     //Intent para a tela de chat
     private void abrirTelaChatNegociacaoActivity(String idNegociacao){
         Intent intent = new Intent(getApplicationContext(), ChatNegociacaoActivity.class);
         intent.putExtra("idNegociacao", idNegociacao);
         startActivity(intent);
     }
-    //Intent para a tela com o histórico de negociações
-    private void abrirTelaMainHistoricoNegociacaoPessoaJuridicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainHistoricoNegociacaoPessoaJuridicaActivity.class);
+    //Intent para a tela de perfil pessoa física
+    private void abrirTelaPerfilPessoaFisicaActivity() {
+        Intent intent = new Intent(getApplicationContext(), PerfilPessoaFisicaActivity.class);
+        startActivity(intent);
+    }
+    //Intent para a tela de histórico pessoa física
+    private void abrirTelaMainHistoricoCompraPessoaFisicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoCompraPessoaFisicaActivity.class);
+        startActivity(intent);
+    }
+    //Intent para a tela main pessoa física, onde estão os produtos
+    private void abrirTelaMainPessoaFisicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainPessoaFisicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de login
-    private void abrirTelaLoginActivity(){
+    private void abrirTelaLoginActivity() {
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(intent);
+        finish();
     }
 }

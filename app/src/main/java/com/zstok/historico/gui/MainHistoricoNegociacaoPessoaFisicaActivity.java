@@ -105,10 +105,6 @@ public class MainHistoricoNegociacaoPessoaFisicaActivity extends AppCompatActivi
                         //Abrir a tela main
                         abrirTelaMainPessoaFisicaActivity();
                         return true;
-                    case R.id.nav_meu_historico_negociacao_pessoa_fisica:
-                        //Fechar menu lateral
-                        drawer.closeDrawers();
-                        return true;
                     case R.id.nav_meu_historico_compra_pessoa_fisica:
                         //Abrir a tela de negociações
                         abrirTelaMainHistoricoCompraPessoaFisicaActivity();
