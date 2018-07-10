@@ -29,6 +29,7 @@ import com.zstok.historico.gui.MainHistoricoNegociacaoPessoaFisicaActivity;
 import com.zstok.historico.negocio.HistoricoServices;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
+import com.zstok.infraestrutura.utils.MoneyTextWatcher;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.itemcompra.dominio.ItemCompra;
 import com.zstok.negociacao.dominio.Negociacao;
@@ -302,10 +303,11 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (verificaConexao.isConected()){
                     if (validarCampo()) {
-                        double totalDesconto = Double.valueOf(Helper.removerMascara(tvTotalDescontoCaixaDialogo.getText().toString()));
+                        double totalDesconto = MoneyTextWatcher.convertToBigDecimal(tvTotalDescontoCaixaDialogo.getText().toString()).doubleValue();
                         NegociacaoServices.inserirTotal(idNegociacao, totalDesconto);
                     }
                 }
+                resgatandoTotal();
             }
         });
     }
@@ -317,8 +319,8 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
         btnGerarDescontoCaixaDialogo = mView.findViewById(R.id.btnGerarDescontoCaixaDialogo);
     }
     //Setando informações iniciais
-    private void setInformacoesIniciais(double desconto) {
-        double total = Double.valueOf(tvTotalCarrinhoNegociacao.getText().toString());
+    private void setInformacoesIniciais(final double desconto) {
+        double total = MoneyTextWatcher.convertToBigDecimal(tvTotalCarrinhoNegociacao.getText().toString()).doubleValue();
         double totalDesconto = total - (total*(desconto/100));
         tvTotalCaixaDialogo.setText(NumberFormat.getCurrencyInstance().format(total));
         tvTotalDescontoCaixaDialogo.setText(NumberFormat.getCurrencyInstance().format(totalDesconto));
@@ -342,7 +344,11 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if (!(edtDescontoCaixaDialogo.getText().toString().isEmpty() || edtDescontoCaixaDialogo.getText().toString().trim().length() == 0)){
-                    setInformacoesIniciais(Double.valueOf(edtDescontoCaixaDialogo.getText().toString()));
+                    if(!(Double.valueOf(edtDescontoCaixaDialogo.getText().toString())> 100)){
+                        setInformacoesIniciais(Double.valueOf(edtDescontoCaixaDialogo.getText().toString()));
+                    }else{
+                        setInformacoesIniciais(100.00);
+                    }
                 }else {
                     tvTotalDescontoCaixaDialogo.setText(tvTotalCaixaDialogo.getText().toString());
                 }

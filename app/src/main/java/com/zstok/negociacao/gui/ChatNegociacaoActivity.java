@@ -58,6 +58,7 @@ public class ChatNegociacaoActivity extends AppCompatActivity {
         carregarNome();
         carregarMensagens();
 
+
         //Verificando status da negociação
         verificarNegociacao();
 

@@ -32,6 +32,7 @@ import com.zstok.historico.gui.MainHistoricoNegociacaoPessoaJuridicaActivity;
 import com.zstok.historico.gui.MainHistoricoVendaPessoaJuridicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
+import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.negociacao.adapter.NegociacaoListHolder;
 import com.zstok.negociacao.dominio.Negociacao;
 import com.zstok.negociacao.gui.ChatNegociacaoActivity;
@@ -170,6 +171,7 @@ public class MainPessoaJuridicaActivity extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String cpf = dataSnapshot.child("pessoaFisica").child(model.getIdPessoaFisica()).child("cpf").getValue(String.class);
+                Helper.mascaraCpf(viewHolder.tvCardViewNomeCpfEmpresa);
                 viewHolder.tvCardViewNomeCpfEmpresa.setText(cpf);
             }
 
