@@ -23,6 +23,11 @@
         android:textSize="18sp"
         android:gravity="center"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/jabuticaba"/>
+
     <EditText
         android:id="@+id/edtQuantidadeDesejadaDialogoCompra"
         android:inputType="number"

@@ -150,7 +150,7 @@ public class MainHistoricoVendaPessoaJuridicaActivity extends AppCompatActivity
     //Método que cria o adapter de histórico
     private void verificarQuery(){
         iniciarProgressDialog();
-        DatabaseReference referenciaHistorico = FirebaseController.getFirebase().child("historicoCompra");
+        DatabaseReference referenciaHistorico = FirebaseController.getFirebase().child("historico");
         final Query queryHistoricoCompra = referenciaHistorico.orderByChild("idPessoaJuridica").equalTo(FirebaseController.getUidUser());
         //Verificando query
         queryHistoricoCompra.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -170,7 +170,7 @@ public class MainHistoricoVendaPessoaJuridicaActivity extends AppCompatActivity
             }
         });
     }
-    //criando adapter
+    //Criando adapter
     private void criarAdapterHistoricoVendas(final Query queryHistoricoCompra) {
         adapterHistorico = new FirebaseRecyclerAdapter<Historico, HistoricoListHolder>(
                 Historico.class,
@@ -206,7 +206,6 @@ public class MainHistoricoVendaPessoaJuridicaActivity extends AppCompatActivity
         };
         recyclerViewHistorico.setAdapter(adapterHistorico);
     }
-
     //Resgatando o cpf envolvido na venda
     private void resgatarCpfPessoaFisica(final HistoricoListHolder viewHolder, final Historico model) {
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
@@ -223,7 +222,6 @@ public class MainHistoricoVendaPessoaJuridicaActivity extends AppCompatActivity
             }
         });
     }
-
     //Método que exibe a caixa de diálogo para o usuário confirmar ou não a sua saída do sistema
     private void sair () {
         //Cria o gerador do AlertDialog
@@ -288,7 +286,7 @@ public class MainHistoricoVendaPessoaJuridicaActivity extends AppCompatActivity
     }
     //Intent para a tela visualizar histórico
     private void abrirTelaVisualizarHistoricoActivity(Historico historico){
-        Intent intent = new Intent(getApplicationContext(), VisualizarHistoricoCompraActivity.class);
+        Intent intent = new Intent(getApplicationContext(), VisualizarHistoricoActivity.class);
         intent.putExtra("idHistorico", historico.getIdHistorico());
         intent.putExtra("idEmpresa", historico.getIdPessoaJuridica());
         intent.putExtra("idPessoaFisica", historico.getIdPessoaFisica());

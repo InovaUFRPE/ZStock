@@ -25,7 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
 import com.zstok.historico.adapter.ItemCompraListHolder;
 import com.zstok.historico.dominio.Historico;
-import com.zstok.historico.gui.MainHistoricoNegociacaoPessoaFisicaActivity;
+import com.zstok.historico.gui.MainHistoricoCompraPessoaFisicaActivity;
 import com.zstok.historico.negocio.HistoricoServices;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
@@ -53,6 +53,8 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
     private RecyclerView recyclerViewItens;
 
     private VerificaConexao verificaConexao;
+
+    private AlertDialog alertaDesconto;
 
     private String idNegociacao;
 
@@ -100,7 +102,7 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                //Implementar métodos de remoção
             }
 
             @Override
@@ -281,7 +283,7 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
         setarInformacoesViews();
 
         //Gerando
-        AlertDialog alertaDesconto = builder.create();
+        alertaDesconto = builder.create();
         alertaDesconto.show();
 
         clickGerarDesconto();
@@ -304,7 +306,11 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
                 if (verificaConexao.isConected()){
                     if (validarCampo()) {
                         double totalDesconto = MoneyTextWatcher.convertToBigDecimal(tvTotalDescontoCaixaDialogo.getText().toString()).doubleValue();
-                        NegociacaoServices.inserirTotal(idNegociacao, totalDesconto);
+                        if (NegociacaoServices.inserirTotal(idNegociacao, totalDesconto)){
+                            alertaDesconto.dismiss();
+                        }else {
+                            Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
+                        }
                     }
                 }
                 resgatandoTotal();
@@ -387,7 +393,7 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
     //Finalizando negociação
     private void finalizarNegociacao() {
         if (NegociacaoServices.limparNegociacao(idNegociacao)) {
-            abrirTelaMainHistoricoNegociacaoPessoaFisicaActivity();
+            abrirTelaMainHistoricoPessoaFisicaActivity();
             Helper.criarToast(getApplicationContext(), getString(R.string.zs_negociacao_finalizada_sucesso));
         }else {
             Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
@@ -489,8 +495,8 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
         }
     }
     //Intent para a tela main negociacao da pessoa física
-    private void abrirTelaMainHistoricoNegociacaoPessoaFisicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainHistoricoNegociacaoPessoaFisicaActivity.class);
+    private void abrirTelaMainHistoricoPessoaFisicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoCompraPessoaFisicaActivity.class);
         startActivity(intent);
         finish();
     }

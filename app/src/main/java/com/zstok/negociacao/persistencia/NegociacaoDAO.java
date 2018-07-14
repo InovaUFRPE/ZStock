@@ -17,8 +17,16 @@ public class NegociacaoDAO {
         FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("quantidadeEstoque").setValue(produto.getQuantidadeEstoque() - itemCompra.getQuantidade());
     }
 
-    public static void inserirTotal(String idNegociacao, double novoTotal){
-        FirebaseController.getFirebase().child("negociacao").child(idNegociacao).child("total").setValue(novoTotal);
+    public static boolean inserirTotal(String idNegociacao, double novoTotal){
+        boolean verificador;
+
+        try{
+            FirebaseController.getFirebase().child("negociacao").child(idNegociacao).child("total").setValue(novoTotal);
+            verificador = true;
+        }catch (DatabaseException e){
+            verificador = false;
+        }
+        return verificador;
     }
 
     public static boolean alterarItemCarrinho(Produto produto, String idNegociacao, String chave){

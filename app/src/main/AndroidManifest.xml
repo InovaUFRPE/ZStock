@@ -71,21 +71,13 @@
             android:name=".historico.gui.MainHistoricoVendaPessoaJuridicaActivity"
             android:label="@string/zs_menu_lateral_historico_pessoa_juridica"
             android:theme="@style/AppTheme" />
-        <activity android:name=".historico.gui.VisualizarHistoricoCompraActivity" />
+        <activity android:name=".historico.gui.VisualizarHistoricoActivity" />
         <activity
             android:name=".negociacao.gui.MainNegociacaoPessoaFisicaActivity"
             android:label="@string/title_activity_negociacao"
             android:theme="@style/AppTheme" />
         <activity android:name=".negociacao.gui.CarrinhoNegociacaoActivity" />
         <activity android:name=".negociacao.gui.ChatNegociacaoActivity" />
-        <activity
-            android:name=".historico.gui.MainHistoricoNegociacaoPessoaFisicaActivity"
-            android:label="@string/title_activity_main_historico_negociacao_pessoa_fisica"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".historico.gui.MainHistoricoNegociacaoPessoaJuridicaActivity"
-            android:label="@string/title_activity_main_historico_negociacao_pessoa_juridica"
-            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

@@ -249,7 +249,6 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     private void verificaCompra(DataSnapshot dataSnapshot){
        if (verificaQuantidade(dataSnapshot)){
            reduzirQuantidade(dataSnapshot);
-           //HistoricoServices.inserirHistoricoCompra(dataSnapshot);
            finalizarCompra(dataSnapshot);
        }
     }
@@ -531,6 +530,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                     tvTotalCardViewItemCompra.setText(NumberFormat.getCurrencyInstance().format(total));
                 }else{
                     Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_carrinho_vazio));
+                    //Setar o background de carrinho vazio
                 }
             }
 

@@ -86,7 +86,7 @@ public class MainHistoricoCompraPessoaFisicaActivity extends AppCompatActivity
         recyclerViewHistorico.setLayoutManager(layoutManager);
 
         //Criando adapter
-        criarAdapterHistorico();
+        verificarQuery();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -146,48 +146,65 @@ public class MainHistoricoCompraPessoaFisicaActivity extends AppCompatActivity
         progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_carregar_historico_compra));
         progressDialog.show();
     }
-    //Método que cria o adapter de histórico
-    private void criarAdapterHistorico(){
+    //Verificando query
+    private void verificarQuery(){
         iniciarProgressDialog();
-        DatabaseReference referenciaHistorico = FirebaseController.getFirebase().child("historicoCompra");
-        Query queryHistoricoCompra = referenciaHistorico.orderByChild("idPessoaFisica").equalTo(FirebaseController.getUidUser());
+        DatabaseReference referenciaHistorico = FirebaseController.getFirebase().child("historico");
+        final Query queryHistoricoCompra = referenciaHistorico.orderByChild("idPessoaFisica").equalTo(FirebaseController.getUidUser());
 
-        if (queryHistoricoCompra != null) {
-            adapterHistorico = new FirebaseRecyclerAdapter<Historico, HistoricoListHolder>(
-                    Historico.class,
-                    R.layout.card_historico,
-                    HistoricoListHolder.class,
-                    queryHistoricoCompra) {
-
-                @Override
-                protected void populateViewHolder(final HistoricoListHolder viewHolder, final Historico model, int position) {
-                    getItemCount();
-                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
-                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                    viewHolder.tvCardViewTotalCompra.setText(NumberFormat.getCurrencyInstance().format(model.getTotal()));
-                    viewHolder.tvCardViewDataCompra.setText(String.valueOf(model.getDataFim()));
-
-                    //Método que resgata o cnpj da pessoa jurídica
-                    resgatarCpnjPessoaJuridica(viewHolder, model);
+        queryHistoricoCompra.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    criarAdapterHistorico(queryHistoricoCompra);
+                }else {
+                    Helper.criarToast(getApplicationContext(), "HISTÓRICO VAZIO!");
+                    progressDialog.dismiss();
                 }
+            }
 
-                @NonNull
-                @Override
-                public HistoricoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
-                    final HistoricoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
-                    viewHolder.setOnItemClickListener(new HistoricoListHolder.ClickListener() {
-                        @Override
-                        public void onItemClick(View view, int position) {
-                            Historico historico =  (Historico) adapterHistorico.getItem(position);
-                            abrirTelaVisualizarHistoricoActivity(historico);
-                        }
-                    });
-                    return viewHolder;
-                }
-            };
-            recyclerViewHistorico.setAdapter(adapterHistorico);
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
+    //Método que cria o adapter de histórico
+    private void criarAdapterHistorico(final Query queryHistoricoCompra) {
+        adapterHistorico = new FirebaseRecyclerAdapter<Historico, HistoricoListHolder>(
+                Historico.class,
+                R.layout.card_historico,
+                HistoricoListHolder.class,
+                queryHistoricoCompra) {
+
+            @Override
+            protected void populateViewHolder(final HistoricoListHolder viewHolder, final Historico model, int position) {
+                viewHolder.mainLayout.setVisibility(View.VISIBLE);
+                viewHolder.linearLayout.setVisibility(View.VISIBLE);
+                viewHolder.tvCardViewTotalCompra.setText(NumberFormat.getCurrencyInstance().format(model.getTotal()));
+                viewHolder.tvCardViewDataCompra.setText(String.valueOf(model.getDataFim()));
+
+                //Método que resgata o cnpj da pessoa jurídica
+                resgatarCpnjPessoaJuridica(viewHolder, model);
+            }
+
+            @NonNull
+            @Override
+            public HistoricoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+                final HistoricoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                viewHolder.setOnItemClickListener(new HistoricoListHolder.ClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Historico historico =  (Historico) adapterHistorico.getItem(position);
+                        abrirTelaVisualizarHistoricoActivity(historico);
+                    }
+                });
+                return viewHolder;
+            }
+        };
+        recyclerViewHistorico.setAdapter(adapterHistorico);
+    }
+
     //Resgatando o cnpj envolvido na compra
     private void resgatarCpnjPessoaJuridica(final HistoricoListHolder viewHolder, final Historico model) {
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
@@ -204,7 +221,6 @@ public class MainHistoricoCompraPessoaFisicaActivity extends AppCompatActivity
             }
         });
     }
-
     //Método que exibe a caixa de diálogo para o usuário confirmar ou não a sua saída do sistema
     private void sair () {
         //Cria o gerador do AlertDialog
@@ -264,7 +280,7 @@ public class MainHistoricoCompraPessoaFisicaActivity extends AppCompatActivity
     }
     //Intent para a tela visualizar histórico
     private void abrirTelaVisualizarHistoricoActivity(Historico historico){
-        Intent intent = new Intent(getApplicationContext(), VisualizarHistoricoCompraActivity.class);
+        Intent intent = new Intent(getApplicationContext(), VisualizarHistoricoActivity.class);
         intent.putExtra("idHistorico", historico.getIdHistorico());
         intent.putExtra("idEmpresa", historico.getIdPessoaJuridica());
         intent.putExtra("idPessoaFisica", historico.getIdPessoaFisica());

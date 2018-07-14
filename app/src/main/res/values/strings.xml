@@ -60,7 +60,7 @@
 
     <string name="zs_btn_voltar_dialogo_compra">Voltar</string>
     <string name="zs_btn_comprar_dialogo_compra">Adicionar ao carrinho</string>
-    <string name="zs_btn_confirmar_dialogo_compra">Confirmar quantidade</string>
+    <string name="zs_btn_confirmar_dialogo_compra">Confirmar</string>
     <string name="zs_texto_total_dialogo_compra">TOTAL:</string>
     <string name="zs_hint_quantidade_dialogo_compra">Digite a quantidade desejada</string>
 

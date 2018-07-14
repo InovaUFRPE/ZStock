@@ -32,7 +32,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.zstok.R;
-import com.zstok.historico.gui.MainHistoricoNegociacaoPessoaJuridicaActivity;
 import com.zstok.historico.gui.MainHistoricoVendaPessoaJuridicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;

@@ -28,7 +28,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
-import com.zstok.historico.gui.MainHistoricoNegociacaoPessoaFisicaActivity;
 import com.zstok.historico.gui.MainHistoricoCompraPessoaFisicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;

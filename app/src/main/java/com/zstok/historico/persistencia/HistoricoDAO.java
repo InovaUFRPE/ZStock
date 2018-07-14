@@ -7,7 +7,7 @@ import com.zstok.infraestrutura.utils.FirebaseController;
 public class HistoricoDAO {
     public static void inserirHistoricoCompra(Historico historico){
         historico.setIdHistorico(FirebaseController.getFirebase().push().getKey());
-        FirebaseController.getFirebase().child("historicoCompra").child(historico.getIdHistorico()).setValue(historico);
+        FirebaseController.getFirebase().child("historico").child(historico.getIdHistorico()).setValue(historico);
     }
 
     public static boolean inserirHistoricoNegociacao(Historico historico){
@@ -15,7 +15,7 @@ public class HistoricoDAO {
 
         try{
             historico.setIdHistorico(FirebaseController.getFirebase().push().getKey());
-            FirebaseController.getFirebase().child("historicoNegociacao").child(historico.getIdHistorico()).setValue(historico);
+            FirebaseController.getFirebase().child("historico").child(historico.getIdHistorico()).setValue(historico);
             verificador = true;
         }catch (DatabaseException e){
             verificador = false;

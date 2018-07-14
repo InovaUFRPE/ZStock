@@ -15,8 +15,8 @@ public class NegociacaoServices {
         NegociacaoDAO.diminuirQuantidade(produto, itemCompra);
     }
 
-    public static void inserirTotal(String idNegociacao, double novoTotal){
-        NegociacaoDAO.inserirTotal(idNegociacao, novoTotal);
+    public static boolean inserirTotal(String idNegociacao, double novoTotal){
+        return NegociacaoDAO.inserirTotal(idNegociacao, novoTotal);
     }
 
     public static boolean alterarItemCarrinho(Produto produto, String idNegociacao, String chave){
