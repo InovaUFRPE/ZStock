@@ -33,6 +33,7 @@ import com.zstok.historico.adapter.HistoricoListHolder;
 import com.zstok.historico.dominio.Historico;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
+import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.negociacao.gui.MainNegociacaoPessoaFisicaActivity;
 import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
 import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;

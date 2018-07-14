@@ -86,7 +86,7 @@ public class MainHistoricoVendaPessoaJuridicaActivity extends AppCompatActivity
         recyclerViewHistorico.setLayoutManager(layoutManager);
 
         //Criando adapter histórico
-        criarAdapterHistorico();
+        verificarQuery();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -148,47 +148,65 @@ public class MainHistoricoVendaPessoaJuridicaActivity extends AppCompatActivity
         progressDialog.show();
     }
     //Método que cria o adapter de histórico
-    private void criarAdapterHistorico(){
+    private void verificarQuery(){
         iniciarProgressDialog();
         DatabaseReference referenciaHistorico = FirebaseController.getFirebase().child("historicoCompra");
-        Query queryHistoricoCompra = referenciaHistorico.orderByChild("idPessoaJuridica").equalTo(FirebaseController.getUidUser());
-
-        if (queryHistoricoCompra != null) {
-            adapterHistorico = new FirebaseRecyclerAdapter<Historico, HistoricoListHolder>(
-                    Historico.class,
-                    R.layout.card_historico,
-                    HistoricoListHolder.class,
-                    queryHistoricoCompra) {
-
-                @Override
-                protected void populateViewHolder(final HistoricoListHolder viewHolder, final Historico model, int position) {
-                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
-                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
-
-                    viewHolder.tvCardViewTotalCompra.setText(NumberFormat.getCurrencyInstance().format(model.getTotal()));
-                    viewHolder.tvCardViewDataCompra.setText(String.valueOf(model.getDataFim()));
-
-                    //Método que resgata o cpf da pessoa física
-                    resgatarCpfPessoaFisica(viewHolder, model);
+        final Query queryHistoricoCompra = referenciaHistorico.orderByChild("idPessoaJuridica").equalTo(FirebaseController.getUidUser());
+        //Verificando query
+        queryHistoricoCompra.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChildren()){
+                    criarAdapterHistoricoVendas(queryHistoricoCompra);
+                }else {
+                    Helper.criarToast(getApplicationContext(), "VAZIO!");
+                    progressDialog.dismiss();
                 }
+            }
 
-                @NonNull
-                @Override
-                public HistoricoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
-                    final HistoricoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
-                    viewHolder.setOnItemClickListener(new HistoricoListHolder.ClickListener() {
-                        @Override
-                        public void onItemClick(View view, int position) {
-                            Historico historico = (Historico) adapterHistorico.getItem(position);
-                            abrirTelaVisualizarHistoricoActivity(historico);
-                        }
-                    });
-                    return viewHolder;
-                }
-            };
-            recyclerViewHistorico.setAdapter(adapterHistorico);
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
+    //criando adapter
+    private void criarAdapterHistoricoVendas(final Query queryHistoricoCompra) {
+        adapterHistorico = new FirebaseRecyclerAdapter<Historico, HistoricoListHolder>(
+                Historico.class,
+                R.layout.card_historico,
+                HistoricoListHolder.class,
+                queryHistoricoCompra) {
+
+            @Override
+            protected void populateViewHolder(final HistoricoListHolder viewHolder, final Historico model, int position) {
+                viewHolder.mainLayout.setVisibility(View.VISIBLE);
+                viewHolder.linearLayout.setVisibility(View.VISIBLE);
+
+                viewHolder.tvCardViewTotalCompra.setText(NumberFormat.getCurrencyInstance().format(model.getTotal()));
+                viewHolder.tvCardViewDataCompra.setText(String.valueOf(model.getDataFim()));
+
+                //Método que resgata o cpf da pessoa física
+                resgatarCpfPessoaFisica(viewHolder, model);
+            }
+
+            @NonNull
+            @Override
+            public HistoricoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+                final HistoricoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                viewHolder.setOnItemClickListener(new HistoricoListHolder.ClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Historico historico = (Historico) adapterHistorico.getItem(position);
+                        abrirTelaVisualizarHistoricoActivity(historico);
+                    }
+                });
+                return viewHolder;
+            }
+        };
+        recyclerViewHistorico.setAdapter(adapterHistorico);
+    }
+
     //Resgatando o cpf envolvido na venda
     private void resgatarCpfPessoaFisica(final HistoricoListHolder viewHolder, final Historico model) {
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
