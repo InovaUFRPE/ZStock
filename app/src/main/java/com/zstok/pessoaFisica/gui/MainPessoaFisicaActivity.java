@@ -74,6 +74,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
     private FirebaseUser user;
 
     private DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
+
     private Query queryFiltro;
 
     @Override

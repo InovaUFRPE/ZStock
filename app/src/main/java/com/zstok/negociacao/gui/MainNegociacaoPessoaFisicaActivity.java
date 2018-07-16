@@ -217,6 +217,7 @@ public class MainNegociacaoPessoaFisicaActivity extends AppCompatActivity
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String nomeEmpresa = dataSnapshot.child("pessoa").child(model.getIdPessoaJuridica()).child("nome").getValue(String.class);
                 viewHolder.tvCardViewNomeCpfEmpresa.setText(nomeEmpresa);
+                progressDialog.dismiss();
             }
 
             @Override
