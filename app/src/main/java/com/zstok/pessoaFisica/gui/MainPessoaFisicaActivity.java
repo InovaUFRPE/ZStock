@@ -21,8 +21,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -57,6 +59,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
     private TextView tvNomeUsuarioNavHeader;
     private TextView tvEmailUsuarioNavHeader;
     private CircleImageView cvNavHeaderPessoa;
+    private Spinner spnFiltroPesquisaPessoaFisica;
 
     private NavigationView navigationView;
     private AlertDialog alertaSair;
@@ -85,6 +88,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
 
         //Instanciando views
         edtPesquisaProdutoPessoaFisica = findViewById(R.id.edtPesquisaProdutoPessoaFisica);
+        spnFiltroPesquisaPessoaFisica = findViewById(R.id.spnFiltroPesquisaPessoaFisica);
         Button btnPesquisaProdutoPessoaJuridica = findViewById(R.id.btnPesquisaProdutoPessoaFisica);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabCarrinhoCompra);
@@ -125,6 +129,17 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
 
         //Carregando informações do menu lateral
         setDadosMenuLateral();
+        spnFiltroPesquisaPessoaFisica.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                criandoAdapter();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         //Evento de pesquisa
         edtPesquisaProdutoPessoaFisica.addTextChangedListener(new TextWatcher() {
@@ -235,15 +250,27 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
     }
     //Montando adapter e jogando no list holder
     private void criandoAdapter() {
+        if(spnFiltroPesquisaPessoaFisica.getSelectedItem().toString().equals("Selecione o tipo de filtro")) {
+            iniciarProgressDialog();
+            criandoAdapterSemFiltro();
+        }else if(spnFiltroPesquisaPessoaFisica.getSelectedItem().toString().equals("Preço")){
+            criandoAdapterFiltroPreco();
+        }else{
+            //Realizar outro tipo de filtragem
+        }
+    }
+
+    private void criandoAdapterFiltroPreco() {
         iniciarProgressDialog();
         final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
+        Query queryAdapter = databaseReference.orderByChild("precoSugerido");
 
-        if (databaseReference != null) {
+        if (queryAdapter != null) {
             adapter = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
                     Produto.class,
                     R.layout.card_produto,
                     ProdutoListHolder.class,
-                    databaseReference) {
+                    queryAdapter) {
 
                 @Override
                 protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
@@ -254,12 +281,12 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                     viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
                     if (model.getQuantidadeEstoque() != 0) {
                         viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
-                    }else {
+                    } else {
                         viewHolder.tvCardViewQuantidadeEstoque.setText(getString(R.string.zs_mensagem_produto_esgotado));
                     }
                     if (model.getUrlImagem() != null) {
                         Glide.with(MainPessoaFisicaActivity.this).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
-                    }else {
+                    } else {
                         viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
                     }
                     //Resgatando nome da pessoa jurídica
@@ -283,6 +310,56 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
             recylerViewMeusprodutos.setAdapter(adapter);
         }
     }
+
+    private void criandoAdapterSemFiltro() {
+        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
+
+        if (databaseReference != null) {
+            adapter = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
+                    Produto.class,
+                    R.layout.card_produto,
+                    ProdutoListHolder.class,
+                    databaseReference) {
+
+                @Override
+                protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
+                    getItemCount();
+                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
+                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
+                    viewHolder.tvCardViewNomeProduto.setText(model.getNome());
+                    viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
+                    if (model.getQuantidadeEstoque() != 0) {
+                        viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
+                    } else {
+                        viewHolder.tvCardViewQuantidadeEstoque.setText(getString(R.string.zs_mensagem_produto_esgotado));
+                    }
+                    if (model.getUrlImagem() != null) {
+                        Glide.with(MainPessoaFisicaActivity.this).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
+                    } else {
+                        viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
+                    }
+                    //Resgatando nome da pessoa jurídica
+                    resgatarNomeEmpresa(viewHolder, model);
+                }
+
+                @NonNull
+                @Override
+                public ProdutoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+                    final ProdutoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                    viewHolder.setOnItemClickListener(new ProdutoListHolder.ClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            Produto produto = (Produto) adapter.getItem(position);
+                            abrirTelaProdutoActivity(produto.getIdEmpresa(), produto.getIdProduto());
+                        }
+                    });
+                    return viewHolder;
+                }
+            };
+            recylerViewMeusprodutos.setAdapter(adapter);
+        }
+    }
+
     //Método que resgata nome da empresa do banco
     private void resgatarNomeEmpresa(final ProdutoListHolder viewHolder, Produto model) {
         FirebaseController.getFirebase().child("pessoa").child(model.getIdEmpresa()).child("nome").addListenerForSingleValueEvent(new ValueEventListener() {
