@@ -22,7 +22,7 @@
         android:textColor="@color/cloudGrey"
         android:textColorHint="@color/cimento"
         android:backgroundTint="@color/cimento"
-        android:hint="Digite seu Cnpj antigo"/>
+        android:hint="@string/zs_hint_cnpj_antigo_alterar_perfil"/>
 
     <EditText
         android:id="@+id/edtCnpjNovoAlterarPessoaJuridica"
@@ -37,13 +37,13 @@
         android:drawableStart="@drawable/ic_cpf_cnpj"
         android:drawablePadding="@dimen/drawable_padding"
         android:inputType="number"
-        android:hint="Digite seu novo Cnpj"/>
+        android:hint="@string/zs_hint_novo_cnpj_alterar_perfil"/>
 
     <Button
         android:id="@+id/btnAlterarCnpjPessoaJuridica"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/goiaba"
-        android:text="Alterar CNPJ"/>
+        android:text="@string/zs_btn_alterar_cnpj"/>
 
 </LinearLayout>

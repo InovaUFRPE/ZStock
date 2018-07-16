@@ -42,7 +42,7 @@
     <Button
         android:id="@+id/btnAlterarEmailPessoa"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:backgroundTint="@color/goiaba"
         android:text="@string/zs_btn_alterar_email"/>
 

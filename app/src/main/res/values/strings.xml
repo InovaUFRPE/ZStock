@@ -31,6 +31,8 @@
     <string name="zs_hint_cpf_atual_alterar_perfil">Digite seu cpf atual</string>
     <string name="zs_hint_cpf_alterar_perfil">Digite novo cpf</string>
     <string name="zs_hint_valor_desconto">Valor do desconto</string>
+    <string name="zs_hint_novo_cnpj_alterar_perfil">Digite seu novo cnpj</string>
+    <string name="zs_hint_cnpj_antigo_alterar_perfil">Digite seu cnpj antigo</string>
 
     <string name="zs_texto_preco_produto">Preço:</string>
     <string name="zs_texto_quantidade_disponivel_produto">Quantidade disponível:</string>
@@ -57,12 +59,12 @@
     <string name="zs_dialogo_remover_item">Remover item</string>
     <string name="zs_dialogo_mensagem_produto">O que deseja fazer com o produto?</string>
     <string name="zs_dialogo_titulo_produto">Produto</string>
+    <string name="zs_texto_total_dialogo_compra">TOTAL:</string>
+    <string name="zs_hint_quantidade_dialogo_compra">Digite a quantidade desejada</string>
 
     <string name="zs_btn_voltar_dialogo_compra">Voltar</string>
     <string name="zs_btn_comprar_dialogo_compra">Adicionar ao carrinho</string>
     <string name="zs_btn_confirmar_dialogo_compra">Confirmar</string>
-    <string name="zs_texto_total_dialogo_compra">TOTAL:</string>
-    <string name="zs_hint_quantidade_dialogo_compra">Digite a quantidade desejada</string>
 
     <string name="zs_btn_entrar">Entrar</string>
     <string name="zs_btn_cadastrar">Cadastrar</string>
@@ -73,6 +75,7 @@
     <string name="zs_btn_alterar_telefone">Alterar telefone</string>
     <string name="zs_btn_alterar_endereco">Alterar endereço</string>
     <string name="zs_btn_alterar_cpf">Alterar cpf</string>
+    <string name="zs_btn_alterar_cnpj">Alterar cnpj</string>
     <string name="zs_btn_alterar_data_nascimento">Alterar data de nascimento</string>
     <string name="zs_btn_negociar_produto">Negociar</string>
     <string name="zs_btn_comprar_produto">Comprar</string>

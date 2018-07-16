@@ -25,7 +25,7 @@
     <Button
         android:id="@+id/btnAlterarRazaoSocial"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="50dp"
         android:backgroundTint="@color/goiaba"
         android:text="Alterar Razão Social"/>
 
