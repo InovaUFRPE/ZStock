@@ -183,20 +183,17 @@ public class MeusProdutosActivity extends AppCompatActivity
 
                 @Override
                 protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
-                    if (getItemCount() != 0) {
-                        viewHolder.mainLayout.setVisibility(View.VISIBLE);
-                        viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                        viewHolder.tvCardViewNomeProduto.setText(model.getNome());
-                        viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
-                        viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
-                        viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
-                        if (model.getUrlImagem() != null) {
-                            Glide.with(getApplicationContext()).load(model.getUrlImagem()).into(viewHolder.imgCardViewProduto);
-                        } else {
-                            viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
-                        }
-                    }else {
-                        Helper.criarToast(getApplicationContext(), "Não existe produto com esse nome!");
+                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
+                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
+                    viewHolder.tvCardViewNomeProduto.setText(model.getNome());
+                    viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
+                    viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
+                    viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
+                    if (model.getUrlImagem() != null) {
+                        Glide.with(getApplicationContext()).load(model.getUrlImagem()).into(viewHolder.imgCardViewProduto);
+                    } else {
+                        viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
+
                     }
                 }
 

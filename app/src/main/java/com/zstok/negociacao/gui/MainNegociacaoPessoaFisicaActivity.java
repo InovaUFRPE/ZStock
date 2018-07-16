@@ -145,7 +145,7 @@ public class MainNegociacaoPessoaFisicaActivity extends AppCompatActivity
     //Método que inicia o progress dialog
     private void iniciarProgressDialog() {
         progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_carregar_historico_venda));
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_carregar_negociacoes));
         progressDialog.show();
     }
     //Método que cria o adapter de histórico

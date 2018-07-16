@@ -164,6 +164,7 @@
     <string name="zs_titulo_progress_dialog_carregar_historico_venda">Carregando histórico de vendas...</string>
     <string name="zs_titulo_progress_dialog_carregar_historico_compra">Carregando histórico de compras...</string>
     <string name="zs_titulo_progress_dialog_carregar_historico_negociacao">Carregando histórico de negociações...</string>
+    <string name="zs_titulo_progress_dialog_carregar_negociacoes">Carregando negociações...</string>
     <string name="zs_titulo_progress_dialog_alterar_produto">Alterando produto...</string>
     <string name="zs_titulo_progress_dialog_perfil">Carregando informações...</string>
 

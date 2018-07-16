@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -246,6 +247,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     //Recuperando os dados do perfil
     private void recuperarDados(){
         iniciarProgressDialog();
+
         FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -263,12 +265,6 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
 
             }
         });
-    }
-    //Método que inicia o progress dialog
-    private void iniciarProgressDialog() {
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
-        progressDialog.show();
     }
     //Carregando as informções do perfil
     private void setInformacoesPerfil(Pessoa pessoa, PessoaJuridica pessoaJuridica){
@@ -378,6 +374,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     //Inserindo imagem no banco
     private void inserirFoto(Uri uriFoto){
         iniciarProgressDialog();
+
         StorageReference ref = storageReference.child("images/perfil/" + FirebaseController.getUidUser() + ".bmp");
         ref.putFile(uriFoto).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -417,6 +414,12 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
                 }
             }
         }
+    }
+    //Iniciando progress dialog
+    private void iniciarProgressDialog() {
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
+        progressDialog.show();
     }
     //Método que exibe a caixa de diálogo para o usuário confirmar ou não a sua saída do sistema
     private void sair () {

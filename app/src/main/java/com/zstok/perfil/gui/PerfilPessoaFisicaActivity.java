@@ -144,7 +144,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                         return true;
                     case R.id.nav_negociacao_pessoa_fisica:
                         //Intent para tela de negocicao
-                        abrirTelaMainNegociacaoActivity();
+                        abrirTelaMainNegociacaoPessoaFisicaActivity();
                         return true;
                     case R.id.nav_produtos_pessoa_fisica:
                         abrirTelaMainPessoaFisicaActivity();
@@ -224,8 +224,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     }
     //Método que recupera os dados do perfil
     private void recuperarDados(){
-        final Handler handler = iniciarProgressDialog();
-
+        iniciarProgressDialog();
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -234,7 +233,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
 
                 if (pessoa != null && pessoaFisica != null){
                     setInformacoesPerfil(pessoa, pessoaFisica);
-                    carregarFoto(handler);
+                    carregarFoto();
                 }
             }
 
@@ -245,29 +244,13 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         });
     }
     //Iniciando progress dialog
-    private Handler iniciarProgressDialog() {
-        Object[] objects = (Object[]) Helper.iniciarProgressDialog(progressDialog, getString(R.string.zs_titulo_progress_dialog_perfil), getApplicationContext());
-
-        final Handler handler = (Handler) objects[0];
-        ProgressDialog progressDialog1 = (ProgressDialog) objects[1];
-
-        progressDialog1.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                signOut();
-            }
-        });
-        return handler;
-    }
-    //Caso a conexão falhe
-    private void signOut() {
-        progressDialog.dismiss();
-        FirebaseAuth.getInstance().signOut();
-        abrirTelaLoginActivity();
-        Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_conexao_limite));
+    private void iniciarProgressDialog() {
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
+        progressDialog.show();
     }
     //Resgatando url da foto que encontra-se na camada de autenticação
-    private void carregarFoto(Handler handler){
+    private void carregarFoto(){
         if (user != null) {
             if (user.getPhotoUrl() != null) {
                 Glide.with(this).load(user.getPhotoUrl()).into(cvPerfilPessoaFisica);
@@ -276,7 +259,6 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                 cvNavHeaderPessoa.setImageResource(R.drawable.ic_sem_foto);
             }
         }
-        handler.removeCallbacksAndMessages(null);
         progressDialog.dismiss();
     }
     //Instanciando views do menu lateral
@@ -412,7 +394,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     }
     //Inserindo imagem no banco
     private void inserirFoto(Uri uriFoto){
-        final Handler handler = iniciarProgressDialog();
+        iniciarProgressDialog();
 
         StorageReference ref = storageReference.child("images/perfil/" + FirebaseController.getUidUser() + ".bmp");
         ref.putFile(uriFoto).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -426,7 +408,6 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                             .build();
                     user.updateProfile(profileChangeRequest);
                 }
-                handler.removeCallbacksAndMessages(null);
                 progressDialog.dismiss();
             }
         });
@@ -478,12 +459,6 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    //Intent para tela de login
-    private void abrirTelaLoginActivity () {
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(intent);
-        finish();
-    }
     //Intent para tela main
     private void abrirTelaMainPessoaFisicaActivity() {
         Intent intent = new Intent(getApplicationContext(), MainPessoaFisicaActivity.class);
@@ -525,8 +500,14 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         startActivity(intent);
     }
     //Intent para a tela de negociação
-    private void abrirTelaMainNegociacaoActivity(){
+    private void abrirTelaMainNegociacaoPessoaFisicaActivity(){
         Intent intent = new Intent(getApplicationContext(), MainNegociacaoPessoaFisicaActivity.class);
         startActivity(intent);
+    }
+    //Intent para tela de login
+    private void abrirTelaLoginActivity () {
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

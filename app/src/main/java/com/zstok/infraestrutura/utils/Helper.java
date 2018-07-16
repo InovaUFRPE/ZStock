@@ -104,33 +104,4 @@ public class Helper {
         SimpleDateFormat formatar = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         return formatar.format(data);
     }
-    public static Object iniciarProgressDialog(ProgressDialog progressDialog, String titulo, Context context){
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setTitle(titulo);
-        progressDialog.show();
-
-        return delimitarTempoProgressDialog(progressDialog, context);
-    }
-    //Delimitando tempo do progress dialog
-    private static Object delimitarTempoProgressDialog(final ProgressDialog progressDialog, final Context context){
-        Runnable progressRunnable = new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.cancel();
-            }
-        };
-
-        Handler pdCanceller = new Handler();
-        pdCanceller.postDelayed(progressRunnable, 15000);//Tempo limite de 15s
-
-        return objetctTemp(pdCanceller, progressDialog);
-    }
-    //Objeto temporário para auxiliar na manipulação do progress dialog
-    private static Object objetctTemp(Handler handler, ProgressDialog progressDialog){
-        Object[] object = new Object[2];
-        object[0] = handler;
-        object[1] = progressDialog;
-
-        return object;
-    }
 }

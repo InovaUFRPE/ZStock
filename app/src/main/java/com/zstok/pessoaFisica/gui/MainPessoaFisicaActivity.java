@@ -112,6 +112,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
         recylerViewMeusprodutos = findViewById(R.id.recyclerProdutosPessoaFisica);
         recylerViewMeusprodutos.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
+        recylerViewMeusprodutos.setLayoutManager(layoutManager);
 
         //Criando o adapter
         criarAdapterProduto(databaseReference.orderByKey());
@@ -207,6 +208,9 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                 queryFiltro = databaseReference.orderByChild("precoSugerido");
                 reverteLayoutRecyclerView();
                 break;
+            default:
+                criarAdapterProduto(databaseReference.orderByKey());
+                break;
         }
         verificarQuery(queryFiltro);
     }
@@ -214,13 +218,11 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
     private void reverteLayoutRecyclerView() {
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
-        recylerViewMeusprodutos.setLayoutManager(layoutManager);
     }
     //Normalizando layout do recycler view
     private void normalizarLayoutRecyclerView(){
         layoutManager.setReverseLayout(false);
         layoutManager.setStackFromEnd(false);
-        recylerViewMeusprodutos.setLayoutManager(layoutManager);
     }
     //Método que cria o adapter de histórico
     private void verificarQuery(final Query queryFiltro){
