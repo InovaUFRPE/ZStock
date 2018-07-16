@@ -14,40 +14,40 @@
     <EditText
         android:id="@+id/edtPesquisaProdutoPessoaFisica"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/btnPesquisaProdutoPessoaFisica"
-        android:layout_toStartOf="@id/btnPesquisaProdutoPessoaFisica"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:layout_toLeftOf="@id/rlFiltroPesquisaPessoaFisica"
+        android:layout_toStartOf="@id/rlFiltroPesquisaPessoaFisica"
         android:inputType="text"
         android:backgroundTint="@color/cimento"
         android:textColor="@color/cimento" />
 
-    <Button
-        android:id="@+id/btnPesquisaProdutoPessoaFisica"
-        android:layout_width="40dp"
-        android:layout_height="45dp"
+    <RelativeLayout
+        android:id="@+id/rlFiltroPesquisaPessoaFisica"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/ic_pesquisa"
-        android:backgroundTint="@color/cimento" />
+        android:layout_gravity="center"
+        android:background="@color/cloudGrey">
 
-    <Spinner
-        android:id="@+id/spnFiltroPesquisaPessoaFisica"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/edtPesquisaProdutoPessoaFisica"
-        android:entries="@array/spinner_tipo_filtro"
-        android:layout_alignParentLeft="true">
-
-    </Spinner>
-
+        <Spinner
+            android:id="@+id/spnFiltroPesquisaPessoaFisica"
+            android:layout_width="120dp"
+            android:layout_height="45dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:backgroundTint="@color/preto"
+            android:entries="@array/spinner_tipo_filtro" />
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerProdutosPessoaFisica"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
         android:layout_below="@id/edtPesquisaProdutoPessoaFisica"
         android:padding="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />

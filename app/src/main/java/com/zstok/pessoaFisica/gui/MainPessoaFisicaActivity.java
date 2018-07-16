@@ -22,7 +22,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -67,11 +66,15 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
     private EditText edtPesquisaProdutoPessoaFisica;
 
     private RecyclerView recylerViewMeusprodutos;
+    private LinearLayoutManager layoutManager;
     private FirebaseRecyclerAdapter adapter;
 
     private ProgressDialog progressDialog;
 
     private FirebaseUser user;
+
+    private DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
+    private Query queryFiltro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,20 +92,12 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
         //Instanciando views
         edtPesquisaProdutoPessoaFisica = findViewById(R.id.edtPesquisaProdutoPessoaFisica);
         spnFiltroPesquisaPessoaFisica = findViewById(R.id.spnFiltroPesquisaPessoaFisica);
-        Button btnPesquisaProdutoPessoaJuridica = findViewById(R.id.btnPesquisaProdutoPessoaFisica);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabCarrinhoCompra);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 abrirTelaCarrinhoCompraActivity();
-            }
-        });
-
-        btnPesquisaProdutoPessoaJuridica.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                criandoAdapterPesquisa(Helper.removerAcentos(edtPesquisaProdutoPessoaFisica.getText().toString().toLowerCase()));
             }
         });
 
@@ -115,11 +110,10 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
         //Instanciando recyler view
         recylerViewMeusprodutos = findViewById(R.id.recyclerProdutosPessoaFisica);
         recylerViewMeusprodutos.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recylerViewMeusprodutos.setLayoutManager(layoutManager);
+        layoutManager = new LinearLayoutManager(this);
 
         //Criando o adapter
-        criandoAdapter();
+        criarAdapterProduto(databaseReference.orderByKey());
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -129,10 +123,12 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
 
         //Carregando informações do menu lateral
         setDadosMenuLateral();
+
         spnFiltroPesquisaPessoaFisica.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                criandoAdapter();
+                criarFiltro();
+                edtPesquisaProdutoPessoaFisica.setText("");
             }
 
             @Override
@@ -155,9 +151,9 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
             public void afterTextChanged(Editable s) {
                 if (edtPesquisaProdutoPessoaFisica.getText().toString().isEmpty() ||
                         edtPesquisaProdutoPessoaFisica.getText().toString().trim().length() == 0){
-                    criandoAdapter();
+                    criarFiltro();
                 }else {
-                    criandoAdapterPesquisa(Helper.removerAcentos(edtPesquisaProdutoPessoaFisica.getText().toString().toLowerCase()));
+                    criarAdapterPesquisa(Helper.removerAcentos(edtPesquisaProdutoPessoaFisica.getText().toString().toLowerCase()));
                 }
             }
         });
@@ -189,59 +185,6 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
             }
         });
     }
-    //Montando adapter e jogando no list holder
-    private void criandoAdapterPesquisa(String pesquisa) {
-        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
-        Query query = databaseReference.orderByChild("nomePesquisa").startAt(pesquisa).endAt(pesquisa+"\uf8ff");
-
-        if (query != null) {
-            FirebaseRecyclerAdapter adapter1 = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
-                    Produto.class,
-                    R.layout.card_produto,
-                    ProdutoListHolder.class,
-                    query) {
-
-                @Override
-                protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
-                    getItemCount();
-                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
-                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                    viewHolder.tvCardViewNomeProduto.setText(model.getNome());
-                    viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
-                    viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
-                    if (model.getUrlImagem() != null) {
-                        Glide.with(getApplicationContext()).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
-                    }
-                    FirebaseController.getFirebase().child("pessoa").child(model.getIdEmpresa()).child("nome").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            viewHolder.tvCardViewNomeEmpresa.setText(dataSnapshot.getValue(String.class));
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-
-                @NonNull
-                @Override
-                public ProdutoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
-                    final ProdutoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
-                    viewHolder.setOnItemClickListener(new ProdutoListHolder.ClickListener() {
-                        @Override
-                        public void onItemClick(View view, int position) {
-                            Produto produto = (Produto) adapter.getItem(position);
-                            abrirTelaProdutoActivity(produto.getIdEmpresa(), produto.getIdProduto());
-                        }
-                    });
-                    return viewHolder;
-                }
-            };
-            recylerViewMeusprodutos.setAdapter(adapter1);
-        }
-    }
     //Método que inicia o progress dialog
     private void iniciarProgressDialog() {
         progressDialog.setCanceledOnTouchOutside(false);
@@ -249,117 +192,139 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
         progressDialog.show();
     }
     //Montando adapter e jogando no list holder
-    private void criandoAdapter() {
-        if(spnFiltroPesquisaPessoaFisica.getSelectedItem().toString().equals("Selecione o tipo de filtro")) {
-            iniciarProgressDialog();
-            criandoAdapterSemFiltro();
-        }else if(spnFiltroPesquisaPessoaFisica.getSelectedItem().toString().equals("Preço")){
-            criandoAdapterFiltroPreco();
-        }else{
-            //Realizar outro tipo de filtragem
+    private void criarFiltro() {
+        switch (spnFiltroPesquisaPessoaFisica.getSelectedItem().toString()) {
+            case "Selecione o tipo de filtro":
+                queryFiltro = databaseReference.orderByKey();
+                normalizarLayoutRecyclerView();
+                break;
+            case "Menor-Maior preço":
+                queryFiltro = databaseReference.orderByChild("precoSugerido");
+                normalizarLayoutRecyclerView();
+                break;
+            case "Maior-Menor preço":
+                queryFiltro = databaseReference.orderByChild("precoSugerido");
+                reverteLayoutRecyclerView();
+                break;
         }
+        verificarQuery(queryFiltro);
     }
-
-    private void criandoAdapterFiltroPreco() {
+    //Revertendo o layout do recycler view
+    private void reverteLayoutRecyclerView() {
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
+        recylerViewMeusprodutos.setLayoutManager(layoutManager);
+    }
+    //Normalizando layout do recycler view
+    private void normalizarLayoutRecyclerView(){
+        layoutManager.setReverseLayout(false);
+        layoutManager.setStackFromEnd(false);
+        recylerViewMeusprodutos.setLayoutManager(layoutManager);
+    }
+    //Método que cria o adapter de histórico
+    private void verificarQuery(final Query queryFiltro){
         iniciarProgressDialog();
-        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
-        Query queryAdapter = databaseReference.orderByChild("precoSugerido");
-
-        if (queryAdapter != null) {
-            adapter = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
-                    Produto.class,
-                    R.layout.card_produto,
-                    ProdutoListHolder.class,
-                    queryAdapter) {
-
-                @Override
-                protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
-                    getItemCount();
-                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
-                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                    viewHolder.tvCardViewNomeProduto.setText(model.getNome());
-                    viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
-                    if (model.getQuantidadeEstoque() != 0) {
-                        viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
-                    } else {
-                        viewHolder.tvCardViewQuantidadeEstoque.setText(getString(R.string.zs_mensagem_produto_esgotado));
-                    }
-                    if (model.getUrlImagem() != null) {
-                        Glide.with(MainPessoaFisicaActivity.this).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
-                    } else {
-                        viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
-                    }
-                    //Resgatando nome da pessoa jurídica
-                    resgatarNomeEmpresa(viewHolder, model);
+        //Verificando query
+        queryFiltro.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    criarAdapterProduto(queryFiltro);
+                }else {
+                    Helper.criarToast(getApplicationContext(), "Sem produtos cadastrado no sistema!");
+                    progressDialog.dismiss();
                 }
+            }
 
-                @NonNull
-                @Override
-                public ProdutoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
-                    final ProdutoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
-                    viewHolder.setOnItemClickListener(new ProdutoListHolder.ClickListener() {
-                        @Override
-                        public void onItemClick(View view, int position) {
-                            Produto produto = (Produto) adapter.getItem(position);
-                            abrirTelaProdutoActivity(produto.getIdEmpresa(), produto.getIdProduto());
-                        }
-                    });
-                    return viewHolder;
-                }
-            };
-            recylerViewMeusprodutos.setAdapter(adapter);
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
+    //Método que preenche o recycler adapter com os produtos
+    private void criarAdapterProduto(Query query) {
+        adapter = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
+                Produto.class,
+                R.layout.card_produto,
+                ProdutoListHolder.class,
+                query) {
 
-    private void criandoAdapterSemFiltro() {
-        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
-
-        if (databaseReference != null) {
-            adapter = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
-                    Produto.class,
-                    R.layout.card_produto,
-                    ProdutoListHolder.class,
-                    databaseReference) {
-
-                @Override
-                protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
-                    getItemCount();
-                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
-                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                    viewHolder.tvCardViewNomeProduto.setText(model.getNome());
-                    viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
-                    if (model.getQuantidadeEstoque() != 0) {
-                        viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
-                    } else {
-                        viewHolder.tvCardViewQuantidadeEstoque.setText(getString(R.string.zs_mensagem_produto_esgotado));
-                    }
-                    if (model.getUrlImagem() != null) {
-                        Glide.with(MainPessoaFisicaActivity.this).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
-                    } else {
-                        viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
-                    }
-                    //Resgatando nome da pessoa jurídica
-                    resgatarNomeEmpresa(viewHolder, model);
+            @Override
+            protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
+                viewHolder.mainLayout.setVisibility(View.VISIBLE);
+                viewHolder.linearLayout.setVisibility(View.VISIBLE);
+                viewHolder.tvCardViewNomeProduto.setText(model.getNome());
+                viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
+                if (model.getQuantidadeEstoque() != 0) {
+                    viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
+                } else {
+                    viewHolder.tvCardViewQuantidadeEstoque.setText(getString(R.string.zs_mensagem_produto_esgotado));
                 }
-
-                @NonNull
-                @Override
-                public ProdutoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
-                    final ProdutoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
-                    viewHolder.setOnItemClickListener(new ProdutoListHolder.ClickListener() {
-                        @Override
-                        public void onItemClick(View view, int position) {
-                            Produto produto = (Produto) adapter.getItem(position);
-                            abrirTelaProdutoActivity(produto.getIdEmpresa(), produto.getIdProduto());
-                        }
-                    });
-                    return viewHolder;
+                if (model.getUrlImagem() != null) {
+                    Glide.with(MainPessoaFisicaActivity.this).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
+                } else {
+                    viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
                 }
-            };
-            recylerViewMeusprodutos.setAdapter(adapter);
-        }
+                //Resgatando nome da pessoa jurídica
+                resgatarNomeEmpresa(viewHolder, model);
+            }
+
+            @NonNull
+            @Override
+            public ProdutoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+                final ProdutoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                viewHolder.setOnItemClickListener(new ProdutoListHolder.ClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Produto produto = (Produto) adapter.getItem(position);
+                        abrirTelaProdutoActivity(produto.getIdEmpresa(), produto.getIdProduto());
+                    }
+                });
+                return viewHolder;
+            }
+        };
+        recylerViewMeusprodutos.setAdapter(adapter);
     }
+    //Montando adapter e jogando no list holder
+    private void criarAdapterPesquisa(String pesquisa) {
+        Query queryPesquisa = databaseReference.orderByChild("nomePesquisa").startAt(pesquisa).endAt(pesquisa+"\uf8ff");
+        FirebaseRecyclerAdapter adapter1 = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
+                Produto.class,
+                R.layout.card_produto,
+                ProdutoListHolder.class,
+                queryPesquisa) {
 
+            @Override
+            protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
+                getItemCount();
+                viewHolder.mainLayout.setVisibility(View.VISIBLE);
+                viewHolder.linearLayout.setVisibility(View.VISIBLE);
+                viewHolder.tvCardViewNomeProduto.setText(model.getNome());
+                viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
+                viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
+                if (model.getUrlImagem() != null) {
+                    Glide.with(getApplicationContext()).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
+                }
+                resgatarNomeEmpresa(viewHolder, model);
+            }
+
+            @NonNull
+            @Override
+            public ProdutoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+                final ProdutoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                viewHolder.setOnItemClickListener(new ProdutoListHolder.ClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Produto produto = (Produto) adapter.getItem(position);
+                        abrirTelaProdutoActivity(produto.getIdEmpresa(), produto.getIdProduto());
+                    }
+                });
+                return viewHolder;
+            }
+        };
+        recylerViewMeusprodutos.setAdapter(adapter1);
+    }
     //Método que resgata nome da empresa do banco
     private void resgatarNomeEmpresa(final ProdutoListHolder viewHolder, Produto model) {
         FirebaseController.getFirebase().child("pessoa").child(model.getIdEmpresa()).child("nome").addListenerForSingleValueEvent(new ValueEventListener() {

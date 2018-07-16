@@ -156,10 +156,10 @@ public class MainHistoricoVendaPessoaJuridicaActivity extends AppCompatActivity
         queryHistoricoCompra.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChildren()){
+                if (dataSnapshot.exists()){
                     criarAdapterHistoricoVendas(queryHistoricoCompra);
                 }else {
-                    Helper.criarToast(getApplicationContext(), "VAZIO!");
+                    Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_historico_vazio));
                     progressDialog.dismiss();
                 }
             }

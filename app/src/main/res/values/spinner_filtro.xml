@@ -2,7 +2,7 @@
 <resources>
     <string-array name="spinner_tipo_filtro">
         <item>Selecione o tipo de filtro</item>
-        <item>Preço</item>
-        <item>Empresa</item>
+        <item>Menor-Maior preço</item>
+        <item>Maior-Menor preço</item>
     </string-array>
 </resources>

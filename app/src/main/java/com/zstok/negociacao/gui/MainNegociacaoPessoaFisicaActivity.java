@@ -1,5 +1,6 @@
 package com.zstok.negociacao.gui;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import com.zstok.R;
 import com.zstok.historico.gui.MainHistoricoCompraPessoaFisicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
+import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.negociacao.adapter.NegociacaoListHolder;
 import com.zstok.negociacao.dominio.Negociacao;
 import com.zstok.perfil.gui.PerfilPessoaFisicaActivity;
@@ -55,6 +57,8 @@ public class MainNegociacaoPessoaFisicaActivity extends AppCompatActivity
 
     private FirebaseUser user;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,14 +75,17 @@ public class MainNegociacaoPessoaFisicaActivity extends AppCompatActivity
         //Resgatando usuário atual
         user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
 
+        //Instanciando progress dialog
+        progressDialog = new ProgressDialog(this);
+
         //Instanciando recyler view
         recylerViewNegocicao = findViewById(R.id.recyclerNegociacaoPessoaFisica);
         recylerViewNegocicao.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(MainNegociacaoPessoaFisicaActivity.this);
         recylerViewNegocicao.setLayoutManager(layoutManager);
 
-        //Criando adapter
-        criarAdapterNegociacao();
+        //Criando adapter negociação
+        verificarQuery();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -135,49 +142,75 @@ public class MainNegociacaoPessoaFisicaActivity extends AppCompatActivity
         tvNomeUsuarioNavHeader.setText(user.getDisplayName());
         tvEmailUsuarioNavHeader.setText(user.getEmail());
     }
-    //Montando adapter e jogando no list holder
-    private void criarAdapterNegociacao() {
-        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("negociacao");
-        Query queryAdapter = databaseReference.orderByChild("idPessoaFisica").equalTo(FirebaseController.getUidUser());
-        if (queryAdapter != null) {
-            adapterNegociacao = new FirebaseRecyclerAdapter<Negociacao, NegociacaoListHolder>(
-                    Negociacao.class,
-                    R.layout.card_negociacao,
-                    NegociacaoListHolder.class,
-                    queryAdapter) {
-
-                @Override
-                protected void populateViewHolder(final NegociacaoListHolder viewHolder, final Negociacao model, int position) {
-                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
-                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
-
-                    viewHolder.tvCardViewDataInicio.setText(model.getDataInicio());
-                    if (model.getDataFim() == null){
-                        viewHolder.tvCardViewDataFim.setText("Indefinida");
-                    }else {
-                        viewHolder.tvCardViewDataFim.setText(model.getDataFim());
-                    }
-                    regatarNomeEmpresa(viewHolder, model);
-                }
-
-                @NonNull
-                @Override
-                public NegociacaoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
-                    final NegociacaoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
-                    viewHolder.setOnItemClickListener(new NegociacaoListHolder.ClickListener() {
-                        @Override
-                        public void onItemClick(View view, int position) {
-                            Negociacao negociacao = (Negociacao) adapterNegociacao.getItem(position);
-                            abrirTelaChatNegociacaoActivity(negociacao.getIdNegociacao());
-                        }
-                    });
-                    return viewHolder;
-                }
-            };
-            recylerViewNegocicao.setAdapter(adapterNegociacao);
-        }
+    //Método que inicia o progress dialog
+    private void iniciarProgressDialog() {
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_carregar_historico_venda));
+        progressDialog.show();
     }
+    //Método que cria o adapter de histórico
+    private void verificarQuery(){
+        iniciarProgressDialog();
+        DatabaseReference databaseReference = FirebaseController.getFirebase().child("negociacao");
+        final Query queryNegociacao = databaseReference.orderByChild("idPessoaFisica").equalTo(FirebaseController.getUidUser());
+        //Verificando query
+        queryNegociacao.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    criarAdapterNegociacao(queryNegociacao);
+                }else {
+                    Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_historico_vazio));
+                    progressDialog.dismiss();
+                }
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    //Montando adapter e jogando no list holder
+    private void criarAdapterNegociacao(Query queryNegociacao) {
+
+        adapterNegociacao = new FirebaseRecyclerAdapter<Negociacao, NegociacaoListHolder>(
+                Negociacao.class,
+                R.layout.card_negociacao,
+                NegociacaoListHolder.class,
+                queryNegociacao) {
+
+            @Override
+            protected void populateViewHolder(final NegociacaoListHolder viewHolder, final Negociacao model, int position) {
+                viewHolder.mainLayout.setVisibility(View.VISIBLE);
+                viewHolder.linearLayout.setVisibility(View.VISIBLE);
+
+                viewHolder.tvCardViewDataInicio.setText(model.getDataInicio());
+                if (model.getDataFim() == null){
+                    viewHolder.tvCardViewDataFim.setText("Indefinida");
+                }else {
+                    viewHolder.tvCardViewDataFim.setText(model.getDataFim());
+                }
+                regatarNomeEmpresa(viewHolder, model);
+            }
+
+            @NonNull
+            @Override
+            public NegociacaoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+                final NegociacaoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                viewHolder.setOnItemClickListener(new NegociacaoListHolder.ClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Negociacao negociacao = (Negociacao) adapterNegociacao.getItem(position);
+                        abrirTelaChatNegociacaoActivity(negociacao.getIdNegociacao());
+                    }
+                });
+                return viewHolder;
+            }
+        };
+        recylerViewNegocicao.setAdapter(adapterNegociacao);
+    }
+    //Regatando do banco de dados o nome da empresa responsável pelo produto
     private void regatarNomeEmpresa(final NegociacaoListHolder viewHolder, final Negociacao model) {
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

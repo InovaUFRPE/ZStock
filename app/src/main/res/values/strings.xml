@@ -125,6 +125,7 @@
     <string name="zs_excecao_carrinho_vazio">Carrinho vazio!</string>
     <string name="zs_excecao_compra_vazia">Carrinho vazio! Adicione itens ao carrinho.</string>
     <string name="zs_excecao_conexao_limite">Conexão limite atingida! Verifique sua conexão com a internet.</string>
+    <string name="zs_excecao_historico_vazio">Histórico vazio</string>
 
     <string name="zs_menu_lateral_perfil">Meu perfil</string>
     <string name="zs_menu_lateral_negociacao">Negociação</string>
