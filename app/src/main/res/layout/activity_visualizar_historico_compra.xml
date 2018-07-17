@@ -59,16 +59,16 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="62dp">
 
         <TextView
             android:id="@+id/tvTextoCnpjVisualizarHistorico"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="@string/zs_texto_cnpj_visualizar_historico"
             android:paddingLeft="@dimen/padding_left"
             android:paddingRight="@dimen/padding_left"
-            android:textSize="20sp"/>
+            android:text="@string/zs_texto_cnpj_visualizar_historico"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/tvCnpjVisualizarHistorico"
@@ -78,6 +78,15 @@
             android:layout_marginStart="70dp"
             android:gravity="center"
             android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btnVizualizarChat"
+            android:layout_width="wrap_content"
+            android:layout_height="37dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@color/goiaba"
+            android:text="Chat" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
@@ -85,7 +94,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="100dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:padding="16dp" />
 
     <RelativeLayout
@@ -97,8 +106,8 @@
             android:id="@+id/tvTextoTotalVisualizarHistorico"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center_horizontal"
             android:paddingLeft="@dimen/padding_left"
@@ -110,20 +119,23 @@
 
         <TextView
             android:id="@+id/tvTotalVisualizarHistorico"
-            android:layout_width="match_parent"
+            android:layout_width="238dp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_gravity="end"
-            android:layout_toRightOf="@id/tvTextoTotalVisualizarHistorico"
+            android:layout_marginEnd="3dp"
+            android:layout_marginRight="3dp"
             android:layout_toEndOf="@id/tvTextoTotalVisualizarHistorico"
+            android:layout_toRightOf="@id/tvTextoTotalVisualizarHistorico"
             android:gravity="center"
             android:paddingLeft="@dimen/padding_left"
             android:paddingRight="@dimen/padding_left"
             android:textColor="@color/preto"
             android:textSize="25sp"
             android:textStyle="bold" />
+
     </RelativeLayout>
 
 </LinearLayout>

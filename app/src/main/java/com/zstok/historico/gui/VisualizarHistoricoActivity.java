@@ -1,11 +1,13 @@
 package com.zstok.historico.gui;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -20,6 +22,7 @@ import com.zstok.historico.dominio.Historico;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.itemcompra.dominio.ItemCompra;
+import com.zstok.negociacao.gui.VizualizarChatActivity;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.produto.dominio.Produto;
 
@@ -32,6 +35,7 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
     private TextView tvCpfVisualizarHistorico;
     private TextView tvCnpjVisualizarHistorico;
     private TextView tvTotalVisualizarHistorico;
+    private Button btnVizualizarChat;
 
     private RecyclerView recyclerViewItens;
     private ProgressDialog progressDialog;
@@ -47,7 +51,6 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
         idHistorico = getIntent().getStringExtra("idHistorico");
 
         //Habilitando visualização do chat caso trate-se de uma negociação
-        habilitarChat();
 
         //Instanciando progress dialog
         progressDialog = new ProgressDialog(this);
@@ -58,6 +61,14 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
         tvCpfVisualizarHistorico =  findViewById(R.id.tvCpfVisualizarHistorico);
         tvCnpjVisualizarHistorico = findViewById(R.id.tvCnpjVisualizarHistorico);
         tvTotalVisualizarHistorico = findViewById(R.id.tvTotalVisualizarHistorico);
+        btnVizualizarChat = (Button) findViewById(R.id.btnVizualizarChat);
+
+        btnVizualizarChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                habilitarChat();
+            }
+        });
 
         //Aplicar máscara
         Helper.mascaraCnpj(tvCnpjVisualizarHistorico);
@@ -81,7 +92,10 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child("historico").child(idHistorico).child("idNegociacao").exists()){
-                    Helper.criarToast(getApplicationContext(), "Negociação");
+                    String idNegociacao = dataSnapshot.child("historico").child(idHistorico).child("idNegociacao").getValue(String.class);
+                    abrirTelaVizualizarNegociacao(idNegociacao);
+                }else{
+                    Helper.criarToast(getApplicationContext(),"Essa compra não possui negociação!");
                 }
             }
 
@@ -90,6 +104,11 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
 
             }
         });
+    }
+    private void abrirTelaVizualizarNegociacao(String idNegociacao){
+        Intent intent = new Intent(getApplicationContext(), VizualizarChatActivity.class);
+        intent.putExtra("idNegociacao",idNegociacao);
+        startActivity(intent);
     }
     //Verificando se a referência do banco existe
     private void verificarQuery() {

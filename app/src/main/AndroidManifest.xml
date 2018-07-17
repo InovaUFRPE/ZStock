@@ -78,6 +78,7 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".negociacao.gui.CarrinhoNegociacaoActivity" />
         <activity android:name=".negociacao.gui.ChatNegociacaoActivity" />
+        <activity android:name=".negociacao.gui.VizualizarChatActivity"></activity>
     </application>
 
 </manifest>
