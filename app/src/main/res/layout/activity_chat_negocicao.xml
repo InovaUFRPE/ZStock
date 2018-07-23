@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/border_cabernet"
     android:focusableInTouchMode="true"
     tools:context=".negociacao.gui.ChatNegociacaoActivity">
 
@@ -18,23 +20,24 @@
             android:id="@+id/tvNegociacaoNome"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:gravity="center_vertical"
-            android:layout_marginTop="10dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
             android:singleLine="true"
-            android:layout_marginStart="25dp"
             android:text="Nome"
-            android:textSize="25sp"
             android:textAllCaps="true"
-            android:layout_marginLeft="25dp" />
+            android:textSize="25sp" />
 
         <View
             android:id="@+id/vwNegociacaoNomeEmpresa"
-            android:layout_width="match_parent"
+            android:layout_width="306dp"
             android:layout_height="1dp"
-            android:layout_marginStart="25dp"
-            android:background="@color/goiaba"
             android:layout_below="@id/tvNegociacaoNome"
-            android:layout_marginLeft="25dp" />
+            android:layout_marginLeft="25dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="-12dp"
+            android:background="@color/goiaba" />
 
         <RelativeLayout
             android:id="@+id/rltBotoesNegociacao"
@@ -49,18 +52,13 @@
                 android:id="@+id/btnNegociacaoCarrinho"
                 android:layout_width="wrap_content"
                 android:layout_height="45dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginEnd="5dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
                 android:background="@color/goiaba"
                 android:text="Carrinho" />
 
         </RelativeLayout>
     </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/goiaba" />
 
     <RelativeLayout
         android:id="@+id/rltMensagensDaNegociacao"
@@ -72,13 +70,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:layout_marginBottom="62dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="2dp"
-            android:layout_marginBottom="62dp"
+            android:background="@drawable/border_cabernet"
+            android:divider="@color/cabernet"
             android:dividerHeight="1dp"
-            android:divider="@color/jabuticaba"
-            android:foregroundTint="@color/goiaba"/>
+            android:foregroundTint="@color/goiaba" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -87,15 +86,15 @@
 
             <EditText
                 android:id="@+id/edtNegociacaoBarraMensagem"
-                android:layout_width="match_parent"
+                android:layout_width="270dp"
                 android:layout_height="45dp"
-                android:layout_marginEnd="60dp"
-                android:layout_marginRight="60dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="15dp"
-                android:hint="Digite sua mensagem"
+
+
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="12dp"
                 android:background="@drawable/borda_enviar_mensagem"
+                android:hint="Digite sua mensagem"
                 android:inputType="text"
                 android:paddingLeft="30dp"
                 android:paddingRight="30dp"
@@ -105,18 +104,18 @@
                 android:id="@+id/btnNegociacaoEnviarMensagem"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="4dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="16dp"
                 android:background="@drawable/borda_goiaba"
                 android:drawableLeft="@drawable/ic_enviar_mensagem"
                 android:drawableStart="@drawable/ic_enviar_mensagem"
                 android:drawableTint="@color/white"
+                android:gravity="center_vertical|center_horizontal"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:gravity="center_vertical|center_horizontal"/>
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="16dp" />
         </RelativeLayout>
     </RelativeLayout>
 
