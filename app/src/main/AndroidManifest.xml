@@ -34,6 +34,7 @@
         <activity
             android:name=".pessoaFisica.gui.MainPessoaFisicaActivity"
             android:label="@string/title_activity_main_pessoa_fisica"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".perfil.gui.PerfilPessoaJuridicaActivity"

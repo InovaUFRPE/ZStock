@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@drawable/border_cabernet"
     android:focusableInTouchMode="true"
     tools:context=".negociacao.gui.ChatNegociacaoActivity">
 
@@ -74,7 +73,6 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="2dp"
-            android:background="@drawable/border_cabernet"
             android:divider="@color/cabernet"
             android:dividerHeight="1dp"
             android:foregroundTint="@color/goiaba" />
@@ -98,24 +96,24 @@
                 android:inputType="text"
                 android:paddingLeft="30dp"
                 android:paddingRight="30dp"
-                android:paddingStart="30dp" />
+                android:paddingStart="30dp"
+                android:layout_marginLeft="12dp"
+                android:layout_alignParentLeft="true" />
 
             <Button
                 android:id="@+id/btnNegociacaoEnviarMensagem"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginEnd="16dp"
+                android:layout_toEndOf="@+id/edtNegociacaoBarraMensagem"
+                android:layout_toRightOf="@+id/edtNegociacaoBarraMensagem"
                 android:background="@drawable/borda_goiaba"
                 android:drawableLeft="@drawable/ic_enviar_mensagem"
                 android:drawableStart="@drawable/ic_enviar_mensagem"
                 android:drawableTint="@color/white"
                 android:gravity="center_vertical|center_horizontal"
                 android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="16dp" />
+                android:paddingRight="10dp" />
         </RelativeLayout>
     </RelativeLayout>
 
