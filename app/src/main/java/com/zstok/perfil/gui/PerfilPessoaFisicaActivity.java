@@ -2,13 +2,13 @@ package com.zstok.perfil.gui;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -21,28 +21,33 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.zstok.R;
+import com.zstok.historico.gui.MainHistoricoCompraPessoaFisicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
-import com.zstok.perfil.negocio.PerfilServices;
+import com.zstok.negociacao.gui.MainNegociacaoPessoaFisicaActivity;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.pessoaFisica.dominio.PessoaFisica;
 import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -52,13 +57,15 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
 
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int GALERY_REQUEST_CODE = 71;
+    private static final int PERMISSION_REQUEST = 0;
 
     private AlertDialog alertaSair;
 
     private TextView tvNomeUsuarioNavHeader;
     private TextView tvEmailUsuarioNavHeader;
-    private CircleImageView cvPerfilPessoaFisica;
     private CircleImageView cvNavHeaderPessoa;
+
+    private CircleImageView cvPerfilPessoaFisica;
     private TextView tvNomePerfilFisico;
     private TextView tvEmailPerfilFisico;
     private TextView tvCpfPerfilFisico;
@@ -72,6 +79,8 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
 
     private ProgressDialog progressDialog;
 
+    private StorageReference storageReference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,11 +88,17 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Solicitando permissão ao usuário, caso o mesmo ainda não tenha permitido a solicitação
+        permissaoGravarLerArquivos();
+
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        //Instanciando storage
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         //Resgatando usuário atual
         user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
@@ -102,19 +117,15 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         tvTelefonePerfilFisico =  findViewById(R.id.tvTelefonePerfilFisico);
         tvEnderecoPerfilFisico = findViewById(R.id.tvEnderecoPerfilFisico);
         tvDataNascimentoPerfilFisico = findViewById(R.id.tvDataNascimentoPerfilFisico);
-        TextView tvEnderecoPerfilFisico = findViewById(R.id.tvEnderecoPerfilFisico);
 
-        //Solicitando permissão ao usuário, caso o mesmo ainda não tenha permitido a solicitação
-        permissaoGravarLerArquivos();
+        //Habilitando o scrollbars do TextView (quando necessário o scroll irá aparecer)
+        habilitarScrollBars();
 
         //Instanciando views do menu lateral
-        instanciandoView();
+        instanciandoViews();
 
         //Carregar dados do menu lateral
         setDadosMenuLateral();
-
-        //Carregando foto do banco de dados e setando para o ImageView
-        carregarFoto();
 
         //Recuperando dados do usuário do banco
         recuperarDados();
@@ -128,15 +139,18 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.nav_meu_perfil_fisico:
+                    case R.id.nav_meu_perfil_pessoa_fisica:
                         drawer.closeDrawers();
                         return true;
-                    case R.id.nav_negociacao_fisico:
+                    case R.id.nav_negociacao_pessoa_fisica:
                         //Intent para tela de negocicao
-                        Helper.criarToast(getApplicationContext(), "Em construção...");
+                        abrirTelaMainNegociacaoPessoaFisicaActivity();
                         return true;
-                    case R.id.nav_produtos_fisico:
+                    case R.id.nav_produtos_pessoa_fisica:
                         abrirTelaMainPessoaFisicaActivity();
+                        return true;
+                    case R.id.nav_meu_historico_compra_pessoa_fisica:
+                        abrirTelaMainHistoricoPessoaFisicaActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -203,10 +217,15 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
             }
         });
     }
+    //Método que habilita o scrollbars do TextView endereço
+    private void habilitarScrollBars() {
+        tvEnderecoPerfilFisico.setMaxLines(Integer.MAX_VALUE);
+        tvEnderecoPerfilFisico.setMovementMethod(new ScrollingMovementMethod());
+    }
+    //Método que recupera os dados do perfil
     private void recuperarDados(){
-        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
-        progressDialog.show();
-        FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
+        iniciarProgressDialog();
+        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Pessoa pessoa = dataSnapshot.child("pessoa").child(FirebaseController.getUidUser()).getValue(Pessoa.class);
@@ -214,6 +233,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
 
                 if (pessoa != null && pessoaFisica != null){
                     setInformacoesPerfil(pessoa, pessoaFisica);
+                    carregarFoto();
                 }
             }
 
@@ -223,7 +243,26 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
             }
         });
     }
-    private void instanciandoView(){
+    //Iniciando progress dialog
+    private void iniciarProgressDialog() {
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
+        progressDialog.show();
+    }
+    //Resgatando url da foto que encontra-se na camada de autenticação
+    private void carregarFoto(){
+        if (user != null) {
+            if (user.getPhotoUrl() != null) {
+                Glide.with(this).load(user.getPhotoUrl()).into(cvPerfilPessoaFisica);
+                progressDialog.dismiss();
+            }else {
+                cvNavHeaderPessoa.setImageResource(R.drawable.ic_sem_foto);
+            }
+        }
+        progressDialog.dismiss();
+    }
+    //Instanciando views do menu lateral
+    private void instanciandoViews(){
         View headerView = navigationView.getHeaderView(0);
         tvNomeUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderNome);
         tvEmailUsuarioNavHeader = headerView.findViewById(R.id.tvNavHeaderEmail);
@@ -231,17 +270,18 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     }
     private void setInformacoesPerfil(Pessoa pessoa, PessoaFisica pessoaFisica){
         tvNomePerfilFisico.setText(pessoa.getNome());
-        tvEmailPerfilFisico.setText(FirebaseController.getFirebaseAuthentication().getCurrentUser().getEmail());
+        tvEmailPerfilFisico.setText(user.getEmail());
         tvCpfPerfilFisico.setText(pessoaFisica.getCpf());
         tvTelefonePerfilFisico.setText(pessoa.getTelefone());
         tvEnderecoPerfilFisico.setText(pessoa.getEndereco());
         tvDataNascimentoPerfilFisico.setText(pessoaFisica.getDataNascimento());
-        progressDialog.dismiss();
     }
     //Carregando informações do menu lateral
     private void setDadosMenuLateral(){
         if (user.getPhotoUrl() != null){
             Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
+        }else {
+            cvNavHeaderPessoa.setImageResource(R.drawable.ic_sem_foto);
         }
         tvNomeUsuarioNavHeader.setText(user.getDisplayName());
         tvEmailUsuarioNavHeader.setText(user.getEmail());
@@ -249,27 +289,18 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     //Permissão para ler e gravar arquivos do celular
     private void permissaoGravarLerArquivos(){
         //Trecho adiciona permissão de ler arquivos
-        int PERMISSION_REQUEST = 0;
+        int permissionCheckRead = ContextCompat.checkSelfPermission(PerfilPessoaFisicaActivity.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE);
 
-        if(ContextCompat.checkSelfPermission(PerfilPessoaFisicaActivity.this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+        if(permissionCheckRead != PackageManager.PERMISSION_GRANTED){
             //Não tem permissão: solicitar
             if(ActivityCompat.shouldShowRequestPermissionRationale(PerfilPessoaFisicaActivity.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)){
-
+                ActivityCompat.requestPermissions(this, new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST);
             }else{
                 ActivityCompat.requestPermissions(PerfilPessoaFisicaActivity.this,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST);
-            }
-        }
-        //Trecho adiciona permissão de gravar arquivos
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST);
             }
         }
     }
@@ -315,25 +346,14 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                     break;
                 }
             }
+            case PERMISSION_REQUEST:{
+                if (!(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)){
+                    abrirTelaMainPessoaFisicaActivity();
+                    break;
+                }
+            }
         }
     }
-    /*
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
-    }
-    */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -345,8 +365,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                     uriFoto = data.getData();
                     try{
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFoto);
-                        cvNavHeaderPessoa.setImageBitmap(bitmap);
-                        cvPerfilPessoaFisica.setImageBitmap(bitmap);
+                        setFotoCircleView(bitmap);
                         inserirFoto(uriFoto);
                     }catch(IOException e ){
                         Log.d("IOException upload", e.getMessage());
@@ -359,9 +378,8 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
                         Bundle extras = data.getExtras();
                         if (extras != null) {
                             Bitmap bitmap = (Bitmap) extras.get("data");
-                            uriFoto = getImageUri(getApplicationContext(), bitmap);
-                            cvPerfilPessoaFisica.setImageBitmap(bitmap);
-                            cvNavHeaderPessoa.setImageBitmap(bitmap);
+                            setFotoCircleView(bitmap);
+                            uriFoto = Helper.getImageUri(getApplicationContext(), bitmap);
                             inserirFoto(uriFoto);
                         }
                     }
@@ -369,26 +387,32 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
             }
         }
     }
+    //Método que seta foto do perfil e menu lateral
+    private void setFotoCircleView(Bitmap bitmap) {
+        cvPerfilPessoaFisica.setImageBitmap(bitmap);
+        cvNavHeaderPessoa.setImageBitmap(bitmap);
+    }
     //Inserindo imagem no banco
     private void inserirFoto(Uri uriFoto){
-        PerfilServices.insereFoto(uriFoto);
-    }
-    //Resgatando foto do Storage
-    private void carregarFoto(){
-        if (user != null) {
-            if (user.getPhotoUrl() != null) {
-                Glide.with(this).load(user.getPhotoUrl()).into(cvPerfilPessoaFisica);
+        iniciarProgressDialog();
+
+        StorageReference ref = storageReference.child("images/perfil/" + FirebaseController.getUidUser() + ".bmp");
+        ref.putFile(uriFoto).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                String urlImagem = taskSnapshot.getDownloadUrl().toString();
+                FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
+                if (user != null && urlImagem != null) {
+                    UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
+                            .setPhotoUri(Uri.parse(urlImagem))
+                            .build();
+                    user.updateProfile(profileChangeRequest);
+                }
+                progressDialog.dismiss();
             }
-        }
+        });
     }
-    //Obtendo URI da imagem
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
-    //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
+    //Método que exibe a caixa de diálogo para o usuário confirmar ou não a sua saída do sistema
     private void sair () {
         //Cria o gerador do AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -423,27 +447,7 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-    @Override
-    public boolean onCreateOptionsMenu (Menu menu){
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.perfil_pessoa_fisica, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected (MenuItem item){
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // com.zstok.perfil.persistencia.PerfilDAO you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected (MenuItem item){
@@ -454,12 +458,6 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-    //Intent para tela de login
-    private void abrirTelaLoginActivity () {
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(intent);
-        finish();
     }
     //Intent para tela main
     private void abrirTelaMainPessoaFisicaActivity() {
@@ -495,5 +493,21 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
     private void abrirTelaAlterarDataNascimentoActivity() {
         Intent intent = new Intent(getApplicationContext(), AlterarDataNascimentoPessoaFisicaActivity.class);
         startActivity(intent);
+    }
+    //Intent para a tela de histórico pessoa física, onde estão os produtos
+    private void abrirTelaMainHistoricoPessoaFisicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoCompraPessoaFisicaActivity.class);
+        startActivity(intent);
+    }
+    //Intent para a tela de negociação
+    private void abrirTelaMainNegociacaoPessoaFisicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainNegociacaoPessoaFisicaActivity.class);
+        startActivity(intent);
+    }
+    //Intent para tela de login
+    private void abrirTelaLoginActivity () {
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

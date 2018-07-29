@@ -2,6 +2,8 @@ package com.zstok.produto.negocio;
 
 import android.net.Uri;
 
+import com.google.firebase.database.DataSnapshot;
+import com.zstok.itemcompra.dominio.ItemCompra;
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.persistencia.ProdutoDAO;
 
@@ -16,7 +18,8 @@ public class ProdutoServices {
         return ProdutoDAO.alterarProdutoVerificador(produto);
     }
     //Método provisório
-    public static boolean comprarProduto(String idProduto, int novaQuantidade){
-        return ProdutoDAO.comprarProduto(idProduto, novaQuantidade);
+    public static boolean adicionarProdutoCarrinho(ItemCompra itemCompra, DataSnapshot dataSnapshot){
+        return ProdutoDAO.adicionarProdutoCarrinho(itemCompra, dataSnapshot);
     }
+
 }

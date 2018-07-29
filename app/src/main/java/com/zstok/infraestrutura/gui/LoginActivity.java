@@ -23,7 +23,7 @@ import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.pessoa.gui.RegistroActivity;
-import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
+import com.zstok.negociacao.gui.MainNegociacaoPessoaJuridicaActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -155,6 +155,11 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+    }
+
     //Transição para a tela de registro
     private void abrirTelaRegistro(){
         Intent intent = new Intent(getApplicationContext(), RegistroActivity.class);
@@ -167,7 +172,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     //Transição para a tela de pessoa jurídica
     private void abrirTelaPessoaJuridica(){
-        Intent intent = new Intent(getApplicationContext(), MainPessoaJuridicaActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainNegociacaoPessoaJuridicaActivity.class);
         startActivity(intent);
     }
     //Transição para a tela de recuperação de senha

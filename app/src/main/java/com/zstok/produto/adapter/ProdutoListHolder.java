@@ -20,20 +20,18 @@ public class ProdutoListHolder extends RecyclerView.ViewHolder implements View.O
     public View linearLayout;
     private ProdutoListHolder.ClickListener itemClickListener;
 
-
     public ProdutoListHolder(final View itemView) {
         super(itemView);
 
         imgCardViewProduto = itemView.findViewById(R.id.imgCardViewProduto);
-        tvCardViewNomeProduto = itemView.findViewById(R.id.nomeCardViewProduto);
-        tvCardViewPrecoProduto = itemView.findViewById(R.id.precoCardViewProduto);
-        tvCardViewQuantidadeEstoque = itemView.findViewById(R.id.quantidadeCardViewProduto);
-        tvCardViewNomeEmpresa = itemView.findViewById(R.id.nomeEmpresaCardViewProduto);
+        tvCardViewNomeProduto = itemView.findViewById(R.id.tvNomeCardViewProduto);
+        tvCardViewPrecoProduto = itemView.findViewById(R.id.tvPrecoCardViewProduto);
+        tvCardViewQuantidadeEstoque = itemView.findViewById(R.id.tvQuantidadeCardViewProduto);
+        tvCardViewNomeEmpresa = itemView.findViewById(R.id.tvNomeEmpresaCardViewProduto);
         mainLayout = itemView.findViewById(R.id.cardViewProduto);
         linearLayout = itemView.findViewById(R.id.produtoCard);
 
         itemView.setOnClickListener(this);
-
     }
 
     @Override

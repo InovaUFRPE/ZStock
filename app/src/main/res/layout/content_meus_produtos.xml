@@ -44,8 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="100dp"
-        android:padding="16dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:padding="16dp" />
 
     <android.support.design.widget.AppBarLayout
         android:layout_height="wrap_content"

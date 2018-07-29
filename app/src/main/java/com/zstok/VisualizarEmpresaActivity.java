@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -64,6 +65,9 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
         tvEnderecoEmpresa = findViewById(R.id.tvEnderecoEmpresa);
         cvImagemPerfilEmpresa = findViewById(R.id.cvEmpresa);
 
+        //Habilitando o scrollbars do TextView (quando necessário o scroll irá aparecer)
+        habilitarScrollBars();
+
         //Instanciando referência do storage
         referenciaStorage = FirebaseStorage.getInstance().getReference();
 
@@ -76,7 +80,7 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
         });
 
         //Resgatando foto do perfil da empresa
-        downloadFoto();
+        recuperarFoto();
 
         //Aplicando máscaras aos campos de cnpj e telefone
         aplicarMascaras();
@@ -84,10 +88,14 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
         //Recuperando dados do firebase
         recuperarDados();
     }
+    //Método que habilita o scrollbars do TextView endereço
+    private void habilitarScrollBars() {
+        tvEnderecoEmpresa.setMaxLines(Integer.MAX_VALUE);
+        tvEnderecoEmpresa.setMovementMethod(new ScrollingMovementMethod());
+    }
     //Resgatando foto do Storage
-    private void downloadFoto(){
-        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
-        progressDialog.show();
+    private void recuperarFoto(){
+        iniciarProgressDialog();
         StorageReference ref = referenciaStorage.child("images/perfil/" + idEmpresa + ".bmp");
 
         try {
@@ -127,6 +135,13 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
             }
         });
     }
+    //Método que inicia o progress dialog
+    private void iniciarProgressDialog() {
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_perfil));
+        progressDialog.show();
+    }
+    //Aplicando máscaras nos campos cnpjs e telefone
     private void aplicarMascaras(){
         Helper.mascaraCnpj(tvCnpjEmpresa);
         Helper.mascaraTelefone(tvTelefoneEmpresa);

@@ -1,14 +1,8 @@
 package com.zstok.perfil.persistencia;
 
-import android.net.Uri;
-
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseException;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.pessoa.dominio.Pessoa;
 import com.zstok.pessoaFisica.dominio.PessoaFisica;
@@ -16,34 +10,14 @@ import com.zstok.pessoaJuridica.dominio.PessoaJuridica;
 
 public class PerfilDAO {
 
-    private static StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-    private static String uriImagemPerfil;
+    private static FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
 
-    //Inserindo imagem no banco
-    public static void insereFoto(Uri uriFoto) {
-        if (uriFoto != null) {
-            StorageReference ref = storageReference.child("images/perfil/" + FirebaseController.getUidUser() + ".bmp");
-            ref.putFile(uriFoto).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    uriImagemPerfil = taskSnapshot.getDownloadUrl().toString();
-                    FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
-                    if (user != null && uriImagemPerfil != null) {
-                        UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
-                                .setPhotoUri(Uri.parse(uriImagemPerfil))
-                                .build();
-                        user.updateProfile(profileChangeRequest);
-                    }
-                }
-            });
-        }
-    }
+    //Inserindo nome no banco
     public static boolean insereNome(String novoNome){
         boolean verificador;
 
         try {
             FirebaseController.getFirebase().child("pessoa").child(FirebaseController.getUidUser()).child("nome").setValue(novoNome);
-            FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
             if (user != null) {
                 UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
                         .setDisplayName(novoNome)
@@ -56,28 +30,20 @@ public class PerfilDAO {
         }
         return verificador;
     }
+    //Inserindo email no banco
     public static boolean insereEmail(final String novoEmail) {
         boolean verificador = true;
 
         try {
-            FirebaseController.getFirebaseAuthentication().getCurrentUser().updateEmail(novoEmail);
-            /*
-            <<Reautenticação>>
-            FirebaseUser user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
-            AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), senha);
-
-            user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                }
-            });
-            */
-
+            if (user != null){
+                user.updateEmail(novoEmail);
+            }
         } catch (DatabaseException e) {
             verificador = false;
         }
         return verificador;
     }
+    //Inserindo telefone no banco
     public static boolean insereTelefone(Pessoa pessoa){
         boolean verificador;
 
@@ -89,6 +55,7 @@ public class PerfilDAO {
         }
         return verificador;
     }
+    //Inserindo endereço no banco
     public static boolean insereEndereco(Pessoa pessoa){
         boolean verificador = true;
 
@@ -99,6 +66,7 @@ public class PerfilDAO {
         }
         return verificador;
     }
+    //Inserindo cpf no banco
     public static boolean insereCpf(PessoaFisica pessoaFisica){
         boolean verificador = true;
 
@@ -109,6 +77,7 @@ public class PerfilDAO {
         }
         return verificador;
     }
+    //Inserindo cnpj no banco
     public static boolean insereCnpj(PessoaJuridica pessoaJuridica){
         boolean verificador = true;
 
@@ -119,6 +88,7 @@ public class PerfilDAO {
         }
         return verificador;
     }
+    //Inserindo data de nascimento no banco
     public static boolean insereDataNascimento(PessoaFisica pessoaFisica){
         boolean verificador = true;
 
@@ -129,7 +99,7 @@ public class PerfilDAO {
         }
         return verificador;
     }
-
+    //Inserindo razão social no banco
     public static boolean insereRazaoSocial(PessoaJuridica pessoaJuridica){
         boolean verificador = true;
 
@@ -140,5 +110,4 @@ public class PerfilDAO {
         }
         return verificador;
     }
-
 }

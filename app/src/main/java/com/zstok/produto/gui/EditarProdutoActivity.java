@@ -1,5 +1,6 @@
 package com.zstok.produto.gui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -7,16 +8,18 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.zstok.R;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
@@ -25,7 +28,6 @@ import com.zstok.infraestrutura.utils.VerificaConexao;
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
 
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -35,8 +37,6 @@ public class EditarProdutoActivity extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int GALERY_REQUEST_CODE = 71;
-
-    private Bitmap bitmapCadastrarProduto;
 
     private String idProduto;
 
@@ -48,12 +48,26 @@ public class EditarProdutoActivity extends AppCompatActivity {
 
     private VerificaConexao verificaConexao;
 
+    private Uri uriFoto;
+
+    private ProgressDialog progressDialogCarregandoInformacoes;
+    private ProgressDialog progressDialogAlterandoProduto;
+    private StorageReference storageReference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editar_produto);
 
+        //Resgatando id do produto enviado pela intent
         idProduto = getIntent().getStringExtra("idProduto");
+
+        //Instanciando progress dialog
+        progressDialogCarregandoInformacoes = new ProgressDialog(this);
+        progressDialogAlterandoProduto = new ProgressDialog(this);
+
+        //Instanciando storage
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         cvImagemProduto = findViewById(R.id.cvEditarProduto);
         edtNomeProduto = findViewById(R.id.edtNomeProduto);
@@ -67,25 +81,8 @@ public class EditarProdutoActivity extends AppCompatActivity {
         Locale mLocale = new Locale("pt", "BR");
         edtPrecoProduto.addTextChangedListener(new MoneyTextWatcher(edtPrecoProduto,mLocale));
 
-        FirebaseController.getFirebase().child("produto") .child(idProduto)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Produto produto = dataSnapshot.getValue(Produto.class);
-                if (produto != null) {
-                    if (produto.getBitmapImagemProduto() != null) {
-                        Glide.with(getApplicationContext()).load(Helper.stringToBitMap(produto.getBitmapImagemProduto())).into(cvImagemProduto);
-                    }
-                    edtNomeProduto.setText(produto.getNomeProduto());
-                    edtPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
-                    edtQuantidadeEstoqueProduto.setText(String.valueOf(produto.getQuantidadeEstoque()));
-                    edtDescricaoProduto.setText(produto.getDescricao());
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+        //Recuperando informações do produto
+        recuperarProduto();
 
         Button btnAlterarProduto = findViewById(R.id.btnAlterarProduto);
 
@@ -94,6 +91,7 @@ public class EditarProdutoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (validarCampos()){
                     if (verificaConexao.isConected()){
+                        iniciarProgressDialogAlterarProduto();
                         alterarProduto(criarProduto());
                     }
                 }
@@ -115,6 +113,40 @@ public class EditarProdutoActivity extends AppCompatActivity {
                 tirarFoto();
             }
         });
+    }
+
+    private void recuperarProduto() {
+        iniciarProgressDialogCarregarInformaçoes();
+        FirebaseController.getFirebase().child("produto").child(idProduto)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Produto produto = dataSnapshot.getValue(Produto.class);
+                if (produto != null) {
+                    if (produto.getUrlImagem() != null) {
+                        recuperarFoto(produto.getUrlImagem());
+                    }else {
+                        cvImagemProduto.setImageResource(R.drawable.ic_produtos);
+                        progressDialogCarregandoInformacoes.dismiss();
+                    }
+                    edtNomeProduto.setText(produto.getNome());
+                    edtPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
+                    edtQuantidadeEstoqueProduto.setText(String.valueOf(produto.getQuantidadeEstoque()));
+                    edtDescricaoProduto.setText(produto.getDescricao());
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    //Resgatando foto do Storage
+    private void recuperarFoto(String urlImagemProduto){
+        if (urlImagemProduto != null) {
+            Glide.with(EditarProdutoActivity.this).load(Uri.parse(urlImagemProduto)).into(cvImagemProduto);
+        }
+        progressDialogCarregandoInformacoes.dismiss();
     }
     //Validar campos
     private boolean validarCampos(){
@@ -146,22 +178,60 @@ public class EditarProdutoActivity extends AppCompatActivity {
     private Produto criarProduto(){
         Produto produto = new Produto();
 
-        produto.setNomeProduto(edtNomeProduto.getText().toString());
+        produto.setNome(edtNomeProduto.getText().toString());
+        produto.setNomePesquisa(Helper.removerAcentos(edtNomeProduto.getText().toString().toLowerCase()));
         produto.setPrecoSugerido(MoneyTextWatcher.convertToBigDecimal(edtPrecoProduto.getText().toString()).doubleValue());
         produto.setQuantidadeEstoque(Integer.valueOf(edtQuantidadeEstoqueProduto.getText().toString()));
         produto.setDescricao(edtDescricaoProduto.getText().toString());
         produto.setIdProduto(idProduto);
-        if (bitmapCadastrarProduto != null) {
-            produto.setBitmapImagemProduto(Helper.bitMapToString(bitmapCadastrarProduto));
-        }
+
         return produto;
+    }
+    //Método que inicia o progress dialog para carregar informações
+    private void iniciarProgressDialogCarregarInformaçoes() {
+        progressDialogCarregandoInformacoes.setCanceledOnTouchOutside(false);
+        progressDialogCarregandoInformacoes.setTitle(getString(R.string.zs_titulo_progress_dialog_carregar_informacoes_produto));
+        progressDialogCarregandoInformacoes.show();
+    }
+    //Método que inicia o progress dialog
+    private void iniciarProgressDialogAlterarProduto() {
+        progressDialogCarregandoInformacoes.setCanceledOnTouchOutside(false);
+        progressDialogCarregandoInformacoes.setTitle(getString(R.string.zs_titulo_progress_dialog_alterar_produto));
+        progressDialogCarregandoInformacoes.show();
+    }
+    //Inserindo foto no banco
+    private void inserirFoto(final Produto produto){
+        StorageReference reference = storageReference.child("images/produtos/" + FirebaseController.getUidUser() + "/" + produto.getIdProduto() + ".bmp");
+        reference.putFile(uriFoto).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                final Uri donwloadUri = taskSnapshot.getDownloadUrl();
+                if (donwloadUri != null) {
+                    FirebaseController.getFirebase().child("produto").child(produto.getIdProduto()).child("urlImagem").setValue(donwloadUri.toString());
+                    finalizarAlteracao();
+                }else {
+                    progressDialogAlterandoProduto.dismiss();
+                    Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
+                }
+            }
+        });
+    }
+    //Finalizando alteração do produto
+    private void finalizarAlteracao() {
+        progressDialogCarregandoInformacoes.dismiss();
+        Helper.criarToast(getApplicationContext(), getString(R.string.zs_produto_alterado_sucesso));
+        abrirTelaMeusProdutosActivity();
     }
     //Inserindo imagem no banco
     private void alterarProduto(Produto produto){
         if (ProdutoServices.alterarProduto(produto)){
-            Helper.criarToast(getApplicationContext(), getString(R.string.zs_produto_alterado_sucesso));
-            abrirTelaMeusProdutosActivity();
+            if (uriFoto != null) {
+                inserirFoto(produto);
+            }else {
+                finalizarAlteracao();
+            }
         } else {
+            progressDialogAlterandoProduto.dismiss();
             Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
         }
     }
@@ -184,16 +254,11 @@ public class EditarProdutoActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case GALERY_REQUEST_CODE:
-                Uri uriFoto;
+                Bitmap bitmapCadstrarProduto;
             {
                 if (requestCode == GALERY_REQUEST_CODE && resultCode == RESULT_OK) {
                     uriFoto = data.getData();
-                    try{
-                        bitmapCadastrarProduto = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFoto);
-                        cvImagemProduto.setImageBitmap(bitmapCadastrarProduto);
-                    }catch(IOException e ){
-                        Log.d("IOException upload", e.getMessage());
-                    }
+                    Glide.with(EditarProdutoActivity.this).load(uriFoto).into(cvImagemProduto);
                 }
             }
             case CAMERA_REQUEST_CODE: {
@@ -201,8 +266,9 @@ public class EditarProdutoActivity extends AppCompatActivity {
                     if (data != null) {
                         Bundle extras = data.getExtras();
                         if (extras != null) {
-                            bitmapCadastrarProduto = (Bitmap) extras.get("data");
-                            cvImagemProduto.setImageBitmap(bitmapCadastrarProduto);
+                            bitmapCadstrarProduto = (Bitmap) extras.get("data");
+                            uriFoto = Helper.getImageUri(getApplicationContext(), bitmapCadstrarProduto);
+                            cvImagemProduto.setImageBitmap(bitmapCadstrarProduto);
                         }
                     }
                 }

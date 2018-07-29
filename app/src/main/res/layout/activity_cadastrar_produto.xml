@@ -71,7 +71,7 @@
             android:drawableTint="@color/white"
             android:drawablePadding="@dimen/drawable_padding"
             android:paddingLeft="@dimen/padding_left"
-            android:paddingStart="@dimen/padding_left"
+            android:paddingRight="@dimen/padding_left"
             android:inputType="text"/>
 
         <EditText
@@ -91,7 +91,7 @@
             android:drawableTint="@color/white"
             android:drawablePadding="@dimen/drawable_padding"
             android:paddingLeft="@dimen/padding_left"
-            android:paddingStart="@dimen/padding_left"
+            android:paddingRight="@dimen/padding_left"
             android:inputType="numberDecimal"/>
 
         <EditText
@@ -110,7 +110,7 @@
             android:drawableTint="@color/white"
             android:drawablePadding="@dimen/drawable_padding"
             android:paddingLeft="@dimen/padding_left"
-            android:paddingStart="@dimen/padding_left"
+            android:paddingRight="@dimen/padding_left"
             android:inputType="number"/>
 
         <EditText
@@ -120,10 +120,11 @@
             android:layout_below="@id/edtQuantidadeEstoqueProduto"
             android:layout_margin="5dp"
             android:drawableLeft="@drawable/ic_editar"
+            android:drawableStart="@drawable/ic_editar"
             android:drawableTint="@color/white"
             android:drawablePadding="@dimen/drawable_padding"
             android:paddingLeft="@dimen/padding_left"
-            android:paddingStart="@dimen/padding_left"
+            android:paddingRight="@dimen/padding_left"
             android:hint="@string/zs_hint_descricao_produto"
             android:paddingBottom="70dp"
             android:maxLength="1000"
@@ -139,7 +140,7 @@
             android:layout_marginTop="15dp"
             android:layout_below="@id/edtDescricaoProduto"
             android:layout_centerInParent="true"
-            android:background="@drawable/border_white"
+            android:background="@drawable/borda_jabuticaba"
             android:backgroundTint="@color/goiaba"
             android:text="@string/zs_btn_cadastrar" />
 

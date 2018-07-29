@@ -34,13 +34,14 @@
         <activity
             android:name=".pessoaFisica.gui.MainPessoaFisicaActivity"
             android:label="@string/title_activity_main_pessoa_fisica"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".perfil.gui.PerfilPessoaJuridicaActivity"
             android:label="@string/title_activity_perfil_pessoa_juridica"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".pessoaJuridica.gui.MainPessoaJuridicaActivity"
+            android:name=".negociacao.gui.MainNegociacaoPessoaJuridicaActivity"
             android:label="@string/title_activity_main_pessoa_juridica"
             android:theme="@style/AppTheme" />
         <activity android:name=".perfil.gui.AlterarEmailPessoaActivity" />
@@ -58,7 +59,27 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".produto.gui.EditarProdutoActivity" />
         <activity android:name=".produto.gui.VisualizarProdutoActivity" />
-        <activity android:name=".VisualizarEmpresaActivity"></activity>
+        <activity android:name=".VisualizarEmpresaActivity" />
+        <activity
+            android:name=".carrinhoCompra.gui.CarrinhoCompraActivity"
+            android:label="@string/title_activity_carrinho_compra"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".historico.gui.MainHistoricoCompraPessoaFisicaActivity"
+            android:label="@string/zs_menu_lateral_historico_pessoa_fisica"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".historico.gui.MainHistoricoVendaPessoaJuridicaActivity"
+            android:label="@string/zs_menu_lateral_historico_pessoa_juridica"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".historico.gui.VisualizarHistoricoActivity" />
+        <activity
+            android:name=".negociacao.gui.MainNegociacaoPessoaFisicaActivity"
+            android:label="@string/title_activity_negociacao"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".negociacao.gui.CarrinhoNegociacaoActivity" />
+        <activity android:name=".negociacao.gui.ChatNegociacaoActivity" />
+        <activity android:name=".negociacao.gui.VizualizarChatActivity"></activity>
     </application>
 
 </manifest>

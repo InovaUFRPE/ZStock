@@ -71,8 +71,8 @@
             android:drawableTint="@color/white"
             android:drawablePadding="@dimen/drawable_padding"
             android:paddingLeft="@dimen/padding_left"
+            android:paddingRight="@dimen/padding_left"
             android:backgroundTint="@color/cimento"
-            android:paddingStart="@dimen/padding_left"
             android:inputType="text"/>
 
         <EditText
@@ -82,6 +82,7 @@
             android:gravity="center_vertical"
             android:hint="@string/zs_hint_preco_produto"
             android:textSize="18sp"
+            android:maxLength="11"
             android:textColor="@color/cloudGrey"
             android:textColorHint="@color/cimento"
             android:layout_margin="5dp"
@@ -91,8 +92,7 @@
             android:drawableTint="@color/white"
             android:drawablePadding="@dimen/drawable_padding"
             android:paddingLeft="@dimen/padding_left"
-            android:paddingStart="@dimen/padding_left"
-            android:backgroundTint="@color/cimento"
+            android:paddingRight="@dimen/padding_left"
             android:inputType="numberDecimal"/>
 
         <EditText
@@ -141,7 +141,7 @@
             android:layout_marginTop="15dp"
             android:layout_below="@id/edtDescricaoProduto"
             android:layout_centerInParent="true"
-            android:background="@drawable/border_white"
+            android:background="@drawable/borda_jabuticaba"
             android:backgroundTint="@color/goiaba"
             android:text="@string/zs_btn_alterar" />
 

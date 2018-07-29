@@ -21,7 +21,7 @@
     <string name="zs_hint_endereco_usuario">Endereço</string>
     <string name="zs_hint_razao_social">Razão Social</string>
     <string name="zs_hint_nome_fantasia">Nome fantasia</string>
-    <string name="zs_hint_novo_nome">Digite novo nomeProduto</string>
+    <string name="zs_hint_novo_nome">Digite novo nome</string>
     <string name="zs_hint_novo_telefone">Digite novo telefone</string>
     <string name="zs_hint_novo_email">Digite novo email</string>
     <string name="zs_hint_digite_senha">Digite sua senha</string>
@@ -30,29 +30,41 @@
     <string name="zs_hint_cidade_alterar_perfil">Digite sua cidade</string>
     <string name="zs_hint_cpf_atual_alterar_perfil">Digite seu cpf atual</string>
     <string name="zs_hint_cpf_alterar_perfil">Digite novo cpf</string>
+    <string name="zs_hint_valor_desconto">Valor do desconto</string>
+    <string name="zs_hint_novo_cnpj_alterar_perfil">Digite seu novo cnpj</string>
+    <string name="zs_hint_cnpj_antigo_alterar_perfil">Digite seu cnpj antigo</string>
 
     <string name="zs_texto_preco_produto">Preço:</string>
     <string name="zs_texto_quantidade_disponivel_produto">Quantidade disponível:</string>
     <string name="zs_texto_empresa_produto">Empresa:</string>
     <string name="zs_texto_descricao_produto">Descrição:</string>
+    <string name="zs_texto_total_compra">TOTAL</string>
+    <string name="zs_texto_nome_produto">Nome do produto</string>
+    <string name="zs_texto_registro">Não é registrado?</string>
+    <string name="zs_texto_registre_se"><b><u>Registre-se</u></b></string>
+    <string name="zs_texto_esqueceu_senha"><u>Não sei minha senha!</u></string>
+    <string name="zs_texto_cpf_visualizar_historico">CPF:</string>
+    <string name="zs_texto_cnpj_visualizar_historico">CNPJ:</string>
+    <string name="zs_texto_data_inicio_negociacao">Data início:</string>
+    <string name="zs_texto_data_fim_negociacao">Data fim:</string>
 
     <string name="zs_dialogo_sim">Sim</string>
     <string name="zs_dialogo_nao">Não</string>
     <string name="zs_dialogo_titulo">Sair</string>
     <string name="zs_dialogo_mensagem_sair_conta">Tem certeza que deseja sair?</string>
     <string name="zs_dialogo_editar_produto">Editar</string>
-    <string name="zs_dialogo_excluir_produto">Excluir</string>
+    <string name="zs_dialogo_excluir">Excluir</string>
+    <string name="zs_dialogo_voltar">Voltar</string>
+    <string name="zs_dialogo_mensagem_item_compra">O que deseja fazer com o item?</string>
+    <string name="zs_dialogo_remover_item">Remover item</string>
     <string name="zs_dialogo_mensagem_produto">O que deseja fazer com o produto?</string>
     <string name="zs_dialogo_titulo_produto">Produto</string>
-
-    <string name="zs_btn_voltar_dialogo_compra">Voltar</string>
-    <string name="zs_btn_comprar_dialogo_compra">Comprar</string>
     <string name="zs_texto_total_dialogo_compra">TOTAL:</string>
     <string name="zs_hint_quantidade_dialogo_compra">Digite a quantidade desejada</string>
 
-    <string name="zs_txt_registro">Não é registrado?</string>
-    <string name="zs_txt_registre_se"><b><u>Registre-se</u></b></string>
-    <string name="zs_txt_esqueceu_senha"><u>Não sei minha senha!</u></string>
+    <string name="zs_btn_voltar_dialogo_compra">Voltar</string>
+    <string name="zs_btn_comprar_dialogo_compra">Adicionar ao carrinho</string>
+    <string name="zs_btn_confirmar_dialogo_compra">Confirmar</string>
 
     <string name="zs_btn_entrar">Entrar</string>
     <string name="zs_btn_cadastrar">Cadastrar</string>
@@ -63,9 +75,14 @@
     <string name="zs_btn_alterar_telefone">Alterar telefone</string>
     <string name="zs_btn_alterar_endereco">Alterar endereço</string>
     <string name="zs_btn_alterar_cpf">Alterar cpf</string>
+    <string name="zs_btn_alterar_cnpj">Alterar cnpj</string>
     <string name="zs_btn_alterar_data_nascimento">Alterar data de nascimento</string>
     <string name="zs_btn_negociar_produto">Negociar</string>
     <string name="zs_btn_comprar_produto">Comprar</string>
+    <string name="zs_btn_adicionar_carrinho">Adicionar ao carrinho</string>
+    <string name="zs_btn_finalizar_compra">Finalizar compra</string>
+    <string name="zs_btn_finalizar_negociacao">Finalizar negociação</string>
+    <string name="zs_btn_gerar_desconto_carrinho_negociacao">Gerar desconto</string>
 
     <string name="zs_sucesso_usuario_cadastrado">Usuário cadastrado com sucesso!</string>
     <string name="zs_email_enviado_sucesso">Email enviado com sucesso!</string>
@@ -77,7 +94,11 @@
     <string name="zs_data_nascimento_alterado_sucesso">Data de nascimento alterada com sucesso!</string>
     <string name="zs_produto_excluido_sucesso">Produto excluído com sucesso!</string>
     <string name="zs_produto_alterado_sucesso">Produto alterado com sucesso!</string>
+    <string name="zs_item_removido_sucesso">Item removido com sucesso</string>
+    <string name="zs_produto_cadastrado_sucesso">Produto cadastrado com sucesso!</string>
+    <string name="zs_adicionar_carrinho_compra_sucesso">Produto adicionado ao carrinho de compra!</string>
     <string name="zs_compra_realizada_sucesso">Compra realizada com sucesso!</string>
+    <string name="zs_negociacao_finalizada_sucesso">Negociação finalizada com sucesso!</string>
 
     <string name="zs_excecao_campo_vazio">Preencha o campo vazio</string>
     <string name="zs_excecao_cpf_cnpj">Digite um CPF ou CNPJ válido</string>
@@ -101,14 +122,20 @@
     <string name="zs_excecao_quantidade_maxima">Quantidade não disponível em estoque!</string>
     <string name="zs_excecao_quantidade_excedida">Valor de compra excedido! Tente comprar uma quantidade menor.</string>
     <string name="zs_excecao_quantidade_invalida">Quantidade inválida!</string>
+    <string name="zs_excecao_carrinho_vazio">Carrinho vazio!</string>
+    <string name="zs_excecao_compra_vazia">Carrinho vazio! Adicione itens ao carrinho.</string>
+    <string name="zs_excecao_conexao_limite">Conexão limite atingida! Verifique sua conexão com a internet.</string>
+    <string name="zs_excecao_historico_vazio">Histórico vazio</string>
 
     <string name="zs_menu_lateral_perfil">Meu perfil</string>
     <string name="zs_menu_lateral_negociacao">Negociação</string>
     <string name="zs_menu_lateral_produtos_pessoa_fisica">Produtos</string>
     <string name="zs_menu_lateral_produtos_pessoa_juridica">Meus produtos</string>
     <string name="zs_menu_lateral_compras">Compras</string>
+    <string name="zs_menu_lateral_historico_pessoa_fisica">Histórico de compras</string>
+    <string name="zs_menu_lateral_historico_pessoa_juridica">Histórico de vendas</string>
+    <string name="zs_menu_lateral_historico_negociacao">Histórico de negociações</string>
     <string name="zs_menu_lateral_sair">Sair</string>
-
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -122,9 +149,24 @@
     <string name="title_activity_perfil_pessoa_juridica">Meu perfil</string>
     <string name="title_activity_main_pessoa_juridica">Negociações</string>
     <string name="title_activity_meus_produtos">Meus produtos</string>
+    <string name="title_activity_carrinho_compra">Carrinho de compra</string>
+    <string name="title_activity_negociacao">Negociação</string>
+    <string name="title_activity_main_historico_negociacao_pessoa_fisica">Histórico de negociações</string>
+    <string name="title_activity_main_historico_negociacao_pessoa_juridica">Histórico de negociações</string>
+
+    <string name="zs_content_description_card_item_compra">Imamgem do produto adicionado ao carrinho</string>
 
     <string name="zs_titulo_progress_dialog_registro">Cadastrando usuário...</string>
-    <string name="zs_titulo_progress_dialog_produto">Carregando produto...</string>
+    <string name="zs_titulo_progress_dialog_carregar_informacoes_produto">Carregando produto...</string>
+    <string name="zs_titulo_progress_dialog_cadastrando_produto">Cadastrando produto...</string>
+    <string name="zs_titulo_progress_dialog_carregar_produto">Carregando produtos...</string>
+    <string name="zs_titulo_progress_dialog_visualizar_historico">Carregando histórico...</string>
+    <string name="zs_titulo_progress_dialog_carregar_historico_venda">Carregando histórico de vendas...</string>
+    <string name="zs_titulo_progress_dialog_carregar_historico_compra">Carregando histórico de compras...</string>
+    <string name="zs_titulo_progress_dialog_carregar_historico_negociacao">Carregando histórico de negociações...</string>
+    <string name="zs_titulo_progress_dialog_carregar_negociacoes">Carregando negociações...</string>
+    <string name="zs_titulo_progress_dialog_alterar_produto">Alterando produto...</string>
     <string name="zs_titulo_progress_dialog_perfil">Carregando informações...</string>
 
+    <string name="zs_mensagem_produto_esgotado">Produto esgotado!</string>
 </resources>

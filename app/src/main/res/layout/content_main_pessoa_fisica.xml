@@ -9,34 +9,55 @@
     android:focusableInTouchMode="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".pessoaFisica.gui.MainPessoaFisicaActivity"
-    tools:showIn="@layout/app_bar_main_pessoa_fisica" >
+    tools:showIn="@layout/app_bar_main_pessoa_fisica">
 
     <EditText
         android:id="@+id/edtPesquisaProdutoPessoaFisica"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/btnPesquisaProdutoPessoaFisica"
-        android:layout_toStartOf="@id/btnPesquisaProdutoPessoaFisica"
-        android:inputType="text"
-        android:backgroundTint="@color/cimento"
-        android:textColor="@color/cimento" />
-
-    <Button
-        android:id="@+id/btnPesquisaProdutoPessoaFisica"
-        android:layout_width="40dp"
-        android:layout_height="45dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
+        android:layout_width="263dp"
+        android:layout_marginBottom="10dp"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/ic_pesquisa"
-        android:backgroundTint="@color/cimento" />
+        android:backgroundTint="@color/cimento"
+        android:drawablePadding="10dp"
+        android:hint="Digite o nome do produto"
+        android:inputType="text"
+        android:textColor="@color/cimento"
+        android:textColorHint="@color/cimento"
+        android:layout_alignParentLeft="true" />
+
+    <RelativeLayout
+        android:id="@+id/rlFiltroPesquisaPessoaFisica"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center"
+        android:background="@color/cloudGrey"
+        android:layout_alignParentRight="true">
+
+        <Spinner
+            android:id="@+id/spnFiltroPesquisaPessoaFisica"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:backgroundTint="@color/preto"
+            android:entries="@array/spinner_tipo_filtro" />
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerProdutosPessoaFisica"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/edtPesquisaProdutoPessoaFisica"
+        android:layout_height="470dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
         android:padding="16dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_alignParentLeft="true" />
 
 </RelativeLayout>
