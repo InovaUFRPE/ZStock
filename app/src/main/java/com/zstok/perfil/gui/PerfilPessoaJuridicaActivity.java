@@ -497,8 +497,8 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     //Intent para tela de login
     private void abrirTelaLoginActivity () {
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        finish();
     }
     //Intent para a tela main
     private void abrirTelaMainPessoaJuridicaActivity(){

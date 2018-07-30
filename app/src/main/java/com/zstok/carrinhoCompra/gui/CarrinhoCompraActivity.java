@@ -214,7 +214,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
                         abrirTelaMainPessoaFisicaActivity();
                         return true;
                     case R.id.nav_negociacao_pessoa_fisica:
-                        Helper.criarToast(getApplicationContext(), "Em construção...");
+                        abrirTelaMainNegocicaoActivity();
                         return true;
                     case R.id.nav_meu_historico_compra_pessoa_fisica:
                         abrirTelaMainHistoricoPessoaFisicaActivity();
@@ -675,7 +675,7 @@ public class CarrinhoCompraActivity extends AppCompatActivity
     //Intent para a tela de login
     private void abrirTelaLoginActivity(){
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        finish();
     }
 }

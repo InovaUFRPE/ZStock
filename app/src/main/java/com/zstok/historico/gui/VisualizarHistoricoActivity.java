@@ -61,14 +61,10 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
         tvCpfVisualizarHistorico =  findViewById(R.id.tvCpfVisualizarHistorico);
         tvCnpjVisualizarHistorico = findViewById(R.id.tvCnpjVisualizarHistorico);
         tvTotalVisualizarHistorico = findViewById(R.id.tvTotalVisualizarHistorico);
-        btnVizualizarChat = (Button) findViewById(R.id.btnVizualizarChat);
+        btnVizualizarChat = findViewById(R.id.btnVizualizarChat);
 
-        btnVizualizarChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                habilitarChat();
-            }
-        });
+        //Habilitar botão chat
+        habilitarChat();
 
         //Aplicar máscara
         Helper.mascaraCnpj(tvCnpjVisualizarHistorico);
@@ -86,16 +82,25 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
         //Método que cria o adapter de itens compra
         verificarQuery();
     }
+    //Evento de clique do botão visualizar chat
+    private void clickVisualizarChat(final DataSnapshot dataSnapshot) {
+        btnVizualizarChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String idNegociacao = dataSnapshot.child("historico").child(idHistorico).child("idNegociacao").getValue(String.class);
+                abrirTelaVizualizarNegociacao(idNegociacao);
+            }
+        });
+    }
     //Método para habilitar chat caso seja uma negociação
     private void habilitarChat(){
         FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(final DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child("historico").child(idHistorico).child("idNegociacao").exists()){
-                    String idNegociacao = dataSnapshot.child("historico").child(idHistorico).child("idNegociacao").getValue(String.class);
-                    abrirTelaVizualizarNegociacao(idNegociacao);
+                    clickVisualizarChat(dataSnapshot);
                 }else{
-                    Helper.criarToast(getApplicationContext(),"Essa compra não possui negociação!");
+                    btnVizualizarChat.setVisibility(View.GONE);
                 }
             }
 
@@ -105,6 +110,7 @@ public class VisualizarHistoricoActivity extends AppCompatActivity {
             }
         });
     }
+    //Intent para a tela de visuzalização da Negociação
     private void abrirTelaVizualizarNegociacao(String idNegociacao){
         Intent intent = new Intent(getApplicationContext(), VizualizarChatActivity.class);
         intent.putExtra("idNegociacao",idNegociacao);

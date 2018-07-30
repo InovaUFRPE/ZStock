@@ -47,6 +47,7 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
     private EditText edtDescontoCaixaDialogo;
     private Button btnGerarDescontoCaixaDialogo;
     private TextView tvTotalCarrinhoNegociacao;
+    private TextView tvCancelarNegociacao;
     private Button btnCarrinhoNegociacao;
 
     private FirebaseRecyclerAdapter adapter;
@@ -72,6 +73,16 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
         //Instanciando views
         tvTotalCarrinhoNegociacao = findViewById(R.id.tvTotalCarrinhoNegociacao);
         btnCarrinhoNegociacao = findViewById(R.id.btnCarrinhoNegociacao);
+        tvCancelarNegociacao = findViewById(R.id.tvCancelarNegociacao);
+
+        tvCancelarNegociacao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (verificaConexao.isConected()) {
+                    cancelarNegocicao();
+                }
+            }
+        });
 
         //Instanciando recyler view
         recyclerViewItens = findViewById(R.id.recyclerItensCarrinhoNecogiacao);
@@ -102,7 +113,6 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                //Implementar métodos de remoção
             }
 
             @Override
@@ -117,6 +127,15 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
         });
 
         criarAdapter();
+    }
+    //Cancelando negociação
+    private void cancelarNegocicao(){
+        if (NegociacaoServices.limparNegociacao(idNegociacao)){
+            Helper.criarToast(getApplicationContext(), getString(R.string.zs_negociacao_cancelada_sucesso));
+            abrirTelaMainNegociacaoPessoaFisicaActivity();
+        }else {
+            Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
+        }
     }
     //Verificando tipo e gerenciando o onClick do botão
     private void verificarConta(){
@@ -136,27 +155,36 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
     private void setClickBotaoCarrinhoNegociacao(DataSnapshot dataSnapshot) {
         if (verificaConexao.isConected()) {
             if (dataSnapshot.child("pessoaJuridica").child(FirebaseController.getUidUser()).exists()) {
-                btnCarrinhoNegociacao.setText(getString(R.string.zs_btn_gerar_desconto_carrinho_negociacao));
-                btnCarrinhoNegociacao.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //Abrir caixa de diálogo
-                        gerarDesconto();
-                    }
-                });
+                clickGerarDesconto();
             } else {
-                btnCarrinhoNegociacao.setText(getString(R.string.zs_btn_finalizar_negociacao));
-                btnCarrinhoNegociacao.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    
-                    public void onClick(View v) {
-                        fecharNegociacao();
-                    }
-                });
+                clickFinalizarNegociacao();
             }
         }else {
             Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_database));
         }
+    }
+    //Evento de click para gerar desconto
+    private void clickGerarDesconto() {
+        btnCarrinhoNegociacao.setText(getString(R.string.zs_btn_gerar_desconto_carrinho_negociacao));
+        tvCancelarNegociacao.setVisibility(View.GONE);
+        btnCarrinhoNegociacao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Abrir caixa de diálogo
+                gerarDesconto();
+            }
+        });
+    }
+    //Evento de click para finalizar negocição
+    private void clickFinalizarNegociacao() {
+        btnCarrinhoNegociacao.setText(getString(R.string.zs_btn_finalizar_negociacao));
+        btnCarrinhoNegociacao.setOnClickListener(new View.OnClickListener() {
+            @Override
+
+            public void onClick(View v) {
+                fecharNegociacao();
+            }
+        });
     }
     //Resgatando total do banco
     private void resgatandoTotal() {
@@ -286,7 +314,7 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
         alertaDesconto = builder.create();
         alertaDesconto.show();
 
-        clickGerarDesconto();
+        clickAplicarDesconto();
     }
     //Validando EditText da caixa de diálogo
     private boolean validarCampo(){
@@ -299,7 +327,7 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
         return verificador;
     }
     //Método que executa o evento de click do botão gerar desconto
-    private void clickGerarDesconto(){
+    private void clickAplicarDesconto(){
         btnGerarDescontoCaixaDialogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -494,9 +522,15 @@ public class CarrinhoNegociacaoActivity extends AppCompatActivity {
             recyclerViewItens.setAdapter(adapter);
         }
     }
-    //Intent para a tela main negociacao da pessoa física
+    //Intent para a tela main histórico da pessoa física
     private void abrirTelaMainHistoricoPessoaFisicaActivity(){
         Intent intent = new Intent(getApplicationContext(), MainHistoricoCompraPessoaFisicaActivity.class);
+        startActivity(intent);
+        finish();
+    }
+    //Intent para a tela main negociação da pessoa física
+    private void abrirTelaMainNegociacaoPessoaFisicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainNegociacaoPessoaFisicaActivity.class);
         startActivity(intent);
         finish();
     }

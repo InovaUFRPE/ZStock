@@ -18,9 +18,12 @@ import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 import com.zstok.R;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
 import java.text.Normalizer;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

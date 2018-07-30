@@ -160,7 +160,7 @@ public class MainNegociacaoPessoaFisicaActivity extends AppCompatActivity
                 if (dataSnapshot.exists()){
                     criarAdapterNegociacao(queryNegociacao);
                 }else {
-                    Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_historico_vazio));
+                    Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_negociacao_andamento_vazio));
                     progressDialog.dismiss();
                 }
             }
@@ -173,7 +173,6 @@ public class MainNegociacaoPessoaFisicaActivity extends AppCompatActivity
     }
     //Montando adapter e jogando no list holder
     private void criarAdapterNegociacao(Query queryNegociacao) {
-
         adapterNegociacao = new FirebaseRecyclerAdapter<Negociacao, NegociacaoListHolder>(
                 Negociacao.class,
                 R.layout.card_negociacao,
@@ -298,6 +297,6 @@ public class MainNegociacaoPessoaFisicaActivity extends AppCompatActivity
     private void abrirTelaLoginActivity() {
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(intent);
-        finish();
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     }
 }
