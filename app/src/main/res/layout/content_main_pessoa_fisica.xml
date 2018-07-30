@@ -14,17 +14,19 @@
     <EditText
         android:id="@+id/edtPesquisaProdutoPessoaFisica"
         android:layout_width="263dp"
-        android:layout_marginBottom="10dp"
         android:layout_height="50dp"
+        android:layout_toLeftOf="@id/rlFiltroPesquisaPessoaFisica"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginBottom="10dp"
         android:backgroundTint="@color/cimento"
         android:drawablePadding="10dp"
-        android:hint="Digite o nome do produto"
+        android:padding="10dp"
+        android:hint="@string/zs_hint_pesquisar_produto"
         android:inputType="text"
         android:textColor="@color/cimento"
-        android:textColorHint="@color/cimento"
-        android:layout_alignParentLeft="true" />
+        android:textColorHint="@color/cimento" />
 
     <RelativeLayout
         android:id="@+id/rlFiltroPesquisaPessoaFisica"
@@ -53,7 +55,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerProdutosPessoaFisica"
         android:layout_width="match_parent"
-        android:layout_height="470dp"
+        android:layout_height="match_parent"
+        android:layout_below="@id/edtPesquisaProdutoPessoaFisica"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:padding="16dp"

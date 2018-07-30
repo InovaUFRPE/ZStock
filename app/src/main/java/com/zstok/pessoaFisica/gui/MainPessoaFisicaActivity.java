@@ -200,16 +200,13 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                 queryFiltro = databaseReference.orderByKey();
                 normalizarLayoutRecyclerView();
                 break;
-            case "Menor-Maior preço":
+            case "Preço: Menor-Maior":
                 queryFiltro = databaseReference.orderByChild("precoSugerido");
                 normalizarLayoutRecyclerView();
                 break;
-            case "Maior-Menor preço":
+            case "Preço: Maior-Menor":
                 queryFiltro = databaseReference.orderByChild("precoSugerido");
                 reverteLayoutRecyclerView();
-                break;
-            default:
-                criarAdapterProduto(databaseReference.orderByKey());
                 break;
         }
         verificarQuery(queryFiltro);
@@ -262,7 +259,7 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
                 if (model.getQuantidadeEstoque() != 0) {
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
                 } else {
-                    viewHolder.tvCardViewQuantidadeEstoque.setText(getString(R.string.zs_mensagem_produto_esgotado));
+                    viewHolder.tvCardViewQuantidadeEstoque.setText(getString(R.string.zs_excecao_produto_esgotado));
                 }
                 if (model.getUrlImagem() != null) {
                     Glide.with(MainPessoaFisicaActivity.this).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
@@ -412,8 +409,8 @@ public class MainPessoaFisicaActivity extends AppCompatActivity
     //Intent para a tela de login
     private void abrirTelaLoginActivity() {
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        finish();
     }
     //Intent para a tela de login
     private void abrirTelaProdutoActivity(String idEmpresa, String idProduto) {

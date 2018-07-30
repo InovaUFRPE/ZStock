@@ -1,4 +1,4 @@
-package com.zstok;
+package com.zstok.pessoaJuridica.gui;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
@@ -20,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.zstok.R;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.pessoa.dominio.Pessoa;
@@ -70,14 +71,6 @@ public class VisualizarEmpresaActivity extends AppCompatActivity {
 
         //Instanciando referência do storage
         referenciaStorage = FirebaseStorage.getInstance().getReference();
-
-        FloatingActionButton fabAvaliarEmpresa = findViewById(R.id.fabAvaliarEmpresa);
-        fabAvaliarEmpresa.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Helper.criarToast(getApplicationContext(), "Em construção...");
-            }
-        });
 
         //Resgatando foto do perfil da empresa
         recuperarFoto();

@@ -1,5 +1,6 @@
 package com.zstok.negociacao.gui;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -55,6 +56,8 @@ public class MainNegociacaoPessoaJuridicaActivity extends AppCompatActivity
     private FirebaseRecyclerAdapter adapterNegociacao;
     private RecyclerView.LayoutManager layoutManager;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +74,9 @@ public class MainNegociacaoPessoaJuridicaActivity extends AppCompatActivity
         //Resgatando usuário atual
         user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
 
+        //Instanciando progress dialog
+        progressDialog = new ProgressDialog(this);
+
         //Instanciando recyler view
         recylerViewNegocicao = findViewById(R.id.recyclerNegociacaoPessoaJuridica);
         recylerViewNegocicao.setHasFixedSize(true);
@@ -78,7 +84,7 @@ public class MainNegociacaoPessoaJuridicaActivity extends AppCompatActivity
         recylerViewNegocicao.setLayoutManager(layoutManager);
 
         //Criando adapter negociacao
-        criarAdapterNegociacao();
+        verificarQuery();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -117,56 +123,27 @@ public class MainNegociacaoPessoaJuridicaActivity extends AppCompatActivity
             }
         });
     }
-    //Montando adapter e jogando no list holder
-    private void criarAdapterNegociacao() {
-        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("negociacao");
-        Query queryAdapter = databaseReference.orderByChild("idPessoaJuridica").equalTo(FirebaseController.getUidUser());
-        if (queryAdapter != null) {
-            adapterNegociacao = new FirebaseRecyclerAdapter<Negociacao, NegociacaoListHolder>(
-                    Negociacao.class,
-                    R.layout.card_negociacao,
-                    NegociacaoListHolder.class,
-                    queryAdapter) {
-
-                @Override
-                protected void populateViewHolder(final NegociacaoListHolder viewHolder, final Negociacao model, int position) {
-                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
-                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
-
-                    viewHolder.tvCardViewDataInicio.setText(model.getDataInicio());
-                    if (model.getDataFim() == null){
-                        viewHolder.tvCardViewDataFim.setText("Indefinida");
-                    }else {
-                        viewHolder.tvCardViewDataFim.setText(model.getDataFim());
-                    }
-                    resgatarCpfPessoaFisica(viewHolder, model);
-                }
-
-                @NonNull
-                @Override
-                public NegociacaoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
-                    final NegociacaoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
-                    viewHolder.setOnItemClickListener(new NegociacaoListHolder.ClickListener() {
-                        @Override
-                        public void onItemClick(View view, int position) {
-                            Negociacao negociacao = (Negociacao) adapterNegociacao.getItem(position);
-                            abrirTelaChatNegociacaoActivity(negociacao.getIdNegociacao());
-                        }
-                    });
-                    return viewHolder;
-                }
-            };
-            recylerViewNegocicao.setAdapter(adapterNegociacao);
-        }
+    //Método que inicia o progress dialog
+    private void iniciarProgressDialog() {
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_carregar_negociacoes));
+        progressDialog.show();
     }
-
-    private void resgatarCpfPessoaFisica(final NegociacaoListHolder viewHolder, final Negociacao model) {
-        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
+    //Método que cria o adapter de histórico
+    private void verificarQuery(){
+        iniciarProgressDialog();
+        DatabaseReference databaseReference = FirebaseController.getFirebase().child("negociacao");
+        final Query queryNegociacao = databaseReference.orderByChild("idPessoaJuridica").equalTo(FirebaseController.getUidUser());
+        //Verificando query
+        queryNegociacao.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String cpf = dataSnapshot.child("pessoaFisica").child(model.getIdPessoaFisica()).child("cpf").getValue(String.class);
-                Helper.mascaraCpf(viewHolder.tvCardViewNomeCpfEmpresa);
-                viewHolder.tvCardViewNomeCpfEmpresa.setText(cpf);
+                if (dataSnapshot.exists()){
+                    criarAdapterNegociacao(queryNegociacao);
+                }else {
+                    Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_negociacao_andamento_vazio));
+                    progressDialog.dismiss();
+                }
             }
 
             @Override
@@ -175,7 +152,62 @@ public class MainNegociacaoPessoaJuridicaActivity extends AppCompatActivity
             }
         });
     }
+    //Montando adapter e jogando no list holder
+    private void criarAdapterNegociacao(Query query) {
+        adapterNegociacao = new FirebaseRecyclerAdapter<Negociacao, NegociacaoListHolder>(
+                Negociacao.class,
+                R.layout.card_negociacao,
+                NegociacaoListHolder.class,
+                query) {
 
+            @Override
+            protected void populateViewHolder(final NegociacaoListHolder viewHolder, final Negociacao model, int position) {
+                viewHolder.mainLayout.setVisibility(View.VISIBLE);
+                viewHolder.linearLayout.setVisibility(View.VISIBLE);
+
+                viewHolder.tvCardViewDataInicio.setText(model.getDataInicio());
+                if (model.getDataFim() == null){
+                    viewHolder.tvCardViewDataFim.setText("Indefinida");
+                }else {
+                    viewHolder.tvCardViewDataFim.setText(model.getDataFim());
+                }
+                resgatarCpfPessoaFisica(viewHolder, model);
+            }
+
+            @NonNull
+            @Override
+            public NegociacaoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+                final NegociacaoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                viewHolder.setOnItemClickListener(new NegociacaoListHolder.ClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Negociacao negociacao = (Negociacao) adapterNegociacao.getItem(position);
+                        abrirTelaChatNegociacaoActivity(negociacao.getIdNegociacao());
+                    }
+                });
+                return viewHolder;
+            }
+        };
+        recylerViewNegocicao.setAdapter(adapterNegociacao);
+
+    }
+    //Resgatando cpf
+    private void resgatarCpfPessoaFisica(final NegociacaoListHolder viewHolder, final Negociacao model) {
+        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String cpf = dataSnapshot.child("pessoaFisica").child(model.getIdPessoaFisica()).child("cpf").getValue(String.class);
+                Helper.mascaraCpf(viewHolder.tvCardViewNomeCpfEmpresa);
+                viewHolder.tvCardViewNomeCpfEmpresa.setText(cpf);
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
     //Instanciando views do navigation header
     private void instanciandoView(){
         View headerView = navigationView.getHeaderView(0);
@@ -262,6 +294,7 @@ public class MainNegociacaoPessoaJuridicaActivity extends AppCompatActivity
     //Intent para a tela de login
     private void abrirTelaLoginActivity(){
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 }

@@ -59,7 +59,7 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".produto.gui.EditarProdutoActivity" />
         <activity android:name=".produto.gui.VisualizarProdutoActivity" />
-        <activity android:name=".VisualizarEmpresaActivity" />
+        <activity android:name=".pessoaJuridica.gui.VisualizarEmpresaActivity" />
         <activity
             android:name=".carrinhoCompra.gui.CarrinhoCompraActivity"
             android:label="@string/title_activity_carrinho_compra"
