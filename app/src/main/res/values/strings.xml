@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Zstok</string>
+    <string name="app_name">Zstock</string>
 
     <string name="zs_hint_email">Email</string>
     <string name="zs_hint_senha">Senha</string>
