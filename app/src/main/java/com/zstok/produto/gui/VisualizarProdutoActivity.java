@@ -2,7 +2,7 @@ package com.zstok.produto.gui;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,12 +19,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
-import com.zstok.VisualizarEmpresaActivity;
+import com.zstok.pessoaJuridica.gui.VisualizarEmpresaActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
 import com.zstok.infraestrutura.utils.MoneyTextWatcher;
 import com.zstok.infraestrutura.utils.VerificaConexao;
+import com.zstok.itemcompra.dominio.ItemCompra;
 import com.zstok.pessoa.dominio.Pessoa;
+import com.zstok.pessoaFisica.gui.MainPessoaFisicaActivity;
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
 
@@ -71,8 +73,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         tvDescricaoProduto = findViewById(R.id.tvDescricaoProduto);
         tvEmpresaProduto = findViewById(R.id.tvEmpresaProduto);
         imgProduto = findViewById(R.id.imgProduto);
-        Button btnComprar = findViewById(R.id.btnComprarProduto);
-        Button btnNegociar = findViewById(R.id.btnNegociarProduto);
+        Button btnAdicionarAoCarrinho = findViewById(R.id.btnAdicionarAoCarrinho);
 
         //Instanciando progress dialog
         progressDialog = new ProgressDialog(this);
@@ -80,14 +81,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         //Instanciando objeto para verificar conexão
         verificaConexao = new VerificaConexao(this);
 
-        btnNegociar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Helper.criarToast(getApplicationContext(), "Em construção...");
-            }
-        });
-
-        btnComprar.setOnClickListener(new View.OnClickListener() {
+        btnAdicionarAoCarrinho.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 iniciarCompra();
@@ -139,27 +133,25 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
     }
     //Método que inicia o progress dialog
     private void iniciarProgressDialog() {
-        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_produto));
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_carregar_informacoes_produto));
         progressDialog.show();
     }
     //Setando campo foto do produto
     private void setarFoto(Produto produto){
-        Bitmap bitmap = Helper.stringToBitMap(produto.getBitmapImagemProduto());
-        Glide.with(getApplicationContext()).load(bitmap).into(imgProduto);
+        if (produto.getUrlImagem() != null) {
+            Glide.with(VisualizarProdutoActivity.this).load(Uri.parse(produto.getUrlImagem())).into(imgProduto);
+        }else {
+            imgProduto.setImageResource(R.drawable.ic_produtos);
+        }
         progressDialog.dismiss();
     }
     //Setando campos da activity
     private void setarCampos(Pessoa pessoa, Produto produto) {
-        tvNomeProduto.setText(produto.getNomeProduto());
+        tvNomeProduto.setText(produto.getNome());
         tvPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(produto.getPrecoSugerido()));
         tvDescricaoProduto.setText(produto.getDescricao());
         tvEmpresaProduto.setText(pessoa.getNome());
-    }
-    //Intent para a tela de visualização da empresa
-    private void abrirTelaVisualizarEmpresaActivity(){
-        Intent intent = new Intent(getApplicationContext(), VisualizarEmpresaActivity.class);
-        intent.putExtra("idEmpresa", idEmpresa);
-        startActivity(intent);
     }
     //Método que abre a caixa de diálogo
     private void iniciarCompra () {
@@ -181,9 +173,32 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         clickVoltar();
 
         //Chamando método para tratar o clique no botão comprar
-        clickComprar();
-
-
+        clickAdicionarAoCarrinho();
+    }
+    //Método que implementa o evento de click do botão voltar
+    private void clickVoltar(){
+        btnVoltarDialogoCompra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertaCompra.dismiss();
+            }
+        });
+    }
+    //Método que implementa o evento de click do botão comprar
+    //Value listener of quantidade
+    private void clickAdicionarAoCarrinho(){
+        btnComprarDialogoCompra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (verificaConexao.isConected()){
+                    if (validarCampos()){
+                        if(validarClickCompra()){
+                            adicionarProdutoCarrinho();
+                        }
+                    }
+                }
+            }
+        });
     }
     //Validando edit text da quantidade digitavda pelo usuário na caixa de diálogo
     private boolean validarCampos(){
@@ -201,7 +216,7 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
         tvNomeProdutoDialogoCompra = mView.findViewById(R.id.tvNomeProdutoDialogoCompra);
         tvTotalDialogoCompra = mView.findViewById(R.id.tvTotalDialogoCompra);
         btnVoltarDialogoCompra = mView.findViewById(R.id.btnVoltarDialogoCompra);
-        btnComprarDialogoCompra = mView.findViewById(R.id.btnComprarDialogoCompra);
+        btnComprarDialogoCompra = mView.findViewById(R.id.btnAdicionarItemDialogoCarrinho);
     }
     //Método que seta as informações para as views da caixa de diálogo
     private void setarInformacoesViews(){
@@ -229,45 +244,60 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
                     int quantidadeItens = Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString());
                     BigDecimal precoItem = MoneyTextWatcher.convertToBigDecimal(tvPrecoProduto.getText().toString());
                     tvTotalDialogoCompra.setText(MoneyTextWatcher.convertStringToMoney(String.valueOf(precoItem.multiply(new BigDecimal(quantidadeItens)))));
+                }else {
+                    tvTotalDialogoCompra.setText("");
                 }
             }
         });
     }
-    //Método que implementa o evento de click do botão voltar
-    private void clickVoltar(){
-        btnVoltarDialogoCompra.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertaCompra.dismiss();
-            }
-        });
+    //Método que cria um objeto ItemCompra
+    private ItemCompra criarItemCompra(){
+        ItemCompra itemCompra = new ItemCompra();
+
+        itemCompra.setIdProduto(idProduto);
+        itemCompra.setValor(MoneyTextWatcher.convertToBigDecimal(tvPrecoProduto.getText().toString()).doubleValue());
+        itemCompra.setQuantidade(Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString()));
+
+        return itemCompra;
     }
-    //Método que implementa o evento de click do botão comprar
-    //Value listener of quantidade
-    private void clickComprar(){
-        btnComprarDialogoCompra.setOnClickListener(new View.OnClickListener() {
+    //Chamando camada de negócio para fazer a redução da quantidade
+    private void adicionarProdutoCarrinho(){
+        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                if (verificaConexao.isConected()){
-                    if (validarCampos()){
-                        if(validarClickCompra()){
-                            comprarProduto();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Verifica se carrinho já existe carrinho.
+                if(dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).exists()){
+                    Double totalCarrinho = dataSnapshot.child("carrinhoCompra").child(FirebaseController.getUidUser()).child("total").getValue(Double.class);
+                    Double precoProduto = dataSnapshot.child("produto").child(idProduto).child("precoSugerido").getValue(Double.class);
+                    double novoTotal = totalCarrinho+(precoProduto* Double.valueOf(edtQuantidadeDialogoCompra.getText().toString()));
+                    if(novoTotal <= 50000.0){
+                        if (ProdutoServices.adicionarProdutoCarrinho(criarItemCompra(),dataSnapshot)){
+                            alertaCompra.dismiss();
+                            Helper.criarToast(getApplicationContext(), getString(R.string.zs_adicionar_carrinho_compra_sucesso));
+                            abrirTelaMainPessoaFisicaActivity();
+                        }else{
+                            Helper.criarToast(getApplicationContext(),getString(R.string.zs_excecao_database));
                         }
+                    }else{
+                        edtQuantidadeDialogoCompra.setError(getString(R.string.zs_excecao_quantidade_excedida));
+                    }
+
+                }else{
+                    if (ProdutoServices.adicionarProdutoCarrinho(criarItemCompra(),dataSnapshot)){
+                        alertaCompra.dismiss();
+                        abrirTelaMainPessoaFisicaActivity();
+                        Helper.criarToast(getApplicationContext(), getString(R.string.zs_adicionar_carrinho_compra_sucesso));
+                    }else{
+                        Helper.criarToast(getApplicationContext(),getString(R.string.zs_excecao_database));
                     }
                 }
             }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
         });
-    }
-    //Chamando camada de negócio para fazer a redução da quantidade
-    private void comprarProduto(){
-        if (ProdutoServices.comprarProduto(idProduto, calcularNovaQuantidade())){
-            alertaCompra.dismiss();
-            Helper.criarToast(getApplicationContext(), getString(R.string.zs_compra_realizada_sucesso));
-        }
-    }
-    //Calculando nova quantidade
-    private int calcularNovaQuantidade() {
-        return Integer.valueOf(tvQuantidadeDisponivelProduto.getText().toString()) - Integer.valueOf(edtQuantidadeDialogoCompra.getText().toString());
     }
     //Validando compra
     private boolean validarClickCompra(){
@@ -287,5 +317,16 @@ public class VisualizarProdutoActivity extends AppCompatActivity {
             verificador = false;
         }
         return verificador;
+    }
+    //Intent para a tela de visualização da empresa
+    private void abrirTelaVisualizarEmpresaActivity(){
+        Intent intent = new Intent(getApplicationContext(), VisualizarEmpresaActivity.class);
+        intent.putExtra("idEmpresa", idEmpresa);
+        startActivity(intent);
+    }
+    //Intent para a tela de visualização da empresa
+    private void abrirTelaMainPessoaFisicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainPessoaFisicaActivity.class);
+        startActivity(intent);
     }
 }

@@ -3,53 +3,32 @@ package com.zstok.itemcompra.dominio;
 public class ItemCompra {
 
     private String idItemCompra;
-    private String nome;
-    private Double valor;
+    private String idProduto;
+    private double valor;
     private int quantidade;
-    private Double desconto;
-
 
     public String getIdItemCompra() {
         return idItemCompra;
     }
-
     public void setIdItemCompra(String idItemCompra) {
         this.idItemCompra = idItemCompra;
     }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public Double getValor() {
+    public double getValor() {
         return valor;
     }
-
-    public void setValor(Double valor) {
+    public void setValor(double valor) {
         this.valor = valor;
     }
-
     public Integer getQuantidade() {
         return quantidade;
     }
-
-    public void setQuantidade(Integer quantidade) {
+    public String getIdProduto() {
+        return idProduto;
+    }
+    public void setIdProduto(String idProduto) {
+        this.idProduto = idProduto;
+    }
+    public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;
-    }
-
-    public Double getDesconto() {
-        return desconto;
-    }
-
-    public void setDesconto(Double desconto) {
-        this.desconto = desconto;
-    }
-
-    public Double getTotal() {
-        return (valor*quantidade)-((valor*quantidade)*(desconto/100));
     }
 }

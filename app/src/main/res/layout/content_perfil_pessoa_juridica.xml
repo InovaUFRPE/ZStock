@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/jabuticaba">
+    android:background="@color/jabuticaba"
+    android:padding="16dp">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -13,7 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="com.zstok.perfil.gui.PerfilPessoaJuridicaActivity"
         tools:showIn="@layout/app_bar_perfil_pessoa_juridica">
@@ -62,7 +62,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="361dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/tvNomeFantasiaPerfilJuridico"
@@ -185,10 +185,41 @@
                 android:background="@color/cloudGrey" />
 
             <TextView
+                android:id="@+id/tvEnderecoPerfilJuridico"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:layout_below="@id/vwCnpj"
+                android:backgroundTint="@color/cimento"
+                android:drawablePadding="@dimen/drawable_padding"
+                android:drawableEnd="@drawable/ic_setinha"
+                android:drawableLeft="@drawable/ic_endereco"
+                android:drawableRight="@drawable/ic_setinha"
+                android:drawableStart="@drawable/ic_endereco"
+                android:gravity="center_vertical"
+                android:hint="@string/zs_hint_endereco_usuario"
+                android:paddingLeft="@dimen/padding_left"
+                android:paddingStart="@dimen/padding_left"
+                android:paddingRight="@dimen/padding_left"
+                android:textColor="@color/cloudGrey"
+                android:textColorHint="@color/cimento"
+                android:textSize="18sp"
+                android:scrollbars="vertical"/>
+
+            <View
+                android:id="@+id/vwEnderecoPerfilJuridico"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_below="@id/tvEnderecoPerfilJuridico"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:background="@color/cloudGrey" />
+
+            <TextView
                 android:id="@+id/tvTelefonePerfilJuridico"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_below="@id/vwCnpj"
+                android:layout_below="@id/vwEnderecoPerfilJuridico"
                 android:layout_margin="5dp"
                 android:backgroundTint="@color/cimento"
                 android:drawableEnd="@drawable/ic_setinha"
@@ -200,33 +231,6 @@
                 android:hint="@string/zs_hint_telefone_usuario"
                 android:paddingLeft="@dimen/padding_left"
                 android:paddingStart="@dimen/padding_left"
-                android:paddingRight="@dimen/padding_left"
-                android:textColor="@color/cloudGrey"
-                android:textColorHint="@color/cimento"
-                android:textSize="18sp" />
-
-            <View
-                android:id="@+id/vwTelefonePerfilJuridico"
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:layout_below="@id/tvTelefonePerfilJuridico"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:background="@color/cloudGrey" />
-
-            <TextView
-                android:id="@+id/tvEnderecoPerfilJuridico"
-                android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:layout_below="@id/vwTelefonePerfilJuridico"
-                android:backgroundTint="@color/cimento"
-                android:drawableEnd="@drawable/ic_setinha"
-                android:drawableLeft="@drawable/ic_endereco"
-                android:drawableRight="@drawable/ic_setinha"
-                android:drawableStart="@drawable/ic_endereco"
-                android:gravity="center_vertical"
-                android:hint="@string/zs_hint_endereco_usuario"
-                android:paddingLeft="@dimen/padding_left"
                 android:paddingRight="@dimen/padding_left"
                 android:textColor="@color/cloudGrey"
                 android:textColorHint="@color/cimento"

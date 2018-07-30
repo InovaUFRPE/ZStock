@@ -111,7 +111,8 @@
                 android:drawableEnd="@drawable/ic_setinha"
                 android:drawablePadding="@dimen/drawable_padding"
                 android:paddingLeft="@dimen/padding_left"
-                android:paddingStart="@dimen/padding_left" />
+                android:paddingStart="@dimen/padding_left"
+                android:paddingRight="@dimen/padding_left"/>
 
             <View
                 android:id="@+id/vwEmailPerfilFisico"
@@ -140,7 +141,8 @@
                 android:drawableStart="@drawable/ic_cpf_cnpj"
                 android:drawablePadding="@dimen/drawable_padding"
                 android:paddingLeft="@dimen/padding_left"
-                android:paddingStart="@dimen/padding_left" />
+                android:paddingStart="@dimen/padding_left"
+                android:paddingRight="@dimen/padding_left"/>
 
             <View
                 android:id="@+id/vwCpfPerfilFisico"
@@ -169,7 +171,8 @@
                 android:drawableStart="@drawable/ic_telefone"
                 android:drawablePadding="@dimen/drawable_padding"
                 android:paddingLeft="@dimen/padding_left"
-                android:paddingStart="@dimen/padding_left"/>
+                android:paddingStart="@dimen/padding_left"
+                android:paddingRight="@dimen/padding_left"/>
 
             <View
                 android:id="@+id/vwTelefonePerfilFisico"
@@ -184,14 +187,18 @@
                 android:id="@+id/tvEnderecoPerfilFisico"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:gravity="center_vertical"
+                android:layout_margin="5dp"
                 android:layout_below="@id/vwTelefonePerfilFisico"
+                android:scrollbars="vertical"
+                android:gravity="center_vertical"
                 android:drawablePadding="@dimen/drawable_padding"
                 android:drawableLeft="@drawable/ic_endereco"
                 android:drawableStart="@drawable/ic_endereco"
                 android:drawableEnd="@drawable/ic_setinha"
                 android:drawableRight="@drawable/ic_setinha"
                 android:paddingLeft="@dimen/padding_left"
+                android:paddingStart="@dimen/padding_left"
+                android:paddingRight="@dimen/padding_left"
                 android:hint="@string/zs_hint_endereco_usuario"
                 android:textSize="18sp"
                 android:textColor="@color/cloudGrey"
@@ -211,7 +218,7 @@
                 android:id="@+id/tvDataNascimentoPerfilFisico"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_below="@id/tvEnderecoPerfilFisico"
+                android:layout_below="@id/vwEnderecoPerfilFisico"
                 android:layout_margin="5dp"
                 android:drawablePadding="@dimen/drawable_padding"
                 android:drawableEnd="@drawable/ic_setinha"
@@ -224,6 +231,7 @@
                 android:backgroundTint="@color/cimento"
                 android:paddingLeft="@dimen/padding_left"
                 android:paddingStart="@dimen/padding_left"
+                android:paddingRight="@dimen/padding_left"
                 android:textSize="18sp"
                 android:textColor="@color/cloudGrey"/>
         </RelativeLayout>

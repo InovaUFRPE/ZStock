@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:gravity="center"
-            android:text="@string/zs_txt_esqueceu_senha"
+            android:text="@string/zs_texto_esqueceu_senha"
             android:textAllCaps="false"
             android:textColor="@color/goiaba" />
 
@@ -79,7 +79,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:text="@string/zs_txt_registro"
+                android:text="@string/zs_texto_registro"
                 android:textColor="@color/cloudGrey"
                 tools:ignore="RtlHardcoded" />
 
@@ -88,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="@string/zs_txt_registre_se"
+                android:text="@string/zs_texto_registre_se"
                 android:textColor="@color/goiaba" />
         </FrameLayout>
     </LinearLayout>

@@ -1,8 +1,13 @@
 package com.zstok.infraestrutura.utils;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,15 +15,24 @@ import android.widget.Toast;
 
 import com.github.rtoshiro.util.format.SimpleMaskFormatter;
 import com.github.rtoshiro.util.format.text.MaskTextWatcher;
+import com.zstok.R;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
+import java.text.Normalizer;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Helper {
+    //Método que monta o Toast
     public static void criarToast(Context context, String texto){
         Toast.makeText(context, texto, Toast.LENGTH_SHORT).show();
     }
+    //Método que verifica a expressão regular do email
     public static boolean verificaExpressaoRegularEmail(String email) {
 
         if (!email.isEmpty()) {
@@ -72,26 +86,25 @@ public class Helper {
 
         textView.addTextChangedListener(mtw);
     }
+    //Método que busca qualquer caractere que não seja número e substitui por vazio
     public static String removerMascara(String str){
         return str.replaceAll("\\D", "");
     }
-    //Convertendo string para bitmap
-    //By: http://androidtrainningcenter.blogspot.com.br/2012/03/how-to-convert-string-to-bitmap-and.html
-    public static Bitmap stringToBitMap(String encodedString){
-        try{
-            byte [] encodeByte = Base64.decode(encodedString,Base64.DEFAULT);
-            return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-        }catch(Exception e){
-            e.getMessage();
-            return null;
-        }
+    //Obtendo URI da imagem
+    public static Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
-    //Convertendo bitMap para string
-    //By: http://androidtrainningcenter.blogspot.com.br/2012/03/how-to-convert-string-to-bitmap-and.html
-    public static String bitMapToString(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress (Bitmap.CompressFormat.PNG, 100, baos);
-        byte [] b = baos.toByteArray ();
-        return Base64.encodeToString (b, Base64.DEFAULT);
+    //Método para remoção de acentos
+    public static String removerAcentos(String str) {
+        return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+    }
+    //Resgatando data atual
+    public static String getData(){
+        Date data = new Date();
+        SimpleDateFormat formatar = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        return formatar.format(data);
     }
 }

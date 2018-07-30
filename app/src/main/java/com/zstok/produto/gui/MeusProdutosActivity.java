@@ -1,7 +1,9 @@
 package com.zstok.produto.gui;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -17,7 +19,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,21 +30,19 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.zstok.R;
+import com.zstok.historico.gui.MainHistoricoVendaPessoaJuridicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
 import com.zstok.infraestrutura.utils.FirebaseController;
 import com.zstok.infraestrutura.utils.Helper;
-import com.zstok.infraestrutura.utils.MoneyTextWatcher;
 import com.zstok.perfil.gui.PerfilPessoaJuridicaActivity;
-import com.zstok.pessoaJuridica.gui.MainPessoaJuridicaActivity;
+import com.zstok.negociacao.gui.MainNegociacaoPessoaJuridicaActivity;
 import com.zstok.produto.adapter.ProdutoListHolder;
 import com.zstok.produto.dominio.Produto;
 import com.zstok.produto.negocio.ProdutoServices;
 
 import java.text.NumberFormat;
-import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -60,6 +59,9 @@ public class MeusProdutosActivity extends AppCompatActivity
 
     private RecyclerView recylerViewMeusprodutos;
     private FirebaseRecyclerAdapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+
+    private ProgressDialog progressDialog;
 
     private FirebaseUser user;
 
@@ -73,6 +75,9 @@ public class MeusProdutosActivity extends AppCompatActivity
         //Resgantado usuário atual
         user = FirebaseController.getFirebaseAuthentication().getCurrentUser();
 
+        //Instanciando progress dialog
+        progressDialog = new ProgressDialog(this);
+
         //Instanciando views
         edtPesquisaProdutoPessoaJuridica = findViewById(R.id.edtPesquisaProdutoPessoaJuridica);
         Button btnPesquisaProdutoPessoaJuridica = findViewById(R.id.btnPesquisaProdutoPessoaJuridica);
@@ -80,9 +85,10 @@ public class MeusProdutosActivity extends AppCompatActivity
         btnPesquisaProdutoPessoaJuridica.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                criandoAdapterPesquisa(edtPesquisaProdutoPessoaJuridica.getText().toString());
+                criandoAdapterPesquisa(Helper.removerAcentos(edtPesquisaProdutoPessoaJuridica.getText().toString().toLowerCase()));
             }
         });
+
         //Evento de pesquisa
         edtPesquisaProdutoPessoaJuridica.addTextChangedListener(new TextWatcher() {
             @Override
@@ -91,7 +97,6 @@ public class MeusProdutosActivity extends AppCompatActivity
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                criandoAdapterPesquisa(edtPesquisaProdutoPessoaJuridica.getText().toString());
             }
 
             @Override
@@ -100,12 +105,12 @@ public class MeusProdutosActivity extends AppCompatActivity
                         edtPesquisaProdutoPessoaJuridica.getText().toString().trim().length() == 0){
                     criandoAdapter();
                 }else {
-                    criandoAdapterPesquisa(edtPesquisaProdutoPessoaJuridica.getText().toString());
+                    criandoAdapterPesquisa(Helper.removerAcentos(edtPesquisaProdutoPessoaJuridica.getText().toString().toLowerCase()));
                 }
             }
         });
 
-        FloatingActionButton fabCadastrarProduto = (FloatingActionButton) findViewById(R.id.fabCadastrarProduto);
+        FloatingActionButton fabCadastrarProduto = findViewById(R.id.fabCadastrarProduto);
         fabCadastrarProduto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,7 +127,7 @@ public class MeusProdutosActivity extends AppCompatActivity
         //Instanciando recyler view
         recylerViewMeusprodutos = findViewById(R.id.recyclerProdutosPessoaJuridica);
         recylerViewMeusprodutos.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MeusProdutosActivity.this);
+        layoutManager = new LinearLayoutManager(MeusProdutosActivity.this);
         recylerViewMeusprodutos.setLayoutManager(layoutManager);
 
         //Criando o adapter
@@ -141,15 +146,19 @@ public class MeusProdutosActivity extends AppCompatActivity
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.nav_meu_perfil_produtos:
+                    case R.id.nav_meu_perfil_pessoa_juridica:
                         abrirTelaPerfilPessoaJuridicaActivity();
                         return true;
-                    case R.id.nav_negociacao_produtos:
+                    case R.id.nav_negociacao_pessoa_juridica:
                         abrirTelaMainPessoaJuridicaActivity();
                         return true;
-                    case R.id.nav_meus_produtos:
+                    case R.id.nav_produtos_pessoa_juridica:
                         drawer.closeDrawers();
                         //Função abrir tela produtos
+                        return true;
+                    case R.id.nav_meu_historico_vendas_pessoa_juridica:
+                        //Função abrir tela histórico de vendas
+                        abrirTelaMainHistoricoVendaPessoaJuridicaActivity();
                         return true;
                     case R.id.nav_sair:
                         sair();
@@ -162,11 +171,11 @@ public class MeusProdutosActivity extends AppCompatActivity
     }
     //Montando adapter e jogando no list holder
     private void criandoAdapterPesquisa(String pesquisa) {
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("produto");
-        Query query = databaseReference.orderByChild("nomeProduto").equalTo(pesquisa);
+        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
+        Query query = databaseReference.orderByChild("nomePesquisa").startAt(pesquisa).endAt(pesquisa+"\uf8ff");
 
         if (query != null) {
-            FirebaseRecyclerAdapter adapter1 = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
+            FirebaseRecyclerAdapter adapterPesquisa = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
                     Produto.class,
                     R.layout.card_produto,
                     ProdutoListHolder.class,
@@ -174,17 +183,20 @@ public class MeusProdutosActivity extends AppCompatActivity
 
                 @Override
                 protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
-                    getItemCount();
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                    viewHolder.tvCardViewNomeProduto.setText(model.getNomeProduto());
+                    viewHolder.tvCardViewNomeProduto.setText(model.getNome());
                     viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
                     viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
-                    if (model.getBitmapImagemProduto() != null) {
-                        Glide.with(getApplicationContext()).load(Helper.stringToBitMap(model.getBitmapImagemProduto())).into(viewHolder.imgCardViewProduto);
+                    if (model.getUrlImagem() != null) {
+                        Glide.with(getApplicationContext()).load(model.getUrlImagem()).into(viewHolder.imgCardViewProduto);
+                    } else {
+                        viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
+
                     }
                 }
+
                 @NonNull
                 @Override
                 public ProdutoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
@@ -199,15 +211,21 @@ public class MeusProdutosActivity extends AppCompatActivity
                     return viewHolder;
                 }
             };
-            recylerViewMeusprodutos.setAdapter(adapter1);
+            recylerViewMeusprodutos.setAdapter(adapterPesquisa);
         }
+    }
+    //Método que inicia o progress dialog
+    private void iniciarProgressDialog() {
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_carregar_produto));
+        progressDialog.show();
     }
     //Montando adapter e jogando no list holder
     private void criandoAdapter() {
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("produto");
+        iniciarProgressDialog();
+        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
         Query queryAdapter = databaseReference.orderByChild("idEmpresa").equalTo(FirebaseController.getUidUser());
         if (queryAdapter != null) {
-
             adapter = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
                     Produto.class,
                     R.layout.card_produto,
@@ -216,15 +234,18 @@ public class MeusProdutosActivity extends AppCompatActivity
 
                 @Override
                 protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
-                    getItemCount();
                     viewHolder.mainLayout.setVisibility(View.VISIBLE);
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                    viewHolder.tvCardViewNomeProduto.setText(model.getNomeProduto());
+                    viewHolder.tvCardViewNomeProduto.setText(model.getNome());
                     viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
                     viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
                     viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
-                    if (model.getBitmapImagemProduto() != null) {
-                        Glide.with(getApplicationContext()).load(Helper.stringToBitMap(model.getBitmapImagemProduto())).into(viewHolder.imgCardViewProduto);
+                    if (model.getUrlImagem() != null) {
+                        Glide.with(MeusProdutosActivity.this).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
+                        progressDialog.dismiss();
+                    } else {
+                        viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
+                        progressDialog.dismiss();
                     }
                 }
 
@@ -260,7 +281,7 @@ public class MeusProdutosActivity extends AppCompatActivity
             }
         });
         //Define a opção de excluir produto
-        builder.setNegativeButton(getString(R.string.zs_dialogo_excluir_produto), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.zs_dialogo_excluir), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
                 excluirProduto(produto);
             }
@@ -270,7 +291,7 @@ public class MeusProdutosActivity extends AppCompatActivity
         //Exibe
         alertaProduto.show();
     }
-    //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
+    //Método que exibe a caixa de diálogo para o usuário confirmar ou não a sua saída do sistema
     private void sair () {
         //Cria o gerador do AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -315,6 +336,8 @@ public class MeusProdutosActivity extends AppCompatActivity
     private void setDadosMenuLateral(){
         if (user.getPhotoUrl() != null){
             Glide.with(this).load(user.getPhotoUrl()).into(cvNavHeaderPessoa);
+        }else {
+            cvNavHeaderPessoa.setImageResource(R.drawable.ic_sem_foto);
         }
         tvNomeUsuarioNavHeader.setText(user.getDisplayName());
         tvEmailUsuarioNavHeader.setText(user.getEmail());
@@ -328,26 +351,7 @@ public class MeusProdutosActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.meus_produtos, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -365,7 +369,7 @@ public class MeusProdutosActivity extends AppCompatActivity
     }
     //Intent para a tela onde estará as negociações
     private void abrirTelaMainPessoaJuridicaActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainPessoaJuridicaActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainNegociacaoPessoaJuridicaActivity.class);
         startActivity(intent);
     }
     //Intent para a tela de perfil pessoa jurídica
@@ -373,15 +377,21 @@ public class MeusProdutosActivity extends AppCompatActivity
         Intent intent = new Intent(getApplicationContext(), PerfilPessoaJuridicaActivity.class);
         startActivity(intent);
     }
-    //Intent para a tela de login
-    private void abrirTelaLoginActivity(){
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(intent);
-    }
     //Intent para a tela de editar produto
     private void abrirTelaEditarProdutoActivity(Produto produto){
         Intent intent = new Intent(getApplicationContext(), EditarProdutoActivity.class);
         intent.putExtra("idProduto", produto.getIdProduto());
+        startActivity(intent);
+    }
+    //Intent para a tela de histórico pessoa jurídica
+    private void abrirTelaMainHistoricoVendaPessoaJuridicaActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainHistoricoVendaPessoaJuridicaActivity.class);
+        startActivity(intent);
+    }
+    //Intent para a tela de login
+    private void abrirTelaLoginActivity(){
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 }
