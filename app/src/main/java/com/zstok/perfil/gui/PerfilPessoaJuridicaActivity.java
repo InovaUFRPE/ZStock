@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -130,9 +129,8 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
         //Recuperando dados do perfil
         recuperarDados();
 
-        //Máscaras cnpj e telfone
+        //Máscaras cnpj
         Helper.mascaraCnpj(tvCnpjPerfilJuridico);
-        Helper.mascaraTelefone(tvTelefonePerfilJuridico);
 
         FloatingActionButton fabAbrirGaleriaPerfilPessoaJuridica = findViewById(R.id.fabAbrirGaleriaCameraPerfilPessoaJuridica);
         fabAbrirGaleriaPerfilPessoaJuridica.setOnClickListener(new View.OnClickListener() {
@@ -248,7 +246,7 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     private void recuperarDados(){
         iniciarProgressDialog();
 
-        FirebaseController.getFirebase().addValueEventListener(new ValueEventListener() {
+        FirebaseController.getFirebase().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Pessoa pessoa = dataSnapshot.child("pessoa").child(FirebaseController.getUidUser()).getValue(Pessoa.class);
@@ -269,12 +267,24 @@ public class PerfilPessoaJuridicaActivity extends AppCompatActivity
     //Carregando as informções do perfil
     private void setInformacoesPerfil(Pessoa pessoa, PessoaJuridica pessoaJuridica){
         tvNomeFantasiaPerfilJuridico.setText(pessoa.getNome());
-        tvTelefonePerfilJuridico.setText(pessoa.getTelefone());
         tvCnpjPerfilJuridico.setText(pessoaJuridica.getCnpj());
         tvEmailPerfilJuridico.setText(user.getEmail());
         tvEnderecoPerfilJuridico.setText(pessoa.getEndereco());
         tvRazaoSocialPerfilJuridico.setText(pessoaJuridica.getRazaoSocial());
+        verificandoTipoTelefone(pessoa);
         progressDialog.dismiss();
+    }
+    //Verificando o tipo de telefone
+    private void verificandoTipoTelefone(Pessoa pessoa) {
+        if (pessoa.getTelefone() != null) {
+            int primeiroDigito = Integer.valueOf(pessoa.getTelefone().substring(2, 3));
+            if (primeiroDigito >= 2 && primeiroDigito <= 5) {
+                Helper.mascaraTelefone(tvTelefonePerfilJuridico);
+            } else {
+                Helper.mascaraCelular(tvTelefonePerfilJuridico);
+            }
+        }
+        tvTelefonePerfilJuridico.setText(pessoa.getTelefone());
     }
     //Carregando informações do menu lateral
     private void setDadosMenuLateral(){

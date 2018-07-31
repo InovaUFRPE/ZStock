@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -132,7 +131,6 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
 
         //Máscaras cpf, telefone e data de nascimento
         Helper.mascaraCpf(tvCpfPerfilFisico);
-        Helper.mascaraTelefone(tvTelefonePerfilFisico);
         Helper.mascaraDataNascimento(tvDataNascimentoPerfilFisico);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -272,9 +270,21 @@ public class PerfilPessoaFisicaActivity extends AppCompatActivity
         tvNomePerfilFisico.setText(pessoa.getNome());
         tvEmailPerfilFisico.setText(user.getEmail());
         tvCpfPerfilFisico.setText(pessoaFisica.getCpf());
-        tvTelefonePerfilFisico.setText(pessoa.getTelefone());
+        verificandoTipoTelefone(pessoa);
         tvEnderecoPerfilFisico.setText(pessoa.getEndereco());
         tvDataNascimentoPerfilFisico.setText(pessoaFisica.getDataNascimento());
+    }
+    //Verificando o tipo de telefone
+    private void verificandoTipoTelefone(Pessoa pessoa) {
+        if (pessoa.getTelefone() != null) {
+            int primeiroDigito = Integer.valueOf(pessoa.getTelefone().substring(2, 3));
+            if (primeiroDigito >= 2 && primeiroDigito <= 5) {
+                Helper.mascaraTelefone(tvTelefonePerfilFisico);
+            } else {
+                Helper.mascaraCelular(tvTelefonePerfilFisico);
+            }
+        }
+        tvTelefonePerfilFisico.setText(pessoa.getTelefone());
     }
     //Carregando informações do menu lateral
     private void setDadosMenuLateral(){
