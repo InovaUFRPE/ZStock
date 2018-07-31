@@ -17,7 +17,7 @@
     <string name="zs_hint_cpf_usuario">CPF</string>
     <string name="zs_hint_cnpj_usuario">CNPJ</string>
     <string name="zs_hint_telefone_usuario">Telefone</string>
-    <string name="zs_hint_mascara_telefone">(XX)XXXXX-XXXX</string>
+    <string name="zs_hint_mascara_telefone">(XX)XXXX-XXXX</string>
     <string name="zs_hint_endereco_usuario">Endereço</string>
     <string name="zs_hint_razao_social">Razão Social</string>
     <string name="zs_hint_nome_fantasia">Nome fantasia</string>
@@ -130,6 +130,7 @@
     <string name="zs_excecao_compra_vazia">Carrinho vazio! Adicione itens ao carrinho.</string>
     <string name="zs_excecao_conexao_limite">Conexão limite atingida! Verifique sua conexão com a internet.</string>
     <string name="zs_excecao_historico_vazio">Histórico vazio</string>
+    <string name="zs_excecao_produto_vazio">Sem produtos cadastrados!</string>
     <string name="zs_excecao_negociacao_andamento_vazio">Sem negociações em andamento!</string>
     <string name="zs_excecao_produto_esgotado">Produto esgotado!</string>
 

@@ -45,12 +45,18 @@ public class Helper {
         return false;
     }
     public static void mascaraTelefone(EditText editText){
-        SimpleMaskFormatter smf = new SimpleMaskFormatter("(NN)NNNNN-NNNN");
+        SimpleMaskFormatter smf = new SimpleMaskFormatter("(NN)NNNN-NNNN");
         MaskTextWatcher mtw = new MaskTextWatcher(editText, smf);
 
         editText.addTextChangedListener(mtw);
     }
     public static void mascaraTelefone(TextView textView){
+        SimpleMaskFormatter smf = new SimpleMaskFormatter("(NN)NNNN-NNNN");
+        MaskTextWatcher mtw = new MaskTextWatcher(textView, smf);
+
+        textView.addTextChangedListener(mtw);
+    }
+    public static void mascaraCelular(TextView textView){
         SimpleMaskFormatter smf = new SimpleMaskFormatter("(NN)NNNNN-NNNN");
         MaskTextWatcher mtw = new MaskTextWatcher(textView, smf);
 

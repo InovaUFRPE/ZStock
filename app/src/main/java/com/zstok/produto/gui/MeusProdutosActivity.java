@@ -29,8 +29,11 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.zstok.R;
 import com.zstok.historico.gui.MainHistoricoVendaPessoaJuridicaActivity;
 import com.zstok.infraestrutura.gui.LoginActivity;
@@ -103,7 +106,7 @@ public class MeusProdutosActivity extends AppCompatActivity
             public void afterTextChanged(Editable s) {
                 if (edtPesquisaProdutoPessoaJuridica.getText().toString().isEmpty() ||
                         edtPesquisaProdutoPessoaJuridica.getText().toString().trim().length() == 0){
-                    criandoAdapter();
+                    verificarQuery();
                 }else {
                     criandoAdapterPesquisa(Helper.removerAcentos(edtPesquisaProdutoPessoaJuridica.getText().toString().toLowerCase()));
                 }
@@ -131,7 +134,7 @@ public class MeusProdutosActivity extends AppCompatActivity
         recylerViewMeusprodutos.setLayoutManager(layoutManager);
 
         //Criando o adapter
-        criandoAdapter();
+        verificarQuery();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -220,51 +223,69 @@ public class MeusProdutosActivity extends AppCompatActivity
         progressDialog.setTitle(getString(R.string.zs_titulo_progress_dialog_carregar_produto));
         progressDialog.show();
     }
-    //Montando adapter e jogando no list holder
-    private void criandoAdapter() {
+    //Método que cria o adapter de histórico
+    private void verificarQuery(){
         iniciarProgressDialog();
-        final DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
-        Query queryAdapter = databaseReference.orderByChild("idEmpresa").equalTo(FirebaseController.getUidUser());
-        if (queryAdapter != null) {
-            adapter = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
-                    Produto.class,
-                    R.layout.card_produto,
-                    ProdutoListHolder.class,
-                    queryAdapter) {
+        DatabaseReference databaseReference = FirebaseController.getFirebase().child("produto");
+        final Query queryProdutos = databaseReference.orderByChild("idEmpresa").equalTo(FirebaseController.getUidUser());
+        //Verificando query
+        queryProdutos.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    criandoAdapter(queryProdutos);
+                }else {
+                    Helper.criarToast(getApplicationContext(), getString(R.string.zs_excecao_produto_vazio));
+                    progressDialog.dismiss();
+                }
+            }
 
-                @Override
-                protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
-                    viewHolder.mainLayout.setVisibility(View.VISIBLE);
-                    viewHolder.linearLayout.setVisibility(View.VISIBLE);
-                    viewHolder.tvCardViewNomeProduto.setText(model.getNome());
-                    viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
-                    viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
-                    viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
-                    if (model.getUrlImagem() != null) {
-                        Glide.with(MeusProdutosActivity.this).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
-                        progressDialog.dismiss();
-                    } else {
-                        viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
-                        progressDialog.dismiss();
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    //Montando adapter e jogando no list holder
+    private void criandoAdapter(Query query) {
+        adapter = new FirebaseRecyclerAdapter<Produto, ProdutoListHolder>(
+                Produto.class,
+                R.layout.card_produto,
+                ProdutoListHolder.class,
+                query) {
+
+            @Override
+            protected void populateViewHolder(final ProdutoListHolder viewHolder, final Produto model, int position) {
+                viewHolder.mainLayout.setVisibility(View.VISIBLE);
+                viewHolder.linearLayout.setVisibility(View.VISIBLE);
+                viewHolder.tvCardViewNomeProduto.setText(model.getNome());
+                viewHolder.tvCardViewPrecoProduto.setText(NumberFormat.getCurrencyInstance().format(model.getPrecoSugerido()));
+                viewHolder.tvCardViewQuantidadeEstoque.setText(String.valueOf(model.getQuantidadeEstoque()));
+                viewHolder.tvCardViewNomeEmpresa.setText(user.getDisplayName());
+                if (model.getUrlImagem() != null) {
+                    Glide.with(MeusProdutosActivity.this).load(Uri.parse(model.getUrlImagem())).into(viewHolder.imgCardViewProduto);
+                    progressDialog.dismiss();
+                } else {
+                    viewHolder.imgCardViewProduto.setImageResource(R.drawable.ic_produtos);
+                    progressDialog.dismiss();
+                }
+            }
+
+            @NonNull
+            @Override
+            public ProdutoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+                final ProdutoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                viewHolder.setOnItemClickListener(new ProdutoListHolder.ClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Produto produto = (Produto) adapter.getItem(position);
+                        dialogoProduto(produto);
                     }
-                }
-
-                @NonNull
-                @Override
-                public ProdutoListHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
-                    final ProdutoListHolder viewHolder = super.onCreateViewHolder(parent, viewType);
-                    viewHolder.setOnItemClickListener(new ProdutoListHolder.ClickListener() {
-                        @Override
-                        public void onItemClick(View view, int position) {
-                            Produto produto = (Produto) adapter.getItem(position);
-                            dialogoProduto(produto);
-                        }
-                    });
-                    return viewHolder;
-                }
-            };
-            recylerViewMeusprodutos.setAdapter(adapter);
-        }
+                });
+                return viewHolder;
+            }
+        };
+        recylerViewMeusprodutos.setAdapter(adapter);
     }
     //Método que exibe a caixa de diálogo para o aluno confirmar ou não a sua saída da turma
     private void dialogoProduto (final Produto produto) {
