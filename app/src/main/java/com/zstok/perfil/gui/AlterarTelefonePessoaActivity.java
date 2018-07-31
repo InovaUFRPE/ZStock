@@ -46,6 +46,7 @@ public class AlterarTelefonePessoaActivity extends AppCompatActivity {
             }
         });
     }
+    //Validando o EditText do telefone
     private boolean validarCampo(){
         boolean verificador = true;
 
@@ -56,13 +57,28 @@ public class AlterarTelefonePessoaActivity extends AppCompatActivity {
         }
         return verificador;
     }
+    //Criando objeto pessoa
     private Pessoa criarPessoa(){
         Pessoa pessoa = new Pessoa();
 
-        pessoa.setTelefone(edtAlterarTelefonePessoa.getText().toString());
+        pessoa.setTelefone(verificandoTipoTelefone(Helper.removerMascara(edtAlterarTelefonePessoa.getText().toString())));
 
         return pessoa;
     }
+    //Verificando o tipo de telefone
+    private String verificandoTipoTelefone(String telefone) {
+        int primeiroDigito = Integer.valueOf(telefone.substring(2,3));
+        if (!(primeiroDigito >= 2 && primeiroDigito <= 5)){
+            return formatarTelefone(telefone);
+        }else {
+            return telefone;
+        }
+    }
+    //Acrescentando o nove
+    private String formatarTelefone(String telefone){
+        return telefone.substring(0,2) + "9" + telefone.substring(2);
+    }
+    //Chamando camada de negócio para alterar o telefone
     private void alterarTelefone(Pessoa pessoa){
         if (PerfilServices.alterarTelefone(pessoa)){
             Helper.criarToast(getApplicationContext(), getString(R.string.zs_telefone_alterado_sucesso));
